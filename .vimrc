@@ -26,9 +26,6 @@ map <Space> <leader>
 map <Leader>w :update<CR>
 map <Leader>q :qall<CR>
 map <Leader>d :bd<CR>
-map <Leader>gs :Gstatus<CR>
-map <Leader>gc :Gcommit<CR>
-map <Leader>gp :Gpush<CR>
 
 " Toggle nerdtree with F10
 map <F10> :NERDTreeToggle<CR>
@@ -49,7 +46,9 @@ au WinEnter * set cursorline
 set cursorline
 
 "key to insert mode with paste using F2 key
-map <F2> :set paste<CR>i
+map <F2> :set paste<CR>"*p:set nopaste<CR>
+
+
 " Leave paste mode on exit
 au InsertLeave * set nopaste
 
@@ -88,6 +87,7 @@ endif
 " Add pathogen execution on startup
 execute pathogen#infect()
 
+filetype on
 filetype plugin indent on
 
 augroup vimrcEx
@@ -99,10 +99,10 @@ augroup vimrcEx
   " When editing a file, always jump to the last known cursor position.
   " Don't do it for commit messages, when the position is invalid, or when
   " inside an event handler (happens when dropping a file on gvim).
-  "autocmd BufReadPost *
-  "  \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
-  "  \   exe "normal g`\"" |
-  "  \ endif
+  autocmd BufReadPost *
+    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
@@ -158,7 +158,7 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline_theme = 'bubblegum'
+let g:airline_theme = 'gruvbox'
 let g:airline_symbols.space = "\ua0"
 
 
@@ -169,8 +169,8 @@ let g:airline_symbols.space = "\ua0"
 " Colorscheme
 set t_Co=256
 set encoding=utf-8
-set background=dark
-colorscheme anotherdark
+set background=light
+colorscheme gruvbox
 
 " Highlight line number of where cursor currently is
 hi CursorLineNr guifg=#050505
@@ -277,3 +277,13 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+" Disable automatic comment insertion
+autocmd FileType * setlocal formatoptions-=o
+
+" Disable colored paranthesis
+let g:loaded_niji = 1
+
+" Map leader for paredit
+let mapleader=","
+
