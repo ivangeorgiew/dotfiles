@@ -1,3 +1,12 @@
+" Mappings for vim-surround (* = [',",{, ...])
+" ys* - add surrounds
+" cs* - change surrounds
+" ds* - delete surrounds
+" S* - add surrounds in visual mode
+
+" Go back to previous location <C-o>
+" Reverse of <C-o> is <C-i>
+
 set shell=/bin/bash
 runtime macros/matchit.vim
 
@@ -10,53 +19,30 @@ let g:jsx_ext_required = 0
 
 let $PATH='/usr/local/bin:' . $PATH
 
-:au FocusLost * :wa "Save on focus lost
-
 " Sessions
 let g:session_autoload = 'no'
-
-" Set autocompletion for css
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 " Exit insert mode using jk 
 :imap jk <Esc>
 
-" Leader Mappings
-map <Space> <leader>
-map <Leader>w :update<CR>
-map <Leader>q :qall<CR>
-map <Leader>d :bd<CR>
-
-" Toggle nerdtree with F10
-map <F10> :NERDTreeToggle<CR>
 " Current file in nerdtree
 map <F9> :NERDTreeFind<CR>
+" Toggle nerdtree with F10
+map <F10> :NERDTreeToggle<CR>
+" Change NERDTree mappings
+let g:NERDTreeMapOpenInTab='<C-t>'
+let g:NERDTreeMapOpenVSplit='<C-v>'
+let g:NERDTreeWinSize=50
 
 " Reduce timeout after <ESC> is recvd. This is only a good idea on fast links.
 set ttimeout
 set ttimeoutlen=20
 set notimeout
 
-" Edit another file in the same directory as the current file
-" uses expression to extract path from current file's path
-
 " highlight vertical column of cursor
 au WinLeave * set nocursorline nocursorcolumn
 au WinEnter * set cursorline
 set cursorline
-
-"key to insert mode with paste using F2 key
-map <F2> :set paste<CR>"*p:set nopaste<CR>
-
-
-" Leave paste mode on exit
-au InsertLeave * set nopaste
-
-" Command aliases
-cabbrev tp tabprev
-cabbrev tn tabnext
-cabbrev tf tabfirst
-cabbrev tl tablast
 
 set backspace=1   " Backspace deletes like most programs in insert mode
 set nocompatible  " Use Vim settings, rather then Vi settings
@@ -70,31 +56,30 @@ set incsearch     " do incremental searching
 "set hlsearch      " highlight matches
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
+set clipboard=unnamed "Copy/paste to/from clipboard by default
+set colorcolumn=120  " Set max text characters per line
 
 " Fuzzy finder: ignore stuff that can't be opened, and generated files
 let g:fuzzy_ignore = "*.png;*.PNG;*.JPG;*.jpg;*.GIF;*.gif;vendor/**;coverage/**;tmp/**;rdoc/**"
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
-if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
-  syntax on
-endif
-
-"if filereadable(expand("~/.vimrc.bundles"))
-"  source ~/.vimrc.bundles
+"if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
+"  syntax on
 "endif
 
 " Add pathogen execution on startup
 execute pathogen#infect()
+execute pathogen#helptags()
 
-filetype on
 filetype plugin indent on
+syntax on
 
 augroup vimrcEx
   autocmd!
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+  " For all text files set 'textwidth' to 80 characters.
+  autocmd FileType text setlocal textwidth=80
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it for commit messages, when the position is invalid, or when
@@ -121,21 +106,18 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
 "To enable Indent Guides use <Leader>ig
 
-" Softtabs, 2 spaces
-set tabstop=2
-set shiftwidth=2
+" Indentations
+set tabstop=4
+set shiftwidth=4
 set expandtab
 
 " Display extra whitespace
-" set list listchars=tab:»·,trail:·
-
-" Copy from Vim to System Clipboard
-vmap <C-C> "*y
+set list listchars=tab:»·,trail:·
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
   " Use Ag over Grep
-  set grepprg=ag\ --nogroup
+  set grepprg=ag
   let g:grep_cmd_opts = '--line-numbers --noheading'
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
@@ -145,12 +127,11 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
-" bind \ (backward slash) to Ag(grep) shortcut
-"command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-"nnoremap \ :Ag<SPACE>
-
-" bind K to grep word under cursor
-"nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+" Ag!(grep) shortcut
+let g:ag_prg = 'ag --literal --column --nogroup --noheading'
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap <F3> :Ag!<SPACE>
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -161,6 +142,8 @@ let g:airline#extensions#whitespace#enabled = 0
 let g:airline_theme = 'gruvbox'
 let g:airline_symbols.space = "\ua0"
 
+"Save on focus lost
+:au FocusLost * :wa
 
 :set smartcase
 :set ignorecase
@@ -169,7 +152,7 @@ let g:airline_symbols.space = "\ua0"
 " Colorscheme
 set t_Co=256
 set encoding=utf-8
-set background=light
+set background=dark
 colorscheme gruvbox
 
 " Highlight line number of where cursor currently is
@@ -188,23 +171,27 @@ set undofile
 set undolevels=1000
 set undoreload=10000
 
-" convert hash rockets
-nmap <leader>rh :%s/\v:(\w+) \=\>/\1:/g<cr>
-
 " Tab completion
 " will insert tab at beginning of line,
-" will use completion if not at beginning
+" will use <C-x><C-o> (omnicompletion)
+"
+" type Tab <C-n>/<C-p> to navigate omnicomp
+" type <C-n>/<C-p> to navigate local expressions
 set wildmode=list:longest,list:full
-set complete=.,w,t
 function! InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k'
         return "\<tab>"
     else
-        return "\<c-p>"
+        return "\<c-x>\<c-o>"
     endif
 endfunction
 inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
+
+" To remove completion preview tab after chosen
+"autocmd CompleteDone * pclose
+" To remove completion preview tab alltogether
+autocmd BufEnter * set completeopt-=preview
 
 " Get off my lawn
 nnoremap <Left> :echoe "Use h"<CR>
@@ -230,47 +217,11 @@ set scroll=10
 nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
-" Rainbow brackets for Scheme
-let g:niji_dark_colours = [
-    \ [ '81', '#5fd7ff'],
-    \ [ '99', '#875fff'],
-    \ [ '1',  '#dc322f'],
-    \ [ '76', '#5fd700'],
-    \ [ '3',  '#b58900'],
-    \ [ '2',  '#859900'],
-    \ [ '6',  '#2aa198'],
-    \ [ '4',  '#268bd2'],
-    \ ]
-
-" Ejs syntax enable for .html
+" Switch syntax for strange file endings
 au BufNewFile,BufRead *.ejs set filetype=html
-" Babelrc syntax
-au BufNewFile,BufRead *.babelrc set filetype=javascript
-
-" Configure Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_loc_list_height = 5
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 1
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_enable_highlighting = 0
-let g:syntastic_html_checkers=['']
-let g:syntastic_scss_checkers=['']
-let g:syntastic_cs_checkers=['vim-csharp']
-
-" Local config
-if filereadable($HOME . "/.vimrc.local")
-  source ~/.vimrc.local
-endif
-
-" cmd n, cmd p for fwd/backward in search
-"map <C-n> :cn<CR>
-"map <C-p> :cp<CR>
+au BufNewFile,BufRead *.babelrc set filetype=json
+au BufNewFile,BufRead *.eslintrc set filetype=json
+au BufNewFile,BufRead *.spacemacs set filetype=lisp
 
 " Easy navigation between splits. Instead of ctrl-w + j. Just ctrl-j
 nnoremap <C-J> <C-W><C-J>
@@ -278,12 +229,153 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" Navigations between tabs
+nnoremap L gt
+nnoremap H gT
+
 " Disable automatic comment insertion
 autocmd FileType * setlocal formatoptions-=o
 
-" Disable colored paranthesis
-let g:loaded_niji = 1
+" Style for vim-table mode
+" You can activate it with <Leader>tm
+let g:table_mode_corner='|'
 
-" Map leader for paredit
-let mapleader=","
+" Go to file under cursor
+nnoremap go gf
+nnoremap gf <c-w>gf
+nnoremap gF :vertical wincmd f<CR>
 
+" Go to definition made easier for JS files
+nnoremap gj lbve"bygd/'<cr>l<c-w>gfgT2<C-o>z.gtgg/<C-r>b<cr>
+nnoremap gJ lbve"bygd/'<cr>lgfgg/<C-r>b<cr>
+
+" Multiple Cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+" Ommit new line char (for visual mode)
+vmap $ g_
+
+" Mapping for :%s/EXPRESSION/REPLACEMENT/gc
+function! ReplaceIt()
+    let expression = input('Enter expression: ')
+    call inputsave()
+    let replacement = input('Enter replacement: ')
+    call inputrestore()
+    execute '%sno@'.expression.'@'.replacement.'@gc'
+endfunction
+nnoremap <F2> :call ReplaceIt()<cr>
+
+" Mapping for :%s/EXPRESSION/REPLACEMENT/gc
+function! MassReplaceIt()
+    let expression = input('Enter expression: ')
+    call inputsave()
+    let replacement = input('Enter replacement: ')
+    call inputrestore()
+    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
+endfunction
+nnoremap <F12> :call MassReplaceIt()<cr>
+
+" Bitch, don't copy the stuff I delete into the register :D
+nnoremap D "*d
+nnoremap DD "*dd
+vnoremap D "*d
+nnoremap d "_d
+nnoremap dd "_dd
+vnoremap d "_d
+nnoremap s "_s
+vnoremap s "_s
+nnoremap c "_c
+vnoremap c "_c
+nnoremap x "_x
+vnoremap x "_x
+
+vnoremap p "0p
+vnoremap P "*p
+
+" Paste while in insert mode
+inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
+
+" Move tab left and right
+nnoremap th :tabm -1<cr>
+nnoremap tl :tabm +1<cr>
+
+" Load previous session
+function! SaveSession()
+    let dirPath = fnamemodify('%', ':~:h:t')
+    execute 'mksession! ~/vim_session/'.dirPath
+endfunction
+
+function! OpenSession()
+    let dirPath = fnamemodify('%', ':~:h:t')
+    let file = '~/vim_session/'.dirPath
+    if glob(file)!=#""
+        execute 'source '.file
+    endif
+endfunction
+
+map <F5> :call OpenSession()<cr><cr>
+
+" Next and previous word under cursor
+nnoremap m *
+nnoremap M #
+
+" Search for word under cursor
+map KK lbve"by:Ag! <C-r>b<cr>
+map K lbve"by:Ag! <C-r>b 
+
+" Copy to multiple words to register
+" and paste them at once
+nmap <Leader>8 lbve"ay:let @a .= ', '<cr>
+nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
+nmap <Leader>0 o<Esc>"ap:s/ /\r/g<cr>DD
+
+" Substitute CamelCase/camelCase to NAMED_CONTANT
+":nmap 0 :s#\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr>
+" Convert each NAME_LIKE_THIS to NameLikeThis in the current line.
+":nmap 0 :s#_*\(\u\)\(\u*\)#\1\L\2#g
+
+" For js import aliases ( ../../../components => components)
+set path=$PWD/app/js
+set path+=$PWD/app/js/**
+
+" Autosave config
+"let g:auto_save = 1  " enable AutoSave on Vim startup
+"let g:auto_save_silent = 1  " do not display the auto-save notification
+
+" Ale configurations
+let g:ale_linters = {'javascript': ['eslint']}
+let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
+let g:airline#extensions#ale#enabled = 1
+let g:ale_lint_on_enter = 1
+" :lnext and :lprev jumps from error to error
+
+" Seach the copied content in file
+nmap // ?<C-r>*<cr>
+
+" Copy whole text without new line
+nmap <Leader>v gg^vG$y
+
+" NerdCommenter settings
+" <leader>cm => comment line
+" <leader>cs => multi comment
+" <leader>cu => multi uncomment
+let g:NERDSpaceDelims = 1
+
+" Get off my lawn
+nnoremap <Left>     :echoerr "Use h"<CR>
+nnoremap <Right>    :echoerr "Use l"<CR>
+nnoremap <Up>       :echoerr "Use k"<CR>
+nnoremap <Down>     :echoerr "Use j"<CR>
+nnoremap gt         :echoerr "use H or L"<CR>
+
+" Leader Mappings
+map <Space> <leader>
+map <Leader>w :update<CR>
+map <Leader>d :bd<CR>
+map <Leader>t :tabclose<CR>
+map <Leader>q :call SaveSession()<cr>:qall<CR>
+map <Leader>f :ALEFix<CR>

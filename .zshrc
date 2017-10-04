@@ -85,3 +85,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 export PATH="$PATH:`yarn global bin`"
+
+lazy_source () {
+    eval "$1 () { [ -f $2 ] && source $2 && $1 \$@ }"
+}
+
+NVM_SOURCE=$HOME/.nvm/nvm.sh
+lazy_source nvm $NVM_SOURCE
