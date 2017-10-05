@@ -306,7 +306,10 @@ nnoremap tl :tabm +1<cr>
 " Load previous session
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
-    execute 'mksession! ~/vim_session/'.dirPath
+    let choice = confirm('Save Session ?',"&Yes\n&No", 1)
+    if choice == 1
+        execute 'mksession! ~/vim_session/'.dirPath
+    endif
 endfunction
 
 function! OpenSession()
@@ -317,7 +320,8 @@ function! OpenSession()
     endif
 endfunction
 
-map <F5> :call OpenSession()<cr><cr>
+map <F5> :call OpenSession()<cr>
+map <F7> :call SaveSession()<cr>
 
 " Next and previous word under cursor
 nnoremap m *
@@ -333,10 +337,10 @@ nmap <Leader>8 lbve"ay:let @a .= ', '<cr>
 nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
 nmap <Leader>0 o<Esc>"ap:s/ /\r/g<cr>DD
 
-" Substitute CamelCase/camelCase to NAMED_CONTANT
-":nmap 0 :s#\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr>
 " Convert each NAME_LIKE_THIS to NameLikeThis in the current line.
-":nmap 0 :s#_*\(\u\)\(\u*\)#\1\L\2#g
+nmap <Leader>2 lbve:s#_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
+" Convert CamelCase/camelCase to NAMED_CONTANT
+nmap <Leader>3 lbve:s#\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
 
 " For js import aliases ( ../../../components => components)
 set path=$PWD/app/js
@@ -354,7 +358,7 @@ let g:ale_lint_on_enter = 1
 " :lnext and :lprev jumps from error to error
 
 " Seach the copied content in file
-nmap // ?<C-r>*<cr>
+nmap // /\V<C-r>*<cr>
 
 " Copy whole text without new line
 nmap <Leader>v gg^vG$y
@@ -377,5 +381,5 @@ map <Space> <leader>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
-map <Leader>q :call SaveSession()<cr>:qall<CR>
-map <Leader>f :ALEFix<CR>
+map <Leader>q :call SaveSession()<CR>:qall<CR>
+map <Leader>f :lopen<CR><CR>
