@@ -280,9 +280,9 @@ endfunction
 nnoremap <F12> :call MassReplaceIt()<cr>
 
 " Bitch, don't copy the stuff I delete into the register :D
-nnoremap D "*d
-nnoremap DD "*dd
-vnoremap D "*d
+nnoremap D "0d
+nnoremap DD "0dd
+vnoremap D "0d
 nnoremap d "_d
 nnoremap dd "_dd
 vnoremap d "_d
@@ -297,7 +297,8 @@ vnoremap p "0p
 vnoremap P "*p
 
 " Paste while in insert mode
-inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
+inoremap <C-r> <Esc>:set paste<cr>a<C-r>0<Esc>:set nopaste<cr>a
+inoremap <C-e> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -328,8 +329,8 @@ nnoremap m *
 nnoremap M #
 
 " Search for word under cursor
-map KK lbve"by:Ag! <C-r>b<cr>
-map K lbve"by:Ag! <C-r>b 
+map KK lbvey:Ag! <C-r>*<cr>
+map K lbvey:Ag! <C-r>* 
 
 " Copy to multiple words to register
 " and paste them at once
@@ -338,9 +339,9 @@ nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
 nmap <Leader>0 o<Esc>"ap:s/ /\r/g<cr>DD
 
 " Convert each NAME_LIKE_THIS to NameLikeThis in the current line.
-nmap <Leader>2 lbve:s#_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
+nmap <Leader>2 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 " Convert CamelCase/camelCase to NAMED_CONTANT
-nmap <Leader>3 lbve:s#\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+nmap <Leader>3 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
 
 " For js import aliases ( ../../../components => components)
 set path=$PWD/app/js
