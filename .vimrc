@@ -295,8 +295,7 @@ vnoremap x "_x
 vnoremap p "0p
 
 " Paste while in insert mode
-inoremap <C-r> <C-r>*
-inoremap <C-e> <C-r>0
+inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
