@@ -280,9 +280,8 @@ endfunction
 nnoremap <F12> :call MassReplaceIt()<cr>
 
 " Bitch, don't copy the stuff I delete into the register :D
-nnoremap D "0d
-nnoremap DD "0dd
-vnoremap D "0d
+nnoremap DD "0dd:let @*=@0<cr>
+vnoremap D "0d:let @*=@0<cr>
 nnoremap d "_d
 nnoremap dd "_dd
 vnoremap d "_d
@@ -294,11 +293,10 @@ nnoremap x "_x
 vnoremap x "_x
 
 vnoremap p "0p
-vnoremap P "*p
 
 " Paste while in insert mode
-inoremap <C-r> <Esc>:set paste<cr>a<C-r>0<Esc>:set nopaste<cr>a
-inoremap <C-e> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
+inoremap <C-r> <C-r>*
+inoremap <C-e> <C-r>0
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -324,19 +322,21 @@ endfunction
 map <F5> :call OpenSession()<cr>
 map <F7> :call SaveSession()<cr>
 
-" Next and previous word under cursor
-nnoremap m *
-nnoremap M #
-
 " Search for word under cursor
 map KK lbvey:Ag! <C-r>*<cr>
 map K lbvey:Ag! <C-r>* 
 
-" Copy to multiple words to register
-" and paste them at once
+" Copy to multiple words to register with ,
 nmap <Leader>8 lbve"ay:let @a .= ', '<cr>
 nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
-nmap <Leader>0 o<Esc>"ap:s/ /\r/g<cr>DD
+" Copy to multiple words to register with ={}
+nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b} '<cr>
+nmap <Leader>( lbve"by:let @a .= '<C-r>b={<C-r>b} '<cr>
+" Paste words from register on new lines
+nmap <Leader>0 o<Esc>"apx^ma:s/ /\r/g<cr>
+
+" Indent correctly
+nmap <Leader>) V`a=
 
 " Convert each NAME_LIKE_THIS to NameLikeThis in the current line.
 nmap <Leader>2 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
@@ -383,4 +383,4 @@ map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
 map <Leader>q :call SaveSession()<CR>:qall<CR>
-map <Leader>f :lopen<CR><CR>
+map <Leader>f :lopen<CR><CR><C-J>:bd<CR>z.
