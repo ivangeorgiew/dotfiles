@@ -259,19 +259,35 @@ let g:multi_cursor_quit_key='<Esc>'
 " Ommit new line char (for visual mode)
 vmap $ g_
 
-" Mapping for :%s/EXPRESSION/REPLACEMENT/gc
-function! ReplaceIt()
+" Mapping for s \%V gc
+function! VisReplaceIt()
+    call inputsave()
     let expression = input('Enter expression: ')
+    call inputrestore()
+    call inputsave()
+    let replacement = input('Enter replacement: ')
+    call inputrestore()
+    execute "'<,'>s@\\%V".expression."@".replacement."@gc"
+endfunction
+vnoremap <F1> :<C-u>call VisReplaceIt()<cr>
+
+" Mapping for s % gc
+function! NormReplaceIt()
+    call inputsave()
+    let expression = input('Enter expression: ')
+    call inputrestore()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
     execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
-nnoremap <F2> :call ReplaceIt()<cr>
+nnoremap <F2> :call NormReplaceIt()<cr>
 
 " Mapping for :%s/EXPRESSION/REPLACEMENT/gc
 function! MassReplaceIt()
+    call inputsave()
     let expression = input('Enter expression: ')
+    call inputrestore()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
@@ -295,7 +311,8 @@ vnoremap x "_x
 vnoremap p "0p
 
 " Paste while in insert mode
-inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
+inoremap <C-r> <Esc>:set paste<cr>a<C-r>0<Esc>:set nopaste<cr>a
+inoremap <C-e> <C-r>
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -332,7 +349,7 @@ nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
 nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b} '<cr>
 nmap <Leader>( lbve"by:let @a .= '<C-r>b={<C-r>b} '<cr>
 " Paste words from register on new lines
-nmap <Leader>0 o<Esc>"apx^ma:s/ /\r/g<cr>
+nmap <Leader>0 o<Esc>"apx^\a:s/ /\r/g<cr>
 
 " Indent correctly
 nmap <Leader>) V`a=
@@ -363,6 +380,13 @@ nmap // /\V<C-r>*<cr>
 " Copy whole text without new line
 nmap <Leader>v gg^vG$y
 
+" Set marker
+nnoremap \ m
+
+" Move to the next word as the one under cursor
+nmap m *
+nmap M #
+
 " NerdCommenter settings
 " <leader>cm => comment line
 " <leader>cs => multi comment
@@ -381,5 +405,5 @@ map <Space> <leader>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
-map <Leader>q :call SaveSession()<CR>:qall<CR>
+map <Leader>q :qall<CR>
 map <Leader>f :lopen<CR><CR><C-J>:bd<CR>z.
