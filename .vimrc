@@ -146,7 +146,7 @@ let g:airline_symbols.space = "\ua0"
 :au FocusLost * :wa
 
 :set smartcase
-:set ignorecase
+:set noignorecase
 :set noantialias
 
 " Colorscheme
@@ -267,7 +267,7 @@ function! VisReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute "'<,'>s@\\%V".expression."@".replacement."@gc"
+    execute "'<,'>s@\\%V".expression."@".replacement."@g"
 endfunction
 vnoremap <F1> :<C-u>call VisReplaceIt()<cr>
 
@@ -279,7 +279,7 @@ function! NormReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute '%sno@'.expression.'@'.replacement.'@gc'
+    execute '%sno@'.expression.'@'.replacement.'@g'
 endfunction
 nnoremap <F2> :call NormReplaceIt()<cr>
 
@@ -405,5 +405,5 @@ map <Space> <leader>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
-map <Leader>q :qall<CR>
+map <Leader>q :call SaveSession()<CR>:qall<CR>
 map <Leader>f :lopen<CR><CR><C-J>:bd<CR>z.
