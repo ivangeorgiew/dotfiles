@@ -14,13 +14,7 @@ runtime macros/matchit.vim
 set ttyfast
 set lazyredraw
 
-" have jsx highlighting/indenting work in .js files as well
-let g:jsx_ext_required = 0
-
 let $PATH='/usr/local/bin:' . $PATH
-
-" Sessions
-let g:session_autoload = 'no'
 
 " Exit insert mode using jk 
 :imap jk <Esc>
@@ -279,7 +273,7 @@ function! NormReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute '%sno@'.expression.'@'.replacement.'@g'
+    execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
 nnoremap <F2> :call NormReplaceIt()<cr>
 
@@ -309,6 +303,7 @@ nnoremap x "_x
 vnoremap x "_x
 
 vnoremap p "0p
+vnoremap P "*p
 
 " Paste while in insert mode
 inoremap <C-r> <Esc>:set paste<cr>a<C-r>0<Esc>:set nopaste<cr>a
@@ -349,7 +344,7 @@ nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
 nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b} '<cr>
 nmap <Leader>( lbve"by:let @a .= '<C-r>b={<C-r>b} '<cr>
 " Paste words from register on new lines
-nmap <Leader>0 o<Esc>"apx^\a:s/ /\r/g<cr>
+nmap <Leader>0 o<Esc>"apx^\a:s/ /\r/g<cr>V`a=
 
 " Indent correctly
 nmap <Leader>) V`a=
@@ -368,14 +363,18 @@ set path+=$PWD/app/js/**
 "let g:auto_save_silent = 1  " do not display the auto-save notification
 
 " Ale configurations
-let g:ale_linters = {'javascript': ['eslint']}
+let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 " :lnext and :lprev jumps from error to error
 
+" have jsx highlighting/indenting work in .js files as well
+let g:jsx_ext_required = 0
+
 " Seach the copied content in file
-nmap // /\V<C-r>*<cr>
+nmap / /\V
+nmap // /\V<C-r>0<cr>
 
 " Copy whole text without new line
 nmap <Leader>v gg^vG$y
