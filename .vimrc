@@ -93,6 +93,20 @@ augroup vimrcEx
   autocmd BufRead,BufNewFile *.md setlocal textwidth=80
 augroup END
 
+" Get off my lawn
+nnoremap <Left>     :echoerr "Use h"<CR>
+nnoremap <Right>    :echoerr "Use l"<CR>
+nnoremap <Up>       :echoerr "Use k"<CR>
+nnoremap <Down>     :echoerr "Use j"<CR>
+nnoremap gt         :echoerr "use H or L"<CR>
+
+" Main Leader Mappings
+map <Space> <leader>
+map <Leader>q :call SaveSession()<CR>:qall<CR>
+map <Leader>w :update<CR>
+map <Leader>d :bd<CR>
+map <Leader>t :tabclose<CR>
+
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
 let g:indent_guides_auto_colors = 0
@@ -302,11 +316,12 @@ vnoremap c "_c
 nnoremap x "_x
 vnoremap x "_x
 
-vnoremap p "0p
-vnoremap P "*p
+nnoremap ,p o<Esc>p
+vnoremap p "*p
+vnoremap P "0p
 
 " Paste while in insert mode
-inoremap <C-r> <Esc>:set paste<cr>a<C-r>0<Esc>:set nopaste<cr>a
+inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
 inoremap <C-e> <C-r>
 
 " Move tab left and right
@@ -337,14 +352,14 @@ map <F7> :call SaveSession()<cr>
 map KK lbvey:Ag! <C-r>*<cr>
 map K lbvey:Ag! <C-r>* 
 
-" Copy to multiple words to register with ,
-nmap <Leader>8 lbve"ay:let @a .= ', '<cr>
-nmap <Leader>9 lbve"Ay:let @a .= ', '<cr>
+" Copy to multiple words to register
+nmap <Leader>8 lbve"ay
+nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
 " Copy to multiple words to register with ={}
-nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b} '<cr>
-nmap <Leader>( lbve"by:let @a .= '<C-r>b={<C-r>b} '<cr>
+nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b}'<cr>
+nmap <Leader>( lbve"by:let @a .= ' <C-r>b={<C-r>b}'<cr>
 " Paste words from register on new lines
-nmap <Leader>0 o<Esc>"apx^\a:s/ /\r/g<cr>V`a=
+map <Leader>0 <Esc>"ap^\a:s/ /\r/g<cr>V`a=
 
 " Indent correctly
 nmap <Leader>) V`a=
@@ -368,6 +383,8 @@ let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 " :lnext and :lprev jumps from error to error
+map <Leader>f <Plug>(ale_next_wrap)
+map <Leader>` :ALEDisable<CR>
 
 " have jsx highlighting/indenting work in .js files as well
 let g:jsx_ext_required = 0
@@ -375,9 +392,6 @@ let g:jsx_ext_required = 0
 " Seach the copied content in file
 nmap / /\V
 nmap // /\V<C-r>0<cr>
-
-" Copy whole text without new line
-nmap <Leader>v gg^vG$y
 
 " Set marker
 nnoremap \ m
@@ -392,17 +406,14 @@ nmap M #
 " <leader>cu => multi uncomment
 let g:NERDSpaceDelims = 1
 
-" Get off my lawn
-nnoremap <Left>     :echoerr "Use h"<CR>
-nnoremap <Right>    :echoerr "Use l"<CR>
-nnoremap <Up>       :echoerr "Use k"<CR>
-nnoremap <Down>     :echoerr "Use j"<CR>
-nnoremap gt         :echoerr "use H or L"<CR>
+" Macro mappings
+" qe...q OR qr...qOR
+" qE...q to append
+" :let @e='<c-r><c-r>e then edit and append '<CR>
+vmap <Leader>e :normal @e<CR>
+vmap <Leader>r :normal @r<CR>
 
-" Leader Mappings
-map <Space> <leader>
-map <Leader>w :update<CR>
-map <Leader>d :bd<CR>
-map <Leader>t :tabclose<CR>
-map <Leader>q :call SaveSession()<CR>:qall<CR>
-map <Leader>f :lopen<CR><CR><C-J>:bd<CR>z.
+"Emmet settings
+"to use type <c-z>,
+let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
+let g:user_emmet_leader_key='<C-Z>'
