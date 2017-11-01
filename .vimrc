@@ -47,33 +47,32 @@ set history=500
 set ruler         " show the cursor position all the time
 set showcmd       " display incomplete commands
 set incsearch     " do incremental searching
-"set hlsearch      " highlight matches
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set colorcolumn=120  " Set max text characters per line
+"set hlsearch      " highlight matches
 
 " Fuzzy finder: ignore stuff that can't be opened, and generated files
 let g:fuzzy_ignore = "*.png;*.PNG;*.JPG;*.jpg;*.GIF;*.gif;vendor/**;coverage/**;tmp/**;rdoc/**"
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
-"if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
-"  syntax on
-"endif
+if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
+  syntax on
+endif
 
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
 
 filetype plugin indent on
-syntax on
 
 augroup vimrcEx
   autocmd!
 
   " For all text files set 'textwidth' to 80 characters.
-  autocmd FileType text setlocal textwidth=80
+  autocmd FileType text setlocal textwidth=120
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it for commit messages, when the position is invalid, or when
@@ -90,22 +89,8 @@ augroup vimrcEx
   " autocmd FileType markdown setlocal spell
 
   " Automatically wrap at 80 characters for Markdown
-  autocmd BufRead,BufNewFile *.md setlocal textwidth=80
+  autocmd BufRead,BufNewFile *.md setlocal textwidth=120
 augroup END
-
-" Get off my lawn
-nnoremap <Left>     :echoerr "Use h"<CR>
-nnoremap <Right>    :echoerr "Use l"<CR>
-nnoremap <Up>       :echoerr "Use k"<CR>
-nnoremap <Down>     :echoerr "Use j"<CR>
-nnoremap gt         :echoerr "use H or L"<CR>
-
-" Main Leader Mappings
-map <Space> <leader>
-map <Leader>q :call SaveSession()<CR>:qall<CR>
-map <Leader>w :update<CR>
-map <Leader>d :bd<CR>
-map <Leader>t :tabclose<CR>
 
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
@@ -137,9 +122,10 @@ endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 " Ag!(grep) shortcut
-let g:ag_prg = 'ag --literal --column --nogroup --noheading'
+" (?!(?:badword|second|\*)) search for not one of these words/characters
+let g:ag_prg = 'ag --column --nogroup --noheading'
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-nnoremap <F3> :Ag!<SPACE>
+nnoremap <F3> :Ag! -F<SPACE>
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -196,16 +182,8 @@ function! InsertTabWrapper()
 endfunction
 inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
-" To remove completion preview tab after chosen
-"autocmd CompleteDone * pclose
 " To remove completion preview tab alltogether
 autocmd BufEnter * set completeopt-=preview
-
-" Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -264,10 +242,7 @@ let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
-" Ommit new line char (for visual mode)
-vmap $ g_
-
-" Mapping for s \%V gc
+" Mapping for visual search and replace
 function! VisReplaceIt()
     call inputsave()
     let expression = input('Enter expression: ')
@@ -275,11 +250,11 @@ function! VisReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute "'<,'>s@\\%V".expression."@".replacement."@g"
+    execute "'<,'>sno@".expression."@".replacement."@g"
 endfunction
-vnoremap <F1> :<C-u>call VisReplaceIt()<cr>
+vnoremap <Leader>1 :<C-u>call VisReplaceIt()<cr>
 
-" Mapping for s % gc
+" Mapping for whole file search and replace
 function! NormReplaceIt()
     call inputsave()
     let expression = input('Enter expression: ')
@@ -291,7 +266,7 @@ function! NormReplaceIt()
 endfunction
 nnoremap <F2> :call NormReplaceIt()<cr>
 
-" Mapping for :%s/EXPRESSION/REPLACEMENT/gc
+" Mapping for project wide search and replace
 function! MassReplaceIt()
     call inputsave()
     let expression = input('Enter expression: ')
@@ -316,9 +291,10 @@ vnoremap c "_c
 nnoremap x "_x
 vnoremap x "_x
 
-nnoremap ,p o<Esc>p
 vnoremap p "*p
 vnoremap P "0p
+" Paste on new line
+nnoremap ,p o<Esc>p
 
 " Paste while in insert mode
 inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
@@ -328,7 +304,7 @@ inoremap <C-e> <C-r>
 nnoremap th :tabm -1<cr>
 nnoremap tl :tabm +1<cr>
 
-" Load previous session
+" Save session
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
     let choice = confirm('Save Session ?',"&Yes\n&No", 1)
@@ -336,7 +312,9 @@ function! SaveSession()
         execute 'mksession! ~/vim_session/'.dirPath
     endif
 endfunction
+map <F7> :call SaveSession()<cr>
 
+" Load previous session
 function! OpenSession()
     let dirPath = fnamemodify('%', ':~:h:t')
     let file = '~/vim_session/'.dirPath
@@ -344,22 +322,21 @@ function! OpenSession()
         execute 'source '.file
     endif
 endfunction
-
 map <F5> :call OpenSession()<cr>
-map <F7> :call SaveSession()<cr>
 
 " Search for word under cursor
 map KK lbvey:Ag! <C-r>*<cr>
 map K lbvey:Ag! <C-r>* 
 
-" Copy to multiple words to register
+" Copy multiple words to register
 nmap <Leader>8 lbve"ay
 nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
-" Copy to multiple words to register with ={}
-nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b}'<cr>
-nmap <Leader>( lbve"by:let @a .= ' <C-r>b={<C-r>b}'<cr>
+nmap <Leader>0 o<Esc>"ap^\a
+imap <Leader>0 <Esc>"ap\a
+" Copy multiple words to register with ={}
+" nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b}'<cr>
+" nmap <Leader>( lbve"by:let @a .= ' <C-r>b={<C-r>b}'<cr>
 " Paste words from register on new lines
-map <Leader>0 <Esc>"ap^\a:s/ /\r/g<cr>V`a=
 
 " Indent correctly
 nmap <Leader>) V`a=
@@ -385,6 +362,7 @@ let g:ale_lint_on_enter = 1
 " :lnext and :lprev jumps from error to error
 map <Leader>f <Plug>(ale_next_wrap)
 map <Leader>` :ALEDisable<CR>
+map <Leader>~ :ALEEnable<CR>
 
 " have jsx highlighting/indenting work in .js files as well
 let g:jsx_ext_required = 0
@@ -410,6 +388,8 @@ let g:NERDSpaceDelims = 1
 " qe...q OR qr...qOR
 " qE...q to append
 " :let @e='<c-r><c-r>e then edit and append '<CR>
+nmap <Leader>e @e
+nmap <Leader>r @r
 vmap <Leader>e :normal @e<CR>
 vmap <Leader>r :normal @r<CR>
 
@@ -417,3 +397,17 @@ vmap <Leader>r :normal @r<CR>
 "to use type <c-z>,
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
 let g:user_emmet_leader_key='<C-Z>'
+
+" Get off my lawn
+nnoremap <Left>     :echoerr "Use h"<CR>
+nnoremap <Right>    :echoerr "Use l"<CR>
+nnoremap <Up>       :echoerr "Use k"<CR>
+nnoremap <Down>     :echoerr "Use j"<CR>
+nnoremap gt         :echoerr "use H or L"<CR>
+
+" Main Leader Mappings
+map <Space> <leader>
+map <Leader>q :call SaveSession()<CR>:qall<CR>
+map <Leader>w :update<CR>
+map <Leader>d :bd<CR>
+map <Leader>t :tabclose<CR>
