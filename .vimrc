@@ -398,6 +398,13 @@ vmap <Leader>r :normal @r<CR>
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
 let g:user_emmet_leader_key='<C-Z>'
 
+"Mundo (undo history) settings
+"press V for vimdiff
+nnoremap <F1> :MundoToggle<CR>
+let g:mundo_width = 60
+let g:mundo_preview_height = 20
+let g:mundo_close_on_revert = 1
+
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
