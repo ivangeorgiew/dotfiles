@@ -1,49 +1,64 @@
 [push]
-  default = current
+    default = current
 [color]
-  ui = auto
+    ui = auto
 [alias]
-  aa = add --all
-  ap = add --patch
-  ca = commit --amend
-  ci = commit -v
-  co = checkout
-  create-branch = !sh -c 'git push origin HEAD:refs/heads/$1 && git fetch origin && git branch --track $1 origin/$1 && cd . && git checkout $1' -
-  delete-branch = !sh -c 'git push origin :refs/heads/$1 && git remote prune origin && git branch -D $1' -
-  merge-branch = !git checkout master && git merge @{-1}
-  pr = !hub pull-request
-  st = status
-  up = !git fetch origin && git rebase origin/master
+    ss = status
+    df = diff
+    ph = push origin HEAD
+    pl = pull --all
+    fp = push --force origin HEAD
+    lg = log --pretty=oneline -10
+    ct = checkout
+    ac = !git add . && git commit -m
+    re = rebase
+    rc = !git add . && git rebase --continue
+    me = merge --ff
+    pre = checkout @{-1}
+    ld = branch -D
+    rd = push origin --delete
+    rh = reset --hard HEAD~1
+    ml = mergetool
+    ma = merge --abort
 [core]
-  excludesfile = ~/.gitignore
-  autocrlf = input
-[merge]
-  ff = only
+    excludesfile = ~/.gitignore
+    autocrlf = input
 [include]
-  path = .gitconfig.local
+    path = .gitconfig.local
 [commit]
-	template = /Users/ivangeorgiev/.gitmessage
+    template = /Users/ivangeorgiev/.gitmessage
 [user]
-  name = Ivan Georgiev
-  email = ivan_georgiew@yahoo.com
+    name = Ivan Georgiev
+    email = ivan.georgiev@tick42.com
 [diff]
-    tool = Kaleidoscope
+    tool = vimdiff
 [difftool "Kaleidoscope"]
-  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[merge]
+    ff = only
+    tool = diffconflicts
+[mergetool]
+    prompt = false
+    keepBackup = false
+[mergetool "vimdiff"]
+    trustExitCode = true
+[mergetool "diffconflicts"]
+    cmd = diffconflicts vim $BASE $LOCAL $REMOTE $MERGED
+    trustExitCode = true
 [mergetool "Kaleidoscope"]
-  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-  trustExitCode = true
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
 [difftool "sourcetree"]
-	cmd = /usr/local/bin/ksdiff -w \"$LOCAL\" \"$REMOTE\"
-	path =
+    cmd = /usr/local/bin/ksdiff -w \"$LOCAL\" \"$REMOTE\"
+    path =
 [mergetool "sourcetree"]
-	cmd = /usr/local/bin/ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-	trustExitCode = true
+    cmd = /usr/local/bin/ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
 [credential]
 
 [hub]
-protocol = https
+    protocol = https
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
-	required = true
+    clean = git-lfs clean %f
+    smudge = git-lfs smudge %f
+    required = true

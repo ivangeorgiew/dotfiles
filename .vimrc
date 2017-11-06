@@ -114,7 +114,7 @@ if executable('ag')
   let g:grep_cmd_opts = '--line-numbers --noheading'
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l -g ""'
+  let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
@@ -209,12 +209,6 @@ au BufNewFile,BufRead *.babelrc set filetype=json
 au BufNewFile,BufRead *.eslintrc set filetype=json
 au BufNewFile,BufRead *.spacemacs set filetype=lisp
 
-" Easy navigation between splits. Instead of ctrl-w + j. Just ctrl-j
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
 " Navigations between tabs
 nnoremap L gt
 nnoremap H gT
@@ -235,25 +229,6 @@ nnoremap gF :vertical wincmd f<CR>
 nnoremap gj lbve"bygd/'<cr>l<c-w>gfgT2<C-o>z.gtgg/<C-r>b<cr>
 nnoremap gJ lbve"bygd/'<cr>lgfgg/<C-r>b<cr>
 
-" Multiple Cursors
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
-
-" Mapping for visual search and replace
-function! VisReplaceIt()
-    call inputsave()
-    let expression = input('Enter expression: ')
-    call inputrestore()
-    call inputsave()
-    let replacement = input('Enter replacement: ')
-    call inputrestore()
-    execute "'<,'>sno@".expression."@".replacement."@g"
-endfunction
-vnoremap <Leader>1 :<C-u>call VisReplaceIt()<cr>
-
 " Mapping for whole file search and replace
 function! NormReplaceIt()
     call inputsave()
@@ -265,6 +240,18 @@ function! NormReplaceIt()
     execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
 nnoremap <F2> :call NormReplaceIt()<cr>
+
+" Mapping for visual search and replace
+function! VisReplaceIt()
+    call inputsave()
+    let expression = input('Enter expression: ')
+    call inputrestore()
+    call inputsave()
+    let replacement = input('Enter replacement: ')
+    call inputrestore()
+    execute "'<,'>sno@".expression."@".replacement."@g"
+endfunction
+vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 
 " Mapping for project wide search and replace
 function! MassReplaceIt()
@@ -331,20 +318,15 @@ map K lbvey:Ag! <C-r>*
 " Copy multiple words to register
 nmap <Leader>8 lbve"ay
 nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
-nmap <Leader>0 o<Esc>"ap^\a
-imap <Leader>0 <Esc>"ap\a
-" Copy multiple words to register with ={}
-" nmap <Leader>* lbve"by:let @a = '<C-r>b={<C-r>b}'<cr>
-" nmap <Leader>( lbve"by:let @a .= ' <C-r>b={<C-r>b}'<cr>
-" Paste words from register on new lines
+nmap <Leader>0 "ap^\a
 
 " Indent correctly
 nmap <Leader>) V`a=
 
-" Convert each NAME_LIKE_THIS to NameLikeThis in the current line.
-nmap <Leader>2 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 " Convert CamelCase/camelCase to NAMED_CONTANT
-nmap <Leader>3 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+nmap <Leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+" Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
+nmap <Leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 " For js import aliases ( ../../../components => components)
 set path=$PWD/app/js
@@ -359,7 +341,7 @@ let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
-" :lnext and :lprev jumps from error to error
+" Jump on next error
 map <Leader>f <Plug>(ale_next_wrap)
 map <Leader>` :ALEDisable<CR>
 map <Leader>~ :ALEEnable<CR>
@@ -369,7 +351,7 @@ let g:jsx_ext_required = 0
 
 " Seach the copied content in file
 nmap / /\V
-nmap // /\V<C-r>0<cr>
+nmap // /\V<C-r>*<cr>
 
 " Set marker
 nnoremap \ m
@@ -400,9 +382,10 @@ let g:user_emmet_leader_key='<C-Z>'
 
 "Mundo (undo history) settings
 "press V for vimdiff
-nnoremap <F1> :MundoToggle<CR>
-let g:mundo_width = 60
-let g:mundo_preview_height = 20
+nnoremap <Leader>1 :MundoToggle<CR>
+let g:mundo_width = 40
+let g:mundo_preview_height = 25
+let g:mundo_preview_bottom = 1
 let g:mundo_close_on_revert = 1
 
 " Get off my lawn
@@ -414,7 +397,26 @@ nnoremap gt         :echoerr "use H or L"<CR>
 
 " Main Leader Mappings
 map <Space> <leader>
-map <Leader>q :call SaveSession()<CR>:qall<CR>
+map <Leader>q :update<CR>:call SaveSession()<CR>:qall<CR>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
+map <Leader>v gg^vGg_y
+
+" Git mergetool shortcuts
+"<leader>D - show other tabs
+"<leader>o (once you’re done reviewing all conflicts, this shows only the middle/merged file)
+"q - abort merge
+"du - re-scan the files for differences
+"do - diff obtain
+"zo - open folded text
+"zc - close folded text
+"]c - next difference
+"[c - previous difference
+if &diff
+    nnoremap du :diffupdate<CR>
+    nnoremap <Leader>o :only<CR>
+    nnoremap q :cq<CR>
+    nmap ] ]c
+    nmap [ [c
+endif
