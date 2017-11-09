@@ -129,6 +129,7 @@ nnoremap <F3> :Ag! -F<SPACE>
 
 " Airline
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled = 0
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -284,7 +285,7 @@ vnoremap P "0p
 nnoremap ,p o<Esc>p
 
 " Paste while in insert mode
-inoremap <C-r> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
+inoremap <C-r> <C-r>*
 inoremap <C-e> <C-r>
 
 " Move tab left and right
@@ -343,6 +344,7 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 " Jump on next error
 map <Leader>f <Plug>(ale_next_wrap)
+map <Leader>F <Plug>(ale_previous_wrap)
 map <Leader>` :ALEDisable<CR>
 map <Leader>~ :ALEEnable<CR>
 
@@ -382,11 +384,16 @@ let g:user_emmet_leader_key='<C-Z>'
 
 "Mundo (undo history) settings
 "press V for vimdiff
-nnoremap <Leader>1 :MundoToggle<CR>
+nnoremap <F1> :MundoToggle<CR>
 let g:mundo_width = 40
 let g:mundo_preview_height = 25
 let g:mundo_preview_bottom = 1
 let g:mundo_close_on_revert = 1
+
+"Increment and Decrement numbers commands
+"X to increment
+nnoremap X <C-a>
+"<C-x> to decrement
 
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
@@ -405,18 +412,27 @@ map <Leader>v gg^vGg_y
 
 " Git mergetool shortcuts
 "<leader>D - show other tabs
-"<leader>o (once you’re done reviewing all conflicts, this shows only the middle/merged file)
-"q - abort merge
+":only (once you’re done reviewing all conflicts, this shows only the middle/merged file)
+":cq - abort merge
+
+"Vim diff
 "du - re-scan the files for differences
 "do - diff obtain
+"dp - diff put
 "zo - open folded text
 "zc - close folded text
-"]c - next difference
-"[c - previous difference
-if &diff
-    nnoremap du :diffupdate<CR>
-    nnoremap <Leader>o :only<CR>
-    nnoremap q :cq<CR>
-    nmap ] ]c
-    nmap [ [c
-endif
+"[ - next difference
+"{ - previous difference
+
+"Vimdiff the current open files in vertical split
+function! ToggleDiff()
+    if &diff
+        execute "windo diffoff"
+    else
+        execute "windo diffthis"
+    endif
+endfunction
+nmap <Leader>1 :call ToggleDiff()<cr>
+nmap du :diffupdate<CR>
+nmap <Leader>[ ]c
+nmap <Leader>] [c
