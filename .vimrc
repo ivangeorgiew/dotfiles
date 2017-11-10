@@ -65,22 +65,11 @@
 
 
 """ MISC START
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
-  syntax on
-endif
-
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
 
-runtime macros/matchit.vim
-filetype plugin indent on
 colorscheme gruvbox
-
-" Highlight line number of where cursor currently is
-hi CursorLineNr guifg=#050505
 
 "Silver Searcher
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
@@ -90,24 +79,19 @@ command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 
 
 """ SET VALUES START
+" Fix lag in vim
+"set ttyfast
+set lazyredraw
+
 " Common
-set shell=/bin/bash
-set list listchars=tab:»·,trail:· "Display extra whitespace
 set scroll=10
 set cursorline
-set backspace=1   " Backspace deletes like most programs in insert mode
 set nocompatible  " Use Vim settings, rather then Vi settings
 set nobackup
 set nowritebackup
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
-set history=500
-set ruler         " show the cursor position all the time
 set showcmd       " display incomplete commands
-set incsearch     " do incremental searching
-set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
-set autoread
-set autoindent
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set colorcolumn=120  " Set max text characters per line
 set hlsearch "highlight matches
@@ -117,19 +101,9 @@ set noantialias
 set diffopt+=vertical
 
 "Folding
-"DONT SET TO SYNTAX, becomes 10sec slower on startup
 set foldmethod=manual "syntax/manual/indent
 set foldnestmax=3 "default 20
-set foldlevelstart=20 "to have everything folded change to 0
-
-" Fix lag in vim
-set ttyfast
-set lazyredraw
-
-" Reduce timeout after <ESC> is recvd. This is only a good idea on fast links.
-set ttimeout
-set ttimeoutlen=20
-set notimeout
+set foldlevelstart=3 "default 20
 
 " Indentations
 set tabstop=4
@@ -137,8 +111,6 @@ set shiftwidth=4
 set expandtab
 
 " Colorscheme
-set t_Co=256
-set encoding=utf-8
 set background=dark
 
 " Numbers
@@ -195,28 +167,35 @@ au BufNewFile,BufRead *.spacemacs set filetype=lisp
 autocmd FileType * setlocal formatoptions-=o
 
 augroup vimrcEx
-  autocmd!
+    autocmd!
 
-  " For all text files set 'textwidth' to 80 characters.
-  autocmd FileType text setlocal textwidth=120
+    " For all text files set 'textwidth' to 80 characters.
+    autocmd FileType text setlocal textwidth=120
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it for commit messages, when the position is invalid, or when
-  " inside an event handler (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it for commit messages, when the position is invalid, or when
+    " inside an event handler (happens when dropping a file on gvim).
+    autocmd BufReadPost *
+        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
+        \   exe "normal g`\"" |
+        \ endif
 
-  " Set syntax highlighting for specific file types
-  autocmd BufRead,BufNewFile *.md set filetype=markdown
+    " Set syntax highlighting for specific file types
+    autocmd BufRead,BufNewFile *.md set filetype=markdown
 
-  " Enable spellchecking for Markdown
-  " autocmd FileType markdown setlocal spell
+    " Enable spellchecking for Markdown
+    autocmd FileType markdown setlocal spell
 
-  " Automatically wrap at 80 characters for Markdown
-  autocmd BufRead,BufNewFile *.md setlocal textwidth=120
+    " Automatically wrap at 80 characters for Markdown
+    autocmd BufRead,BufNewFile *.md setlocal textwidth=80
+
+    "Enable 
+    au FileType javascript 
+        \ if line("$") < 1000 |
+        \   setlocal foldmethod=syntax |
+        \ endif
 augroup END
+
 """ AUTOCMD END
 
 
@@ -293,6 +272,12 @@ let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
+
+"Fold settings
+let g:fastfold_savehook = 1
+let g:fastfold_fold_movement_commands = ['zj', 'zk']
+let g:fastfold_mapsuffixes = ['zn', 'zm', 'z1', 'z2', 'z3']
+let g:fastfold_fold_command_suffixes = ['n', 'm', '1', '2', '3']
 """ GLOBAL END
 
 
@@ -391,15 +376,11 @@ nnoremap zn zM
 "Unfold all
 nnoremap zm zR
 "open/close fold
-nnoremap Z za
-"set foldmethod=manual to work
-vnoremap Z zf
-nnoremap <silent> z1 :set foldlevel=1<CR>
-nnoremap <silent> z2 :set foldlevel=2<CR>
-nnoremap <silent> z3 :set foldlevel=3<CR>
-
-nnoremap <silent> zj :call NextClosedFold('j')<cr>
-nnoremap <silent> zk :call NextClosedFold('k')<cr>
+nnoremap Z za<Plug>(FastFoldUpdate)
+"fold visual selection
+vnoremap Z zf<Plug>(FastFoldUpdate)
+"No need for manual Fold update
+nmap <SID>(DisableFastFoldUpdate) <Plug>(FastFoldUpdate)
 
 "Close insert mode
 imap jk <Esc>
