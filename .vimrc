@@ -16,8 +16,10 @@
 "press V for vimdiff
 
 "Git (vim-fugitive) commands in vim
-" [ ] move between files in Gstatus
-" - adds/removed file to commit
+" [ ] - move between files in Gstatus
+" - - adds/removed file to commit
+" U - stashes file changes
+" p - stash -p
 
 " NerdCommenter
 " <leader>cm => comment line
@@ -39,8 +41,6 @@
 " :e! to reload file
 
 "<leader>o - close all buffers except the one you're in
-"zM - fold everything
-"zR - unfold everything
 
 "Vimdiff
 "<leader>1 - toggle vimdiff for vertsplit
@@ -110,12 +110,16 @@ set autoread
 set autoindent
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set colorcolumn=120  " Set max text characters per line
-set hlsearch " highlight matches
-set foldmethod=syntax "syntax or manual
-set foldlevelstart=10 "to have everything folded change to 0
+set hlsearch "highlight matches
 set smartcase
 set noignorecase
 set noantialias
+set diffopt+=vertical
+
+"Folding
+set foldmethod=syntax "syntax/manual/indent
+set foldnestmax=3 "default 20
+set foldlevelstart=20 "to have everything folded change to 0
 
 " Fix lag in vim
 set ttyfast
@@ -249,7 +253,7 @@ let g:jsx_ext_required = 0
 "let g:auto_save = 1  " enable AutoSave on Vim startup
 "let g:auto_save_silent = 1  " do not display the auto-save notification
 
-" Ale configurations
+" ALE configurations
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:airline#extensions#ale#enabled = 1
@@ -275,7 +279,7 @@ let g:ag_prg = 'ag --column --nogroup --noheading'
 
 " Airline
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#branch#enabled = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -378,12 +382,18 @@ map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
 
 "Folding mappings
+"Fold all
+nnoremap zn zM
+"Unfold all
+nnoremap zm zR
+"open/close fold
 nnoremap Z za
+"set foldmethod=manual to work
 vnoremap Z zf
-nnoremap <silent> z8 :set foldlevel=0<CR>
-nnoremap <silent> z9 :set foldlevel=1<CR>
-nnoremap <silent> z0 :set foldlevel=2<CR>
-nnoremap <silent> z- zR
+nnoremap <silent> z1 :set foldlevel=1<CR>
+nnoremap <silent> z2 :set foldlevel=2<CR>
+nnoremap <silent> z3 :set foldlevel=3<CR>
+
 nnoremap <silent> zj :call NextClosedFold('j')<cr>
 nnoremap <silent> zk :call NextClosedFold('k')<cr>
 
@@ -396,6 +406,9 @@ map <F10> :NERDTreeToggle<CR>
 
 "X to increment
 nnoremap X <C-a>
+
+"Go to last text char in vis
+vnoremap $ g_
 
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
@@ -508,7 +521,9 @@ map <Leader>` :ALEDisable<CR>
 map <Leader>~ :ALEEnable<CR>
 
 " no regex search
-nmap ? /\V
+"nmap / /\V
+"Turn off highlighting until next search
+nnoremap ? :noh<CR>
 " Seach the copied content in file
 nmap // /\V<C-r>*<cr>
 
