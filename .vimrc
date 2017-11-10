@@ -7,6 +7,22 @@
 " Go back to previous location <C-o>
 " Reverse of <C-o> is <C-i>
 
+" :e! to reload file
+
+"Vim diff
+"<leader>1 - toggle vimdiff for vertsplit
+"<leader>o - close all buffers except the one you're in
+"du - re-scan the files for differences
+"do - diff obtain (2 windows)
+"dp - diff put (2 windows)
+"dl - get code from left (3 windows)
+"dr - get code from right (3 windows)
+"zo - open folded text
+"zc - close folded text
+"[ - next difference
+"] - previous difference
+
+
 set shell=/bin/bash
 runtime macros/matchit.vim
 
@@ -49,6 +65,8 @@ set showcmd       " display incomplete commands
 set incsearch     " do incremental searching
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
+set autoread
+set autoindent
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set colorcolumn=120  " Set max text characters per line
 "set hlsearch      " highlight matches
@@ -404,25 +422,11 @@ nnoremap gt         :echoerr "use H or L"<CR>
 
 " Main Leader Mappings
 map <Space> <leader>
-map <Leader>q :update<CR>:call SaveSession()<CR>:qall<CR>
+map <Leader>q :qall<CR>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
 map <Leader>v gg^vGg_y
-
-" Git mergetool shortcuts
-"<leader>D - show other tabs
-":only (once you’re done reviewing all conflicts, this shows only the middle/merged file)
-":cq - abort merge
-
-"Vim diff
-"du - re-scan the files for differences
-"do - diff obtain
-"dp - diff put
-"zo - open folded text
-"zc - close folded text
-"[ - next difference
-"{ - previous difference
 
 "Vimdiff the current open files in vertical split
 function! ToggleDiff()
@@ -433,6 +437,20 @@ function! ToggleDiff()
     endif
 endfunction
 nmap <Leader>1 :call ToggleDiff()<cr>
-nmap du :diffupdate<CR>
+"Once done with changes
+nmap <Leader>o :only<CR>
 nmap <Leader>[ ]c
 nmap <Leader>] [c
+nnoremap du :diffupdate<CR>
+nnoremap dl :diffget //2<CR>
+nnoremap dr :diffget //3<CR>
+
+"Git (vim-fugitive) commands in vim
+" [ ] move between files in Gstatus
+" - adds/removed file to commit
+map <Leader>gc :Gcommit<CR>
+map <Leader>gd <CR>:Gdiff<CR>
+map <Leader>gp :Gpush<CR>
+map <Leader>gr :Gread<CR>
+map <Leader>gs :Gstatus<CR>
+map <Leader>gw :Gwrite<CR>
