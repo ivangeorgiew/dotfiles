@@ -117,7 +117,8 @@ set noantialias
 set diffopt+=vertical
 
 "Folding
-set foldmethod=syntax "syntax/manual/indent
+"DONT SET TO SYNTAX, becomes 10sec slower on startup
+set foldmethod=manual "syntax/manual/indent
 set foldnestmax=3 "default 20
 set foldlevelstart=20 "to have everything folded change to 0
 
@@ -223,6 +224,9 @@ augroup END
 
 """ GLOBAL START
 let $PATH='/usr/local/bin:' . $PATH
+
+" Snippets are activated by Shift+Tab
+let g:snippetsEmu_key = "<S-Tab>"
 
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
