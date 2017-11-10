@@ -61,9 +61,6 @@
 " type <C-n>/<C-p> to navigate local expressions
 """ COMMENTS END
 
-
-
-
 """ MISC START
 " Add pathogen execution on startup
 execute pathogen#infect()
@@ -75,12 +72,9 @@ colorscheme gruvbox
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """ MISC END
 
-
-
-
 """ SET VALUES START
 " Fix lag in vim
-"set ttyfast
+set ttyfast
 set lazyredraw
 
 " Common
@@ -140,9 +134,6 @@ if executable('ag')
 endif
 """ SET VALUES END
 
-
-
-
 """ AUTOCMD START
 " To remove completion preview tab alltogether
 autocmd BufEnter * set completeopt-=preview
@@ -161,7 +152,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
 au BufNewFile,BufRead *.ejs set filetype=html
 au BufNewFile,BufRead *.babelrc set filetype=json
 au BufNewFile,BufRead *.eslintrc set filetype=json
-au BufNewFile,BufRead *.spacemacs set filetype=lisp
+au BufNewFile,BufRead *.md set filetype=markdown
 
 " Disable automatic comment insertion
 autocmd FileType * setlocal formatoptions-=o
@@ -169,7 +160,7 @@ autocmd FileType * setlocal formatoptions-=o
 augroup vimrcEx
     autocmd!
 
-    " For all text files set 'textwidth' to 80 characters.
+    " For all text files set 'textwidth' to 120 characters.
     autocmd FileType text setlocal textwidth=120
 
     " When editing a file, always jump to the last known cursor position.
@@ -180,17 +171,13 @@ augroup vimrcEx
         \   exe "normal g`\"" |
         \ endif
 
-    " Set syntax highlighting for specific file types
-    autocmd BufRead,BufNewFile *.md set filetype=markdown
 
-    " Enable spellchecking for Markdown
-    autocmd FileType markdown setlocal spell
+    " Automatically wrap at 120 characters for Markdown
+    autocmd BufRead,BufNewFile *.md setlocal textwidth=120
 
-    " Automatically wrap at 80 characters for Markdown
-    autocmd BufRead,BufNewFile *.md setlocal textwidth=80
-
-    "Enable 
-    au FileType javascript 
+    "Enable syntax folding only when below 1000 lines
+    "to improve performance drastically
+    au FileType * 
         \ if line("$") < 1000 |
         \   setlocal foldmethod=syntax |
         \ endif
@@ -280,9 +267,6 @@ let g:fastfold_mapsuffixes = ['zn', 'zm', 'z1', 'z2', 'z3']
 let g:fastfold_fold_command_suffixes = ['n', 'm', '1', '2', '3']
 """ GLOBAL END
 
-
-
-
 """ FUNCTIONS START
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
@@ -358,9 +342,6 @@ function! ToggleDiff()
     endif
 endfunction
 """ FUNCTIONS END
-
-
-
 
 """ MAPPINGS START
 " Main Leader Mappings
