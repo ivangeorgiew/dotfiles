@@ -18,7 +18,7 @@
 "Git (vim-fugitive) commands in vim
 " [ ] - move between files in Gstatus
 " - - adds/removed file to commit
-" U - stashes file changes
+" U - removes file changes
 " p - stash -p
 
 " NerdCommenter
@@ -200,6 +200,7 @@ let g:snippetsEmu_key = "<S-Tab>"
 
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
+let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
 let g:NERDTreeWinSize=50
 
@@ -271,7 +272,7 @@ let g:html_indent_tags = 'li\|p'
 """ FUNCTIONS START
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
-    if expand('%:p:h') =~ "app" || expand('%:p:h') =~ "projects"
+    if expand('%:p') =~ "projects" && expand('%:t') != ''
         execute 'mksession! ~/vim_session/'.dirPath
     endif
 endfunction
@@ -294,9 +295,7 @@ function! InsertTabWrapper()
 endfunction
 
 function! FileReplaceIt()
-    call inputsave()
-    let expression = input('Enter expression: ')
-    call inputrestore()
+    let expression = @b
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
@@ -391,12 +390,13 @@ nnoremap dl :diffget //2<CR>
 nnoremap dr :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
-map <Leader>gc :Gcommit<CR>
-map <Leader>gd <CR>:Gdiff<CR>
-map <Leader>gp :Gpush<CR>
-map <Leader>gr :Gread<CR>
-map <Leader>gs :Gstatus<CR>
-map <Leader>gw :Gwrite<CR>
+nmap <Leader>gac :Git add .<CR>:Gcommit -m 
+nmap <Leader>gc :Gcommit -m 
+nmap <Leader>gd :Gdiff<CR>gg
+nmap <Leader>gp :Gpush<CR>
+nmap <Leader>gr :Gread<CR>
+nmap <Leader>gs :Gstatus<CR>
+nmap <Leader>gw :Gwrite<CR>
 
 " Navigations between tabs
 nnoremap H gT
@@ -411,11 +411,11 @@ nnoremap gf <c-w>gf
 nnoremap gF :vertical wincmd f<CR>
 
 " Go to definition made easier for JS files
-nnoremap gj lbve"bygd/'<cr>l<c-w>gfgT2<C-o>z.gtgg/<C-r>b<cr>
-nnoremap gJ lbve"bygd/'<cr>lgfgg/<C-r>b<cr>
+nnoremap gj mblbve"bygd/'<cr><c-w>gfgT`bgtgg/<C-r>b<cr>:noh<cr>
+nnoremap gJ lbve"bygd/'<cr>gfgg/<C-r>b<cr>:noh<cr>
 
 " Search and replace
-nnoremap <F2> :call FileReplaceIt()<cr>
+nnoremap <F2> lbve"by:call FileReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
 vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 
@@ -454,14 +454,17 @@ map <F7> :call SaveSession()<cr>
 map <F5> :call OpenSession()<cr>
 
 " Search for word under cursor
-map KK lbvey:Ag! <C-r>*<cr>
+nmap KK lbvey:Ag! <C-r>*<cr>
 "specify folder
-map K lbvey:Ag! <C-r>* 
+nmap K lbvey:Ag! <C-r>* 
 
 " Copy multiple words to register
 nmap <Leader>8 lbve"ay
 nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
 nmap <Leader>0 "ap^\a
+
+" Space to new line in vis selection
+vmap K :<C-u>%s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=
 
 " Indent correctly to the set mark(\a)
 nmap <Leader>) V`a=
@@ -480,7 +483,7 @@ map <Leader>` :ALEDisable<CR>
 map <Leader>~ :ALEEnable<CR>
 
 " no regex search
-"nmap / /\V
+nmap / /\V
 "Turn off highlighting until next search
 nnoremap ? :noh<CR>
 " Seach the copied content in file
