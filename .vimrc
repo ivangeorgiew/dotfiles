@@ -61,6 +61,9 @@
 " type <C-n>/<C-p> to navigate local expressions
 """ COMMENTS END
 
+
+
+
 """ MISC START
 " Add pathogen execution on startup
 execute pathogen#infect()
@@ -71,6 +74,9 @@ colorscheme gruvbox
 "Silver Searcher
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """ MISC END
+
+
+
 
 """ SET VALUES START
 " Fix lag in vim
@@ -95,7 +101,7 @@ set noantialias
 set diffopt+=vertical
 
 "Folding
-set foldmethod=manual "syntax/manual/indent
+set foldmethod=manual
 set foldnestmax=3 "default 20
 set foldlevelstart=3 "default 20
 
@@ -134,6 +140,9 @@ if executable('ag')
 endif
 """ SET VALUES END
 
+
+
+
 """ AUTOCMD START
 " To remove completion preview tab alltogether
 autocmd BufEnter * set completeopt-=preview
@@ -163,6 +172,9 @@ augroup vimrcEx
     " For all text files set 'textwidth' to 120 characters.
     autocmd FileType text setlocal textwidth=120
 
+    " Automatically wrap at 120 characters for Markdown
+    autocmd BufRead,BufNewFile *.md setlocal textwidth=120
+
     " When editing a file, always jump to the last known cursor position.
     " Don't do it for commit messages, when the position is invalid, or when
     " inside an event handler (happens when dropping a file on gvim).
@@ -170,27 +182,19 @@ augroup vimrcEx
         \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
         \   exe "normal g`\"" |
         \ endif
-
-
-    " Automatically wrap at 120 characters for Markdown
-    autocmd BufRead,BufNewFile *.md setlocal textwidth=120
-
-    "Enable syntax folding only when below 1000 lines
-    "to improve performance drastically
-    au FileType * 
+        
+    "Fold for javascript
+    au FileType javascript
         \ if line("$") < 1000 |
         \   setlocal foldmethod=syntax |
         \ endif
 augroup END
-
 """ AUTOCMD END
 
 
 
 
 """ GLOBAL START
-let $PATH='/usr/local/bin:' . $PATH
-
 " Snippets are activated by Shift+Tab
 let g:snippetsEmu_key = "<S-Tab>"
 
@@ -259,18 +263,17 @@ let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
-
-"Fold settings
-let g:fastfold_savehook = 1
-let g:fastfold_fold_movement_commands = ['zj', 'zk']
-let g:fastfold_mapsuffixes = ['zn', 'zm', 'z1', 'z2', 'z3']
-let g:fastfold_fold_command_suffixes = ['n', 'm', '1', '2', '3']
 """ GLOBAL END
+
+
+
 
 """ FUNCTIONS START
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
-    execute 'mksession! ~/vim_session/'.dirPath
+    if expand('%:p:h') =~ "app" || expand('%:p:h') =~ "projects"
+        execute 'mksession! ~/vim_session/'.dirPath
+    endif
 endfunction
 
 function! OpenSession()
@@ -278,20 +281,6 @@ function! OpenSession()
     let file = '~/vim_session/'.dirPath
     if glob(file)!=#""
         execute 'source '.file
-    endif
-endfunction
-
-function! NextClosedFold(dir)
-    let cmd = 'norm!z' . a:dir
-    let view = winsaveview()
-    let [l0, l, open] = [0, view.lnum, 1]
-    while l != l0 && open
-        exe cmd
-        let [l0, l] = [l, line('.')]
-        let open = foldclosed(l) < 0
-    endwhile
-    if open
-        call winrestview(view)
     endif
 endfunction
 
@@ -343,25 +332,29 @@ function! ToggleDiff()
 endfunction
 """ FUNCTIONS END
 
+
+
+
 """ MAPPINGS START
 " Main Leader Mappings
 map <Space> <leader>
-map <Leader>q :qall<CR>
+map <Leader>q :call SaveSession()<CR>:qall<CR>
 map <Leader>w :update<CR>
 map <Leader>d :bd<CR>
 map <Leader>t :tabclose<CR>
 
 "Folding mappings
 "Fold all
-nnoremap zn zM
+nnoremap zm zM
 "Unfold all
-nnoremap zm zR
+nnoremap zn zR
 "open/close fold
-nnoremap Z za<Plug>(FastFoldUpdate)
+nnoremap Z za
 "fold visual selection
-vnoremap Z zf<Plug>(FastFoldUpdate)
-"No need for manual Fold update
-nmap <SID>(DisableFastFoldUpdate) <Plug>(FastFoldUpdate)
+vnoremap Z zf
+nnoremap <silent> zl1 :set foldlevel=1<CR>
+nnoremap <silent> zl2 :set foldlevel=2<CR>
+nnoremap <silent> zl3 :set foldlevel=3<CR>
 
 "Close insert mode
 imap jk <Esc>
