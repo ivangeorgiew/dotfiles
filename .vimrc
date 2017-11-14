@@ -71,7 +71,7 @@ execute pathogen#helptags()
 
 colorscheme gruvbox
 
-"Silver Searcher
+"Ag replace command
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """ MISC END
 
@@ -131,7 +131,7 @@ set wildmode=list:longest,list:full
 set splitbelow
 set splitright
 
-" For js import aliases ( ../../../components => components)
+" For import aliases ( ../../../components => components)
 set path=$PWD/app/js
 set path+=$PWD/app/js/**
 
@@ -187,7 +187,7 @@ augroup vimrcEx
     au FocusLost * :wa
 
     " Disable automatic comment insertion
-    au FileType * setlocal fo-=r fo-=o
+    au FileType * setlocal formatoptions-=r formatoptions-=o
 
     " highlight vertical column of cursor
     au WinLeave * set nocursorline nocursorcolumn
@@ -217,7 +217,7 @@ let g:NERDSpaceDelims = 1
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-Z>'
+let g:user_emmet_leader_key='<C-Z>' "<C-z>, to activate
 
 "Mundo (undo history) settings
 let g:mundo_width = 40
@@ -416,14 +416,15 @@ nnoremap gO gf
 
 " Go to definition made easier for JS files using Ag
 "current new tab
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
 "current window
-nnoremap gO lbve"by:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>
+nnoremap gO lbve"by:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>
 
 " Search and replace
 nnoremap <F2> lbve"by:call FileReplaceIt()<cr>
+vnoremap <F2> "by:call FileReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
 vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 
@@ -445,6 +446,7 @@ vnoremap P "0p
 
 " Paste on new line
 nnoremap ,p o<Esc>p
+nnoremap ,P O<Esc>p
 
 " Insert-Paste from * reg
 inoremap <C-r> <C-r>*
@@ -462,9 +464,11 @@ map <F7> :call SaveSession()<cr>
 map <F5> :call OpenSession()<cr>
 
 " Search for word under cursor
-nmap KK lbvey:Ag! <C-r>*<cr>
+nmap )) lbve"by:Ag! <C-r>b<cr>
+vmap )) "by:Ag! <C-r>b<cr>
 "specify folder
-nmap K lbvey:Ag! <C-r>* 
+nmap ) lbve"by:Ag! <C-r>b 
+vmap ) "by:Ag! <C-r>b 
 
 " Copy multiple words to register
 nmap <Leader>8 lbve"ay
@@ -472,7 +476,7 @@ nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
 nmap <Leader>0 "ap^\a
 
 " Space to new line in vis selection
-vmap K :<C-u>%s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=
+vmap K :<C-u>s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=
 
 " Indent correctly to the set mark(\a)
 nmap <Leader>) V`a=
@@ -487,8 +491,7 @@ nmap <Leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 map <Leader>f <Plug>(ale_next_wrap)
 map <Leader>F <Plug>(ale_previous_wrap)
 "enable/disable
-map <Leader>` :ALEDisable<CR>
-map <Leader>~ :ALEEnable<CR>
+map <Leader>~ :ALEDisable<CR>
 
 "Turn off highlighting until next search
 nnoremap ? :noh<CR>
@@ -528,4 +531,7 @@ nnoremap <C-l> <C-w>l
 " Center page when moving up or down
 nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
+
+"Reload vimrc
+nnoremap <Leader>` :so ~/.vimrc<CR>
 """ MAPPINGS END

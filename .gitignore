@@ -9,4 +9,4 @@ tags
 tmp/**/*
 !tmp/cache/.keep
 zeus.json
-.vim/undo/
+.vim/undo
