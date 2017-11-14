@@ -99,6 +99,7 @@ set smartcase
 set noignorecase
 set noantialias
 set diffopt+=vertical
+set nowrap
 
 "Folding
 set foldmethod=manual
@@ -144,50 +145,53 @@ endif
 
 
 """ AUTOCMD START
-" To remove completion preview tab alltogether
-autocmd BufEnter * set completeopt-=preview
+augroup syntax
+    au!
 
-"Save on focus lost
-au FocusLost * :wa
+    "Indent Guides colors
+    au VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
+    au VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
 
-" highlight vertical column of cursor
-au WinLeave * set nocursorline nocursorcolumn
-au WinEnter * set cursorline
+    " Switch syntax for strange file endings
+    au BufNewFile,BufRead *.ejs set filetype=html
+    au BufNewFile,BufRead *.babelrc set filetype=json
+    au BufNewFile,BufRead *.eslintrc set filetype=json
+    au BufNewFile,BufRead *.md set filetype=markdown
+augroup END
 
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
+augroup folding
+    au!
 
-" Switch syntax for strange file endings
-au BufNewFile,BufRead *.ejs set filetype=html
-au BufNewFile,BufRead *.babelrc set filetype=json
-au BufNewFile,BufRead *.eslintrc set filetype=json
-au BufNewFile,BufRead *.md set filetype=markdown
-
-" Disable automatic comment insertion
-autocmd FileType * setlocal formatoptions-=o
-
-augroup vimrcEx
-    autocmd!
-
-    " For all text files set 'textwidth' to 120 characters.
-    autocmd FileType text setlocal textwidth=120
-
-    " Automatically wrap at 120 characters for Markdown
-    autocmd BufRead,BufNewFile *.md setlocal textwidth=120
-
-    " When editing a file, always jump to the last known cursor position.
-    " Don't do it for commit messages, when the position is invalid, or when
-    " inside an event handler (happens when dropping a file on gvim).
-    autocmd BufReadPost *
-        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
-        \   exe "normal g`\"" |
-        \ endif
-        
     "Fold for javascript
     au FileType javascript
         \ if line("$") < 1000 |
         \   setlocal foldmethod=syntax |
         \ endif
+augroup END
+
+augroup vimrcEx
+    au!
+
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it for commit messages, when the position is invalid, or when
+    " inside an event handler (happens when dropping a file on gvim).
+    au BufReadPost *
+        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
+        \   exe "normal g`\"" |
+        \ endif
+    
+    " To remove completion preview tab alltogether
+    au BufEnter * set completeopt-=preview
+
+    "Save on focus lost
+    au FocusLost * :wa
+
+    " Disable automatic comment insertion
+    au FileType * setlocal fo-=r fo-=o
+
+    " highlight vertical column of cursor
+    au WinLeave * set nocursorline nocursorcolumn
+    au WinEnter * set cursorline
 augroup END
 """ AUTOCMD END
 
@@ -403,16 +407,20 @@ nnoremap H gT
 nnoremap L gt
 
 " Go to file under cursor
-"current tab
-nnoremap go gf
 "current new tab
 nnoremap gf <c-w>gf
 "vertical split
 nnoremap gF :vertical wincmd f<CR>
+"current window
+nnoremap gO gf
 
-" Go to definition made easier for JS files
-nnoremap gj mblbve"bygd/'<cr><c-w>gfgT`bgtgg/<C-r>b<cr>:noh<cr>
-nnoremap gJ lbve"bygd/'<cr>gfgg/<C-r>b<cr>:noh<cr>
+" Go to definition made easier for JS files using Ag
+"current new tab
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
+"vertical split
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
+"current window
+nnoremap gO lbve"by:AgNoLoc '(export) (?:\w+ <C-r>b \|<C-r>b )'<CR>
 
 " Search and replace
 nnoremap <F2> lbve"by:call FileReplaceIt()<cr>
@@ -482,8 +490,6 @@ map <Leader>F <Plug>(ale_previous_wrap)
 map <Leader>` :ALEDisable<CR>
 map <Leader>~ :ALEEnable<CR>
 
-" no regex search
-nmap / /\V
 "Turn off highlighting until next search
 nnoremap ? :noh<CR>
 " Seach the copied content in file
