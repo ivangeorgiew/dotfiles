@@ -21,10 +21,11 @@
 " U - removes file changes
 " p - stash -p
 
-" NerdCommenter
-" <leader>cm => comment line
-" <leader>cs => multi comment
-" <leader>cu => multi uncomment
+" tCommenter
+" gcc - comment line
+" gc - toggle comment
+" g> - comment(vis and normal)
+" g< - uncomment(vis and normal)
 
 "Increment and Decrement numbers commands
 "X to increment, <C-x> to decrement
@@ -105,6 +106,7 @@ set nowrap
 set foldmethod=manual
 set foldnestmax=3 "default 20
 set foldlevelstart=3 "default 20
+set sessionoptions-=folds
 
 " Indentations
 set tabstop=4
@@ -159,16 +161,6 @@ augroup syntax
     au BufNewFile,BufRead *.md set filetype=markdown
 augroup END
 
-augroup folding
-    au!
-
-    "Fold for javascript
-    au FileType javascript
-        \ if line("$") < 1000 |
-        \   setlocal foldmethod=syntax |
-        \ endif
-augroup END
-
 augroup vimrcEx
     au!
 
@@ -180,14 +172,11 @@ augroup vimrcEx
         \   exe "normal g`\"" |
         \ endif
     
-    " To remove completion preview tab alltogether
-    au BufEnter * set completeopt-=preview
-
     "Save on focus lost
     au FocusLost * :wa
 
     " Disable automatic comment insertion
-    au FileType * setlocal formatoptions-=r formatoptions-=o
+    au BufEnter * set fo-=c fo-=o
 
     " highlight vertical column of cursor
     au WinLeave * set nocursorline nocursorcolumn
@@ -211,9 +200,6 @@ let g:NERDTreeWinSize=50
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
 let g:indent_guides_auto_colors = 0
-
-" NerdCommenter settings
-let g:NERDSpaceDelims = 1
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
@@ -286,15 +272,6 @@ function! OpenSession()
     let file = '~/vim_session/'.dirPath
     if glob(file)!=#""
         execute 'source '.file
-    endif
-endfunction
-
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-x>\<c-o>"
     endif
 endfunction
 
@@ -515,9 +492,6 @@ vmap <Leader>r :normal @r<CR>
 
 "Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
-
-"Omnicompetion
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
 "Silver searcher
 nnoremap <F3> :Ag! -F<SPACE>
