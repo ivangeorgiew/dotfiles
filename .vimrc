@@ -86,7 +86,6 @@ set lazyredraw
 
 " Common
 set scroll=10
-set cursorline
 set nocompatible  " Use Vim settings, rather then Vi settings
 set nobackup
 set nowritebackup
@@ -94,19 +93,22 @@ set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitigno
 set showcmd       " display incomplete commands
 set autowrite     " Automatically :write before running commands
 set clipboard=unnamed "Copy/paste to/from clipboard by default
-set colorcolumn=120  " Set max text characters per line
 set hlsearch "highlight matches
 set smartcase
 set noignorecase
 set noantialias
 set diffopt+=vertical
+set sessionoptions=curdir,tabpages,winsize
 set nowrap
+set colorcolumn=120  " Set max text characters per line
+
+" speed up vim
+set nocursorcolumn
+set nocursorline
 
 "Folding
 set foldmethod=manual
-set foldnestmax=3 "default 20
-set foldlevelstart=3 "default 20
-set sessionoptions-=folds
+set foldlevelstart=0 "default -1
 
 " Indentations
 set tabstop=4
@@ -139,8 +141,11 @@ set path+=$PWD/app/js/**
 
 "Silver searcher
 if executable('ag')
-  set grepprg=ag
+    set grepprg=ag
 endif
+
+"vim-stay settings
+set viewoptions=folds,cursor
 """ SET VALUES END
 
 
@@ -158,19 +163,10 @@ augroup syntax
     au BufNewFile,BufRead *.ejs set filetype=html
     au BufNewFile,BufRead *.babelrc set filetype=json
     au BufNewFile,BufRead *.eslintrc set filetype=json
-    au BufNewFile,BufRead *.md set filetype=markdown
 augroup END
 
 augroup vimrcEx
     au!
-
-    " When editing a file, always jump to the last known cursor position.
-    " Don't do it for commit messages, when the position is invalid, or when
-    " inside an event handler (happens when dropping a file on gvim).
-    au BufReadPost *
-        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
-        \   exe "normal g`\"" |
-        \ endif
 
     "Save on focus lost
     au FocusLost * :wa
@@ -178,9 +174,8 @@ augroup vimrcEx
     " Disable automatic comment insertion
     au BufEnter * set fo-=c fo-=o
 
-    " highlight vertical column of cursor
-    au WinLeave * set nocursorline
-    au WinEnter * set cursorline
+    " Remove saved view session older than 5 days
+    au VimLeavePre * CleanViewdir! 5
 augroup END
 """ AUTOCMD END
 
@@ -195,7 +190,10 @@ let g:snippetsEmu_key = "<S-Tab>"
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
-let g:NERDTreeWinSize=50
+let g:NERDTreeWinSize=40
+let g:NERDTreeShowHidden=1
+let g:NERDTreeChDirMode=1
+let g:NERDTreeIgnore=['\node_modules']
 
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
@@ -221,19 +219,18 @@ let g:jsx_ext_required = 0
 " ALE configurations
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
-let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-  " Use Ag over Grep
-  let g:grep_cmd_opts = '--line-numbers --noheading'
+    " Use Ag over Grep
+    let g:grep_cmd_opts = '--line-numbers --noheading'
 
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
+    " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+    let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
 
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+    " ag is fast enough that CtrlP doesn't need to cache
+    let g:ctrlp_use_caching = 0
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
@@ -241,11 +238,12 @@ let g:ag_prg = 'ag --column --nogroup --noheading'
 
 " Airline
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#branch#enabled = 1
+let g:airline_extensions = ['ale']
+let g:airline_skip_empty_sections = 1
+let g:airline_section_y = ''
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline#extensions#whitespace#enabled = 0
 let g:airline_theme = 'gruvbox'
 let g:airline_symbols.space = "\ua0"
 
@@ -259,14 +257,14 @@ let g:html_indent_tags = 'li\|p'
 """ FUNCTIONS START
 " Remap TAB to keyword completion
 function! CleverTab()
-  if pumvisible()
-    return "\<C-N>"
-  endif
-  if exists('&omnifunc') && &omnifunc != ''
-    return "\<C-X>\<C-O>"
-  else
-    return "\<C-N>"
-  endif
+    if pumvisible()
+        return "\<C-N>"
+    endif
+    if exists('&omnifunc') && &omnifunc != ''
+        return "\<C-X>\<C-O>"
+    else
+        return "\<C-N>"
+    endif
 endfunction
 
 function! SaveSession()
@@ -349,8 +347,7 @@ nnoremap <silent> zl3 :set foldlevel=3<CR>
 imap jk <Esc>
 
 "NERDTree
-map <F9> :NERDTreeFind<CR>
-map <F10> :NERDTreeToggle<CR>
+map <F10> :NERDTreeToggle<CR><C-W>=
 
 "X to increment
 nnoremap X <C-a>
@@ -390,20 +387,20 @@ nnoremap H gT
 nnoremap L gt
 
 " Go to file under cursor
+"current window
+nnoremap go gf
 "current new tab
 nnoremap gf <c-w>gf
 "vertical split
 nnoremap gF :vertical wincmd f<CR>
-"current window
-nnoremap gO gf
 
 " Go to definition made easier for JS files using Ag
 "current new tab
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
 "current window
-nnoremap gO lbve"by:AgNoLoc '(export) (?:.+ .+ <C-r>b[ (]\|.+ <C-r>b[ (]\|<C-r>b )'<CR>
+nnoremap gO lbve"by:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>
 
 " Search and replace
 nnoremap <F2> lbve"by:call FileReplaceIt()<cr>
@@ -516,5 +513,8 @@ nnoremap <C-u> <C-u>z.
 nnoremap <Leader>` :so ~/.vimrc<CR>
 
 "Omnicompetion
-inoremap <C-n> <C-R>=CleverTab()<CR>
+inoremap <Tab> <C-R>=CleverTab()<CR>
+
+"vim-stay
+nmap <Leader>C :CleanViewdir!
 """ MAPPINGS END
