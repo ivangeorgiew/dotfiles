@@ -192,8 +192,7 @@ let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
 let g:NERDTreeWinSize=40
 let g:NERDTreeShowHidden=1
-let g:NERDTreeChDirMode=1
-let g:NERDTreeIgnore=['\node_modules']
+let g:NERDTreeIgnore=['node_modules', '.git']
 
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
@@ -347,6 +346,7 @@ nnoremap <silent> zl3 :set foldlevel=3<CR>
 imap jk <Esc>
 
 "NERDTree
+map <F9> :NERDTreeFind<CR><C-W>=
 map <F10> :NERDTreeToggle<CR><C-W>=
 
 "X to increment
