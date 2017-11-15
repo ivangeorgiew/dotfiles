@@ -127,7 +127,7 @@ set undolevels=1000
 set undoreload=10000
 
 " Tab completion
-set wildmode=list:longest,list:full
+set wildmode=list:longest,full
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -171,7 +171,7 @@ augroup vimrcEx
         \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") && line("$") < 1000 |
         \   exe "normal g`\"" |
         \ endif
-    
+
     "Save on focus lost
     au FocusLost * :wa
 
@@ -179,7 +179,7 @@ augroup vimrcEx
     au BufEnter * set fo-=c fo-=o
 
     " highlight vertical column of cursor
-    au WinLeave * set nocursorline nocursorcolumn
+    au WinLeave * set nocursorline
     au WinEnter * set cursorline
 augroup END
 """ AUTOCMD END
@@ -203,7 +203,7 @@ let g:indent_guides_auto_colors = 0
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-Z>' "<C-z>, to activate
+let g:user_emmet_leader_key='<C-z>' "<C-z>, to activate
 
 "Mundo (undo history) settings
 let g:mundo_width = 40
@@ -223,9 +223,6 @@ let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
-
-" vim-table settings
-let g:table_mode_corner='|'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -260,6 +257,18 @@ let g:html_indent_tags = 'li\|p'
 
 
 """ FUNCTIONS START
+" Remap TAB to keyword completion
+function! CleverTab()
+  if pumvisible()
+    return "\<C-N>"
+  endif
+  if exists('&omnifunc') && &omnifunc != ''
+    return "\<C-X>\<C-O>"
+  else
+    return "\<C-N>"
+  endif
+endfunction
+
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
     if expand('%:p') =~ "projects" && expand('%:t') != ''
@@ -371,12 +380,9 @@ nnoremap dl :diffget //2<CR>
 nnoremap dr :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
-nmap <Leader>gac :Git add .<CR>:Gcommit -m 
-nmap <Leader>gc :Gcommit -m 
-nmap <Leader>gd :Gdiff<CR>gg
-nmap <Leader>gp :Gpush<CR>
-nmap <Leader>gr :Gread<CR>
 nmap <Leader>gs :Gstatus<CR>
+nmap <Leader>gd :Gdiff<CR>gg
+nmap <Leader>gr :Gread<CR>
 nmap <Leader>gw :Gwrite<CR>
 
 " Navigations between tabs
@@ -471,7 +477,7 @@ map <Leader>F <Plug>(ale_previous_wrap)
 map <Leader>~ :ALEDisable<CR>
 
 "Turn off highlighting until next search
-nnoremap ? :noh<CR>
+nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
 nmap // /\V<C-r>*<cr>
 
@@ -508,4 +514,7 @@ nnoremap <C-u> <C-u>z.
 
 "Reload vimrc
 nnoremap <Leader>` :so ~/.vimrc<CR>
+
+"Omnicompetion
+inoremap <C-n> <C-R>=CleverTab()<CR>
 """ MAPPINGS END
