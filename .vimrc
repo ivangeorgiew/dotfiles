@@ -86,8 +86,15 @@ command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fix lag in vim
 set shell=bash
-set ttyfast
 set lazyredraw
+set nocursorcolumn
+set synmaxcol=128
+set re=1
+" syntax sync minlines=128
+" set colorcolumn=120  " slows alot
+
+" Affect lag
+set cursorline
 
 " Common
 set smartcase
@@ -105,11 +112,8 @@ set hlsearch "highlight matches
 set diffopt+=vertical " vimdiff split direction
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nowrap " Dont wrap text
-set colorcolumn=120  " Set max text characters per line
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
-set cursorline " Show cursor line
-set nocursorcolumn " No cursor column
 set complete-=t " Don't complete from tags
 
 "Folding
@@ -241,6 +245,9 @@ if executable('ag')
 
     " ag is fast enough that CtrlP doesn't need to cache
     let g:ctrlp_use_caching = 0
+
+    " Start searching from the project root
+    let g:ag_working_path_mode="r"
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
@@ -293,13 +300,14 @@ endfunction
 
 " Remap TAB to omnicompletion
 function! CleverTab()
+    let col = col('.') - 1
     if pumvisible()
         return "\<C-N>"
     endif
-    if exists('&omnifunc') && &omnifunc != ''
-        return "\<C-X>\<C-O>"
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
     else
-        return "\<C-N>"
+        return "\<C-X>\<C-O>"
     endif
 endfunction
 
