@@ -1,8 +1,10 @@
-""" COMMENTS START
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" COMMENTS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 
 " vim-table mode
-" You can activate it with <Leader>tm
+" You can activate it with <leader>tm
 
 " Macro
 " qe...q OR qr...q
@@ -53,19 +55,20 @@
 "[ - next difference
 "] - previous difference
 
-"To enable Indent Guides use <Leader>ig
+"To enable Indent Guides use <leader>ig
 
 " will insert tab at beginning of line,
 " will use <C-x><C-o> (omnicompletion)
 "
 " type Tab <C-n>/<C-p> to navigate omnicomp
 " type <C-n>/<C-p> to navigate local expressions
-""" COMMENTS END
 
 
 
 
-""" MISC START
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" MISC
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
@@ -74,41 +77,44 @@ colorscheme gruvbox
 
 "Ag replace command
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-""" MISC END
 
 
 
 
-""" SET VALUES START
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" SET VALUES
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fix lag in vim
+set shell=bash
 set ttyfast
 set lazyredraw
 
 " Common
-set scroll=10
+set smartcase
+set noignorecase
+set noantialias
+set scroll=10 " Set scroll lines
 set nocompatible  " Use Vim settings, rather then Vi settings
-set nobackup
-set nowritebackup
+set nobackup " dont make backups
+set nowritebackup "dont make backups
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
 set showcmd       " display incomplete commands
 set autowrite     " Automatically :write before running commands
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set hlsearch "highlight matches
-set smartcase
-set noignorecase
-set noantialias
-set diffopt+=vertical
-set sessionoptions=curdir,tabpages,winsize
-set nowrap
+set diffopt+=vertical " vimdiff split direction
+set sessionoptions=curdir,tabpages,winsize " save only this information in session
+set nowrap " Dont wrap text
 set colorcolumn=120  " Set max text characters per line
-
-" speed up vim
-set nocursorcolumn
-set nocursorline
+set nojoinspaces " Only one space when joining lines
+set list listchars=tab:»·,trail:· "show trailing whitespace
+set cursorline " Show cursor line
+set nocursorcolumn " No cursor column
+set complete-=t " Don't complete from tags
 
 "Folding
-set foldmethod=manual
-set foldlevelstart=0 "default -1
+set foldmethod=manual "faster folds, created with zf
+set foldlevelstart=0 "all folds folded initially
 
 " Indentations
 set tabstop=4
@@ -129,7 +135,7 @@ set undolevels=1000
 set undoreload=10000
 
 " Tab completion
-set wildmode=list:longest,full
+set wildmode=list:full,full
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -146,12 +152,13 @@ endif
 
 "vim-stay settings
 set viewoptions=folds,cursor
-""" SET VALUES END
 
 
 
 
-""" AUTOCMD START
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" AUTOCMD
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup syntax
     au!
 
@@ -162,7 +169,12 @@ augroup syntax
     " Switch syntax for strange file endings
     au BufNewFile,BufRead *.ejs set filetype=html
     au BufNewFile,BufRead *.babelrc set filetype=json
+    au BufRead,BufNewFile *.sass setfiletype sass
     au BufNewFile,BufRead *.eslintrc set filetype=json
+
+    "ALE linting
+    au BufNewFile,BufRead *.js ALEEnable
+    au BufNewFile,BufRead *.css ALEEnable
 augroup END
 
 augroup vimrcEx
@@ -177,12 +189,13 @@ augroup vimrcEx
     " Remove saved view session older than 5 days
     au VimLeavePre * CleanViewdir! 5
 augroup END
-""" AUTOCMD END
 
 
 
 
-""" GLOBAL START
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" GLOBAL
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Snippets are activated by Shift+Tab
 let g:snippetsEmu_key = "<S-Tab>"
 
@@ -211,17 +224,15 @@ let g:mundo_close_on_revert = 1
 " have jsx highlighting/indenting work in .js files as well
 let g:jsx_ext_required = 0
 
-" Autosave config
-"let g:auto_save = 1  " enable AutoSave on Vim startup
-"let g:auto_save_silent = 1  " do not display the auto-save notification
-
 " ALE configurations
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_lint_on_enter = 1
+let g:ale_enabled = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
+
     " Use Ag over Grep
     let g:grep_cmd_opts = '--line-numbers --noheading'
 
@@ -237,8 +248,8 @@ let g:ag_prg = 'ag --column --nogroup --noheading'
 
 " Airline
 let g:airline_powerline_fonts = 1
-let g:airline_extensions = ['ale']
 let g:airline_skip_empty_sections = 1
+let g:airline#extensions#ale#enabled = 1
 let g:airline_section_y = ''
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
@@ -248,13 +259,39 @@ let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
-""" GLOBAL END
 
 
 
 
-""" FUNCTIONS START
-" Remap TAB to keyword completion
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" FUNCTIONS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! MoveCurrentFile()
+    let old_destination = expand('%:p:h')
+    let filename = expand('%:t')
+    call inputsave()
+     let new_destination = input('New destination: ', expand('%:p:h'), 'file')
+    call inputrestore()
+    if new_destination != '' && new_destination != old_destination
+        exec ':saveas ' . new_destination . '/' . filename
+        exec ':silent !rm ' . old_destination . '/' . filename
+        redraw!
+    endif
+endfunction
+
+function! RenameCurrentFile()
+    let old_name = expand('%')
+    call inputsave()
+    let new_name = input('New file name: ')
+    call inputrestore()
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . expand('%:h'). '/' . new_name
+        call delete(old_name)
+        redraw!
+    endif
+endfunction
+
+" Remap TAB to omnicompletion
 function! CleverTab()
     if pumvisible()
         return "\<C-N>"
@@ -316,18 +353,19 @@ function! ToggleDiff()
         execute "windo diffthis"
     endif
 endfunction
-""" FUNCTIONS END
 
 
 
 
-""" MAPPINGS START
-" Main Leader Mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" MAPPINGS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Main leader Mappings
 map <Space> <leader>
-map <Leader>q :call SaveSession()<CR>:qall<CR>
-map <Leader>w :update<CR>
-map <Leader>d :bd<CR>
-map <Leader>t :tabclose<CR>
+map <leader>q :call SaveSession()<CR>:qall<CR>
+map <leader>w :update<CR>
+map <leader>d :bd<CR>
+map <leader>t :tabclose<CR>
 
 "Folding mappings
 "Fold all
@@ -338,15 +376,11 @@ nnoremap zn zR
 nnoremap Z za
 "fold visual selection
 vnoremap Z zf
-nnoremap <silent> zl1 :set foldlevel=1<CR>
-nnoremap <silent> zl2 :set foldlevel=2<CR>
-nnoremap <silent> zl3 :set foldlevel=3<CR>
 
 "Close insert mode
 imap jk <Esc>
 
 "NERDTree
-map <F9> :NERDTreeFind<CR><C-W>=
 map <F10> :NERDTreeToggle<CR><C-W>=
 
 "X to increment
@@ -363,24 +397,24 @@ nnoremap <Down>     :echoerr "Use j"<CR>
 nnoremap gt         :echoerr "use H or L"<CR>
 
 " Copy whole file contents
-map <Leader>v gg^vGg_y
+map <leader>v gg^vGg_y
 
 "Vimdiff
 "diff 2 buffers in vertical split
-nmap <Leader>1 :call ToggleDiff()<cr>
+nmap <leader>1 :call ToggleDiff()<cr>
 "close every buffer except the one you're in
-nmap <Leader>o :only<CR>
-nmap <Leader>[ ]c
-nmap <Leader>] [c
+nmap <leader>o :only<CR>
+nmap <leader>[ ]c
+nmap <leader>] [c
 nnoremap du :diffupdate<CR>
 nnoremap dl :diffget //2<CR>
 nnoremap dr :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
-nmap <Leader>gs :Gstatus<CR>
-nmap <Leader>gd :Gdiff<CR>gg
-nmap <Leader>gr :Gread<CR>
-nmap <Leader>gw :Gwrite<CR>
+nmap <leader>gs :Gstatus<CR>
+nmap <leader>gd :Gdiff<CR>gg
+nmap <leader>gr :Gread<CR>
+nmap <leader>gw :Gwrite<CR>
 
 " Navigations between tabs
 nnoremap H gT
@@ -438,40 +472,41 @@ nnoremap th :tabm -1<cr>
 nnoremap tl :tabm +1<cr>
 
 " Save session
-map <F7> :call SaveSession()<cr>
+map <silent> <F7> :call SaveSession()<cr>
 
 " Load previous session
-map <F5> :call OpenSession()<cr>
+map <silent> <F5> :call OpenSession()<cr>
 
 " Search for word under cursor
 nmap )) lbve"by:Ag! <C-r>b<cr>
 vmap )) "by:Ag! <C-r>b<cr>
 "specify folder
-nmap ) lbve"by:Ag! <C-r>b 
-vmap ) "by:Ag! <C-r>b 
+nmap ) lbve"by:Ag! <C-r>b
+vmap ) "by:Ag! <C-r>b
 
 " Copy multiple words to register
-nmap <Leader>8 lbve"ay
-nmap <Leader>9 :let @a .= ', '<cr>lbve"Ay
-nmap <Leader>0 "ap^\a
+nmap <leader>8 lbve"ay
+nmap <leader>9 :let @a .= ', '<cr>lbve"Ay
+nmap <leader>0 "ap^\a
 
 " Space to new line in vis selection
 vmap K :<C-u>s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=
 
 " Indent correctly to the set mark(\a)
-nmap <Leader>) V`a=
+nmap <leader>) V`a=
 
 " Convert CamelCase/camelCase to NAMED_CONTANT
-nmap <Leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+nmap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
 " Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
-nmap <Leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
+nmap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 "ALE
 "jump on next error
-map <Leader>f <Plug>(ale_next_wrap)
-map <Leader>F <Plug>(ale_previous_wrap)
+map <leader>af <Plug>(ale_next_wrap)
+map <leader>aF <Plug>(ale_previous_wrap)
 "enable/disable
-map <Leader>~ :ALEDisable<CR>
+map <leader>ae :ALEEnable<CR>
+map <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
 nnoremap <silent> ? :noh<CR>
@@ -488,10 +523,10 @@ nmap M #
 vmap M #
 
 " Macro mappings
-nmap <Leader>e @e
-nmap <Leader>r @r
-vmap <Leader>e :normal @e<CR>
-vmap <Leader>r :normal @r<CR>
+nmap <leader>e @e
+nmap <leader>r @r
+vmap <leader>e :normal @e<CR>
+vmap <leader>r :normal @r<CR>
 
 "Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
@@ -509,12 +544,19 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
-"Reload vimrc
-nnoremap <Leader>` :so ~/.vimrc<CR>
-
 "Omnicompetion
-inoremap <Tab> <C-R>=CleverTab()<CR>
+inoremap <tab> <C-R>=CleverTab()<CR>
 
-"vim-stay
-nmap <Leader>C :CleanViewdir!
-""" MAPPINGS END
+" vim-stay
+nmap <leader>C :CleanViewdir!
+
+" File manipulation
+cnoremap <expr> %% expand('%:h').'/'
+"Open file for editing
+nmap <leader>fe :edit %%
+"Rename current file
+nmap <leader>fr :call RenameCurrentFile()<cr>
+"Move current file
+nmap <leader>fm :call MoveCurrentFile()<cr>
+"Delete current file
+nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
