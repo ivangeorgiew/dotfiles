@@ -1,6 +1,4 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ COMMENTS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 
 " vim-table mode
@@ -59,15 +57,15 @@
 
 "Folding
 " zd - delete fold
+" zE - delete all folds
 " Z - toggle fold/ create fold
 " zj/zk - move between folds
+""" COMMENTS
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ MISC
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
@@ -76,13 +74,12 @@ colorscheme gruvbox
 
 "Ag replace command
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+""" MISC
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ SET VALUES
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fix lag in vim
 set shell=bash
 set lazyredraw
@@ -139,7 +136,7 @@ set undoreload=10000
 " set wildmode=list,full
 
 " C-n completion
-set completeopt=menuone,noselect
+set completeopt=menu,preview
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -157,13 +154,12 @@ endif
 
 "vim-stay settings
 set viewoptions=folds,cursor
+""" SET VALUES
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ AUGROUP
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup syntax
     au!
 
@@ -186,8 +182,8 @@ augroup vimrcEx
     au!
 
     " Show characters over 120 columns
-    autocmd BufEnter * highlight OverLength ctermbg=Red guibg=#592929
-    autocmd BufEnter * match OverLength /\%121v.*/
+    autocmd BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
+    autocmd BufEnter *.js match OverLength /\%121v.*/
 
     "Save on focus lost
     au FocusLost * :wa
@@ -197,14 +193,15 @@ augroup vimrcEx
 
     " Set format options
     au BufEnter * set formatoptions=tcqrj
+
+    au VimLeavePre * call SaveSession()
 augroup END
+""" AUGROUP
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ GLOBAL
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
@@ -272,13 +269,12 @@ let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
+""" GLOBAL
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ FUNCTIONS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! MoveCurrentFile()
     let old_destination = expand('%:p:h')
     let filename = expand('%:t')
@@ -298,7 +294,7 @@ function! RenameCurrentFile()
     let new_name = input('New file name: ')
     call inputrestore()
     if new_name != '' && new_name != old_name
-        if expand('%:e') != ''
+        if expand('%:e') != '' && new_name !~ '\.'
             exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
         else
             exec ':saveas ' . expand('%:h'). '/' . new_name
@@ -310,8 +306,11 @@ endfunction
 
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
-    if expand('%:p') =~ "projects" && expand('%:t') != ''
-        execute 'mksession! ~/vim_session/'.dirPath
+    if expand('%:p') =~ "projects"
+        let choice = confirm('Save Session ?',"&Yes\n&No", 1)
+        if choice == 1
+            execute 'mksession! ~/vim_session/'.dirPath
+        endif
     endif
 endfunction
 
@@ -323,8 +322,13 @@ function! OpenSession()
     endif
 endfunction
 
-function! FileReplaceIt()
+function! FileReplaceIt(visual)
     let expression = @b
+    if a:visual == 0
+        call inputsave()
+        let expression = input('Enter expression: ')
+        call inputrestore()
+    endif
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
@@ -358,16 +362,15 @@ function! ToggleDiff()
         execute "windo diffthis"
     endif
 endfunction
+""" FUNCTIONS
 
 
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ MAPPINGS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Main leader Mappings
 map <Space> <leader>
-map <leader>q :call SaveSession()<CR>:qall<CR>
+map <leader>q :qall<CR>
 map <leader>w :update<CR>
 map <leader>d :bd<CR>
 map <leader>t :tabclose<CR>
@@ -442,8 +445,8 @@ nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w
 nnoremap gO lbve"by:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>
 
 " Search and replace
-nnoremap <F2> lbve"by:call FileReplaceIt()<cr>
-vnoremap <F2> "by:call FileReplaceIt()<cr>
+nnoremap <F2> :call FileReplaceIt(0)<cr>
+vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
 vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 
@@ -565,13 +568,14 @@ nmap <leader>fm :call MoveCurrentFile()<cr>
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-" ino " ""<left>
-" ino ' ''<left>
-" ino ` ``<left>
-" ino ( ()<left>
-" ino (<CR> (<CR>)<ESC>O
-" ino [ []<left>
-" ino [<CR> [<CR>]<ESC>O
-" ino { {}<left>
-" ino {<space> {  }<left><left>
-" ino {<CR> {<CR>}<ESC>O
+ino " ""<left>
+ino ' ''<left>
+ino ` ``<left>
+ino ( ()<left>
+ino (<CR> (<CR>)<ESC>O
+ino [ []<left>
+ino [<CR> [<CR>]<ESC>O
+ino { {}<left>
+ino {<space> {  }<left><left>
+ino {<CR> {<CR>}<ESC>O
+""" MAPPINGS
