@@ -110,7 +110,6 @@ set clipboard=unnamed "Copy/paste to/from clipboard by default
 set hlsearch "highlight matches
 set diffopt+=vertical " vimdiff split direction
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
-set nowrap " Dont wrap text
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
 
@@ -186,14 +185,18 @@ augroup END
 augroup vimrcEx
     au!
 
+    " Show characters over 120 columns
+    autocmd BufEnter * highlight OverLength ctermbg=Red guibg=#592929
+    autocmd BufEnter * match OverLength /\%121v.*/
+
     "Save on focus lost
     au FocusLost * :wa
 
-    " Disable automatic comment insertion
-    au BufEnter * set fo-=c fo-=o
-
     " Remove saved view session older than 5 days
     au VimLeavePre * CleanViewdir! 5
+
+    " Set format options
+    au BufEnter * set formatoptions=tcqrj
 augroup END
 
 
@@ -232,7 +235,7 @@ let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_lint_on_enter = 1
 let g:ale_enabled = 0
-let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_text_changed = 'never'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -562,13 +565,13 @@ nmap <leader>fm :call MoveCurrentFile()<cr>
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-ino " ""<left>
-ino ' ''<left>
-ino ` ``<left>
-ino ( ()<left>
-ino (<CR> (<CR>)<ESC>O
-ino [ []<left>
-ino [<CR> [<CR>]<ESC>O
-ino { {}<left>
-ino {<space> {  }<left><left>
-ino {<CR> {<CR>}<ESC>O
+" ino " ""<left>
+" ino ' ''<left>
+" ino ` ``<left>
+" ino ( ()<left>
+" ino (<CR> (<CR>)<ESC>O
+" ino [ []<left>
+" ino [<CR> [<CR>]<ESC>O
+" ino { {}<left>
+" ino {<space> {  }<left><left>
+" ino {<CR> {<CR>}<ESC>O
