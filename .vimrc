@@ -52,16 +52,15 @@
 "dp - diff put (2 windows)
 "dl - get code from left (3 windows)
 "dr - get code from right (3 windows)
-"[ - next difference
-"] - previous difference
+"<leader>[ - next difference
+"<leader>] - previous difference
 
 "To enable Indent Guides use <leader>ig
 
-" will insert tab at beginning of line,
-" will use <C-x><C-o> (omnicompletion)
-"
-" type Tab <C-n>/<C-p> to navigate omnicomp
-" type <C-n>/<C-p> to navigate local expressions
+"Folding
+" zd - delete fold
+" Z - toggle fold/ create fold
+" zj/zk - move between folds
 
 
 
@@ -93,7 +92,7 @@ set re=1
 " syntax sync minlines=128
 " set colorcolumn=120  " slows alot
 
-" Affect lag
+" Affects lag
 set cursorline
 
 " Common
@@ -114,9 +113,8 @@ set sessionoptions=curdir,tabpages,winsize " save only this information in sessi
 set nowrap " Dont wrap text
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
-set complete-=t " Don't complete from tags
 
-"Folding
+" Folding
 set foldmethod=manual "faster folds, created with zf
 set foldlevelstart=0 "all folds folded initially
 
@@ -139,15 +137,19 @@ set undolevels=1000
 set undoreload=10000
 
 " Tab completion
-set wildmode=list:full,full
+" set wildmode=list,full
+
+" C-n completion
+set completeopt=menuone,noselect
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
 
 " For import aliases ( ../../../components => components)
-set path=$PWD/app/js
-set path+=$PWD/app/js/**
+set path=~/projects/entitlements/entitlements-web/app/js
+set path+=~/projects/entitlements/entitlements-web/app/js/**
+set path+=~/projects/entitlements/entitlements-web/**
 
 "Silver searcher
 if executable('ag')
@@ -161,7 +163,7 @@ set viewoptions=folds,cursor
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" AUTOCMD
+""" AUGROUP
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup syntax
     au!
@@ -200,9 +202,6 @@ augroup END
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ GLOBAL
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Snippets are activated by Shift+Tab
-let g:snippetsEmu_key = "<S-Tab>"
-
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
@@ -233,6 +232,7 @@ let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
 let g:ale_lint_on_enter = 1
 let g:ale_enabled = 0
+let g:ale_lint_on_text_changed = 'normal'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -248,6 +248,9 @@ if executable('ag')
 
     " Start searching from the project root
     let g:ag_working_path_mode="r"
+
+    " Ctrlp looks in directory you opened vim in
+    let g:ctrlp_working_path_mode = 0
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
@@ -292,22 +295,13 @@ function! RenameCurrentFile()
     let new_name = input('New file name: ')
     call inputrestore()
     if new_name != '' && new_name != old_name
-        exec ':saveas ' . expand('%:h'). '/' . new_name
+        if expand('%:e') != ''
+            exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
+        else
+            exec ':saveas ' . expand('%:h'). '/' . new_name
+        endif
         call delete(old_name)
         redraw!
-    endif
-endfunction
-
-" Remap TAB to omnicompletion
-function! CleverTab()
-    let col = col('.') - 1
-    if pumvisible()
-        return "\<C-N>"
-    endif
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<C-X>\<C-O>"
     endif
 endfunction
 
@@ -389,6 +383,7 @@ vnoremap Z zf
 imap jk <Esc>
 
 "NERDTree
+map <F9> :NERDTreeFind<CR><C-W>=
 map <F10> :NERDTreeToggle<CR><C-W>=
 
 "X to increment
@@ -420,9 +415,8 @@ nnoremap dr :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
 nmap <leader>gs :Gstatus<CR>
-nmap <leader>gd :Gdiff<CR>gg
-nmap <leader>gr :Gread<CR>
-nmap <leader>gw :Gwrite<CR>
+nmap <leader>gl :Git log --pretty=oneline -10<CR>
+nmap <leader>gd <CR>:Gdiff<CR>
 
 " Navigations between tabs
 nnoremap H gT
@@ -498,7 +492,8 @@ nmap <leader>9 :let @a .= ', '<cr>lbve"Ay
 nmap <leader>0 "ap^\a
 
 " Space to new line in vis selection
-vmap K :<C-u>s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=
+nmap K \b:s@ @\r@g<CR>V`b=:noh<CR>
+vmap K :<C-u>s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=:noh<CR>
 
 " Indent correctly to the set mark(\a)
 nmap <leader>) V`a=
@@ -536,10 +531,10 @@ nmap <leader>r @r
 vmap <leader>e :normal @e<CR>
 vmap <leader>r :normal @r<CR>
 
-"Mundo (undo history) toggle
+" Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
 
-"Silver searcher
+" Silver searcher
 nnoremap <F3> :Ag! -F<SPACE>
 
 " Quicker window movement
@@ -552,19 +547,28 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
-"Omnicompetion
-inoremap <tab> <C-R>=CleverTab()<CR>
-
-" vim-stay
+" vim-stay remove files
 nmap <leader>C :CleanViewdir!
 
 " File manipulation
 cnoremap <expr> %% expand('%:h').'/'
-"Open file for editing
-nmap <leader>fe :edit %%
-"Rename current file
+" Open file for editing
+nmap <leader>fe :tabe %%
+" Rename current file
 nmap <leader>fr :call RenameCurrentFile()<cr>
-"Move current file
+" Move current file
 nmap <leader>fm :call MoveCurrentFile()<cr>
-"Delete current file
+" Delete current file
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
+
+" Auto pairs
+ino " ""<left>
+ino ' ''<left>
+ino ` ``<left>
+ino ( ()<left>
+ino (<CR> (<CR>)<ESC>O
+ino [ []<left>
+ino [<CR> [<CR>]<ESC>O
+ino { {}<left>
+ino {<space> {  }<left><left>
+ino {<CR> {<CR>}<ESC>O
