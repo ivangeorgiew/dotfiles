@@ -370,10 +370,10 @@ endfunction
 """ MAPPINGS
 " Main leader Mappings
 map <Space> <leader>
-map <leader>q :qall<CR>
-map <leader>w :update<CR>
-map <leader>d :bd<CR>
-map <leader>t :tabclose<CR>
+map <silent> <leader>q :qall<CR>
+map <silent> <leader>w :update<CR>
+map <silent> <leader>d :bd<CR>
+map <silent> <leader>t :tabclose<CR>
 
 "Folding mappings
 "Fold all
@@ -452,8 +452,9 @@ vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 
 
 " Fix register copy/pasting
-nnoremap <silent> DD "0dd:let @*=@0<cr>
-vnoremap <silent> D "0d:let @*=@0<cr>
+nnoremap DD "*dd
+nnoremap D "*d
+vnoremap D "*d
 nnoremap d "_d
 nnoremap dd "_dd
 vnoremap d "_d
@@ -463,17 +464,14 @@ nnoremap c "_c
 vnoremap c "_c
 nnoremap x "_x
 vnoremap x "_x
-vnoremap p "*p
-vnoremap P "0p
+vnoremap p "_c<C-r>*<Esc>
 
 " Paste on new line
 nnoremap ,p o<Esc>p
 nnoremap ,P O<Esc>p
 
 " Insert-Paste from * reg
-inoremap <C-r> <C-r>*
-" Insert-Paste from other register
-inoremap <C-e> <C-r>
+inoremap <C-e> <C-r>*
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -521,6 +519,7 @@ map <leader>ad :ALEDisable<CR>
 nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
 nmap // /\V<C-r>*<cr>
+vmap // "by/\V<C-r>b<cr>
 
 " Set marker
 nnoremap \ m
@@ -568,13 +567,19 @@ nmap <leader>fm :call MoveCurrentFile()<cr>
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
+ino ", "
 ino " ""<left>
+ino ', '
 ino ' ''<left>
+ino `, `
 ino ` ``<left>
+ino (, (
 ino ( ()<left>
 ino (<CR> (<CR>)<ESC>O
+ino [, [
 ino [ []<left>
 ino [<CR> [<CR>]<ESC>O
+ino {, {
 ino { {}<left>
 ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
