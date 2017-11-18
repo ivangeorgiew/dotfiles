@@ -1,4 +1,4 @@
-""" COMMENTS
+""" COMMENTS"{{{
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 
 " vim-table mode
@@ -60,12 +60,9 @@
 " zE - delete all folds
 " Z - toggle fold/ create fold
 " zj/zk - move between folds
-""" COMMENTS
+""" COMMENTS"}}}
 
-
-
-
-""" MISC
+""" MISC"{{{
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
@@ -74,12 +71,9 @@ colorscheme gruvbox
 
 "Ag replace command
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-""" MISC
+""" MISC"}}}
 
-
-
-
-""" SET VALUES
+""" SET VALUES"{{{
 " Fix lag in vim
 set shell=bash
 set lazyredraw
@@ -109,6 +103,8 @@ set diffopt+=vertical " vimdiff split direction
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
+set viminfo= " dont save viminfo files
+set virtualedit=block " allow cursor to move where there is no text in v-block
 
 " Folding
 set foldmethod=manual "faster folds, created with zf
@@ -154,18 +150,18 @@ endif
 
 "vim-stay settings
 set viewoptions=folds,cursor
-""" SET VALUES
+""" SET VALUES"}}}
 
-
-
-
-""" AUGROUP
+""" AUGROUP"{{{
 augroup syntax
     au!
 
     "Indent Guides colors
     au VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
     au VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
+
+    "Wrap character color
+    au VimEnter,Colorscheme * :hi! NonText ctermfg=Red
 
     " Switch syntax for strange file endings
     au BufNewFile,BufRead *.ejs set filetype=html
@@ -194,14 +190,15 @@ augroup vimrcEx
     " Set format options
     au BufEnter * set formatoptions=tcqrj
 
+    " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
+
+    " .vimrc folding
+    au FileType vim set foldmethod=marker
 augroup END
-""" AUGROUP
+""" AUGROUP"}}}
 
-
-
-
-""" GLOBAL
+""" GLOBAL"{{{
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
@@ -269,12 +266,14 @@ let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
-""" GLOBAL
 
+" Arrow for wrapped text
+if has('linebreak')
+    let &showbreak='⤷ '
+endif
+""" GLOBAL"}}}
 
-
-
-""" FUNCTIONS
+""" FUNCTIONS"{{{
 function! MoveCurrentFile()
     let old_destination = expand('%:p:h')
     let filename = expand('%:t')
@@ -362,12 +361,9 @@ function! ToggleDiff()
         execute "windo diffthis"
     endif
 endfunction
-""" FUNCTIONS
+""" FUNCTIONS"}}}
 
-
-
-
-""" MAPPINGS
+""" MAPPINGS"{{{
 " Main leader Mappings
 map <Space> <leader>
 map <silent> <leader>q :qall<CR>
@@ -397,10 +393,6 @@ nnoremap X <C-a>
 
 "Go to last text char in vis
 vnoremap $ g_
-
-"Fix whole file indent and return to position
-nnoremap =g magg=G`a
-vnoremap =g <Esc>gg=Ggv
 
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
@@ -589,4 +581,4 @@ ino {, {
 ino { {}<left>
 ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
-""" MAPPINGS
+""" MAPPINGS"}}}
