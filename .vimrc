@@ -279,7 +279,7 @@ function! MoveCurrentFile()
     let old_destination = expand('%:p:h')
     let filename = expand('%:t')
     call inputsave()
-     let new_destination = input('New destination: ', expand('%:p:h'), 'file')
+    let new_destination = input('New destination: ', expand('%:p:h'), 'file')
     call inputrestore()
     if new_destination != '' && new_destination != old_destination
         exec ':saveas ' . new_destination . '/' . filename
@@ -397,6 +397,10 @@ nnoremap X <C-a>
 
 "Go to last text char in vis
 vnoremap $ g_
+
+"Fix whole file indent and return to position
+nnoremap =g magg=G`a
+vnoremap =g <Esc>gg=Ggv
 
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
@@ -518,8 +522,10 @@ map <leader>ad :ALEDisable<CR>
 "Turn off highlighting until next search
 nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
-nmap // /\V<C-r>*<cr>
-vmap // "by/\V<C-r>b<cr>
+nmap / /\V
+nmap /? /\V<C-r>*<cr>
+vmap / /\V
+vmap /? "by/\V<C-r>b<cr>
 
 " Set marker
 nnoremap \ m
