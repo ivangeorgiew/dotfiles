@@ -15,3 +15,4 @@ You have to do these things in order:
 9) Cp the contents of dotfiles/ into ~/
 10) Install eslint
 11) Update stuff you want to update
+12) Install Universal-Ctags

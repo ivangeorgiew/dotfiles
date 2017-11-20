@@ -82,8 +82,8 @@ execute pathogen#helptags()
 
 colorscheme gruvbox
 
-"Ag replace command
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+"AG command
+command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """ MISC"}}}
 
 """ SET VALUES"{{{
@@ -141,11 +141,13 @@ set undofile
 set undolevels=1000
 set undoreload=10000
 
-" Tab mode completion
-" set wildmode=longest:full,full
+" Complete on the bottom of vim (:tabe /bla/ for example)
+set wildmenu
+set wildmode=longest:full,full
 
-" C-n completion
+" insert completion
 set completeopt=longest,menuone
+set complete=t,.
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -166,6 +168,7 @@ set viewoptions=folds,cursor
 
 " tags settings
 set tags=./tags;
+set statusline+=%{gutentags#statusline()}
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
@@ -286,6 +289,7 @@ endif
 
 " Gutentags settings
 let g:gutentags_project_root = ['package.json']
+let g:gutentags_generate_on_empty_buffer = 1
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
@@ -436,6 +440,9 @@ nmap <leader>gd <CR>:Gdiff<CR>
 nnoremap H gT
 nnoremap L gt
 
+" Copy from *
+inoremap <C-e> <Esc>mba<C-r>*<Esc>V`b=<C-o>
+
 " Yank till the end of the line
 nnoremap Y yg_
 
@@ -480,9 +487,6 @@ vnoremap p "_c<C-r>*<Esc>
 " Paste on new line
 nnoremap ,p o<Esc>p
 nnoremap ,P O<Esc>p
-
-" Insert-Paste from * reg
-inoremap <C-e> <C-r>*
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -566,12 +570,13 @@ nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
 " vim-stay remove files
-nmap <leader>C :CleanViewdir!
+nmap <leader>C :CleanViewdir!<CR>
 
 " File manipulation
 cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing
-nmap <leader>fe :tabe %%
+nmap <leader>fe :e %%
+nmap <leader>ft :tabe %%
 " Rename current file
 nmap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file
@@ -580,31 +585,7 @@ nmap <leader>fm :call MoveCurrentFile()<cr>
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-ino ", "
-ino " ""<left>
-ino ', '
-ino ' ''<left>
-ino `, `
-ino ` ``<left>
-ino (, (
-ino ( ()<left>
 ino (<CR> (<CR>)<ESC>O
-ino [, [
-ino [ []<left>
 ino [<CR> [<CR>]<ESC>O
-ino {, {
-ino { {}<left>
-ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
-
-" Completion mappings
-" keep menu item always highlighted on <C-n>
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-" keep menu item always highlighted on <C-p>
-inoremap <expr> <C-p> pumvisible() ? '<C-p>' :
-  \ '<C-p><C-r>=pumvisible() ? "\<lt>Up>" : ""<CR>'
-" omnicompletion
-inoremap <expr> <C-m> pumvisible() ? '<C-n>' :
-  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 """ MAPPINGS"}}}
