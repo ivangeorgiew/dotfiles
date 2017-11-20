@@ -40,6 +40,7 @@
 " Reverse of <C-o> is <C-i>
 
 " :e! to reload file
+" <C-w> in command line deletes word backwards
 
 "<leader>o - close all buffers except the one you're in
 
@@ -146,7 +147,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " insert completion
-set completeopt=longest,menuone
+set completeopt=menuone,preview
 set complete=t,.
 
 " Open new split panes to right and bottom, which feels more natural
@@ -441,7 +442,7 @@ nnoremap H gT
 nnoremap L gt
 
 " Copy from *
-inoremap <C-e> <Esc>mba<C-r>*<Esc>V`b=<C-o>
+inoremap <C-t> <Esc>mba<C-r>*<Esc>V`b=<C-o>
 
 " Yank till the end of the line
 nnoremap Y yg_
@@ -576,6 +577,7 @@ nmap <leader>C :CleanViewdir!<CR>
 cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing
 nmap <leader>fe :e %%
+nmap <leader>fv :vsplit %%
 nmap <leader>ft :tabe %%
 " Rename current file
 nmap <leader>fr :call RenameCurrentFile()<cr>
