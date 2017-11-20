@@ -60,6 +60,19 @@
 " zE - delete all folds
 " Z - toggle fold/ create fold
 " zj/zk - move between folds
+
+"Completion
+"<C-x><C-l> line completion
+"<C-x><C-f> filename completion
+"<C-x><C-o> omnicompletion
+"<C-n> normal completion
+"<C-y> selected value and close completion
+"<C-e> initila value and close completion
+
+"Ctrl-p shortcuts
+"<C-f> cycle between modes
+"<C-d> search by filename only
+"<C-z> mark mutliple files to be opened
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -128,11 +141,11 @@ set undofile
 set undolevels=1000
 set undoreload=10000
 
-" Tab completion
-" set wildmode=list,full
+" Tab mode completion
+" set wildmode=longest:full,full
 
 " C-n completion
-set completeopt=menu,preview
+set completeopt=longest,menuone
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -150,6 +163,9 @@ endif
 
 "vim-stay settings
 set viewoptions=folds,cursor
+
+" tags settings
+set tags=./tags;
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
@@ -233,7 +249,6 @@ let g:ale_lint_on_text_changed = 'never'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-
     " Use Ag over Grep
     let g:grep_cmd_opts = '--line-numbers --noheading'
 
@@ -242,9 +257,6 @@ if executable('ag')
 
     " ag is fast enough that CtrlP doesn't need to cache
     let g:ctrlp_use_caching = 0
-
-    " Start searching from the project root
-    let g:ag_working_path_mode="r"
 
     " Ctrlp looks in directory you opened vim in
     let g:ctrlp_working_path_mode = 0
@@ -271,6 +283,9 @@ let g:html_indent_tags = 'li\|p'
 if has('linebreak')
     let &showbreak='⤷ '
 endif
+
+" Gutentags settings
+let g:gutentags_project_root = ['package.json']
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
@@ -391,9 +406,6 @@ map <F10> :NERDTreeToggle<CR><C-W>=
 "X to increment
 nnoremap X <C-a>
 
-"Go to last text char in vis
-vnoremap $ g_
-
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
@@ -423,6 +435,9 @@ nmap <leader>gd <CR>:Gdiff<CR>
 " Navigations between tabs
 nnoremap H gT
 nnoremap L gt
+
+" Yank till the end of the line
+nnoremap Y yg_
 
 " Go to file under cursor
 "current window
@@ -581,4 +596,15 @@ ino {, {
 ino { {}<left>
 ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
+
+" Completion mappings
+" keep menu item always highlighted on <C-n>
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+" keep menu item always highlighted on <C-p>
+inoremap <expr> <C-p> pumvisible() ? '<C-p>' :
+  \ '<C-p><C-r>=pumvisible() ? "\<lt>Up>" : ""<CR>'
+" omnicompletion
+inoremap <expr> <C-m> pumvisible() ? '<C-n>' :
+  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 """ MAPPINGS"}}}
