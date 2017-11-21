@@ -8,6 +8,19 @@ export ZSH=/Users/ivangeorgiev/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="bullet-train"
+BULLETTRAIN_PROMPT_ORDER=(
+    status
+    custom
+    context
+    dir
+    perl
+    ruby
+    virtualenv
+    nvm
+    go
+    git
+    hg
+)
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -85,6 +98,8 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 export PATH="$PATH:`yarn global bin`"
+export PATH="$PATH:./node_modules/.bin"
+export PATH="$PATH:/Users/ivangeorgiev/bin"
 
 lazy_source () {
     eval "$1 () { [ -f $2 ] && source $2 && $1 \$@ }"

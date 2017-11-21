@@ -12,14 +12,14 @@
     ct = checkout
     ac = !git add . && git commit -m
     re = rebase
-    rc = !git add . && git rebase --continue
     me = merge --ff
+    rc = !git add . && git rebase --continue
     pre = checkout @{-1}
-    ld = branch -D
-    rd = push origin --delete
-    rh = reset --hard HEAD~1
-    ml = mergetool
+    dl = branch -D
+    dr = push origin --delete
+    rh = reset HEAD~1
     ma = merge --abort
+    updatevim = !sudo rm -fr ~/dotfiles/.vim && sudo cp -R ~/.vim ~/dotfiles/ && cp ~/.vimrc ~/dotfiles/
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
