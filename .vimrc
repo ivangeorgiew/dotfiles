@@ -21,11 +21,9 @@
 " U - removes file changes
 " p - stash -p
 
-" tCommenter
-" gcc - comment line
-" gc - toggle comment
-" g> - comment(vis and normal)
-" g< - uncomment(vis and normal)
+" commentay.vim
+" gcc - comment line (takes number as well)
+" gc - toggle comment (takes motion i{ for example)
 
 "Increment and Decrement numbers commands
 "X to increment, <C-x> to decrement
@@ -117,8 +115,8 @@ set diffopt+=vertical " vimdiff split direction
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
-set viminfo= " dont save viminfo files
 set virtualedit=block " allow cursor to move where there is no text in v-block
+set textwidth=120
 
 " Folding
 set foldmethod=manual "faster folds, created with zf
@@ -148,7 +146,6 @@ set wildmode=longest:full,full
 
 " insert completion
 set completeopt=menuone,preview
-set complete=t,.
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -191,6 +188,7 @@ augroup syntax
 
     "ALE linting
     au BufNewFile,BufRead *.js ALEEnable
+    au BufNewFile,BufRead *.json ALEEnable
     au BufNewFile,BufRead *.css ALEEnable
 augroup END
 
@@ -208,7 +206,7 @@ augroup vimrcEx
     au VimLeavePre * CleanViewdir! 5
 
     " Set format options
-    au BufEnter * set formatoptions=tcqrj
+    au BufEnter * set formatoptions=cq
 
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
@@ -245,8 +243,8 @@ let g:mundo_close_on_revert = 1
 let g:jsx_ext_required = 0
 
 " ALE configurations
-let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint']}
-let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint']}
+let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
+let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_lint_on_enter = 1
 let g:ale_enabled = 0
 let g:ale_lint_on_text_changed = 'never'
@@ -320,6 +318,7 @@ function! RenameCurrentFile()
         endif
         call delete(old_name)
         redraw!
+        exec ':e!'
     endif
 endfunction
 
@@ -442,10 +441,13 @@ nnoremap H gT
 nnoremap L gt
 
 " Copy from *
-inoremap <C-t> <Esc>mba<C-r>*<Esc>V`b=<C-o>
+inoremap <C-e> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
 
 " Yank till the end of the line
 nnoremap Y yg_
+
+" Screw that newline character
+vnoremap $ g_
 
 " Go to file under cursor
 "current window
@@ -457,11 +459,15 @@ nnoremap gF :vertical wincmd f<CR>
 
 " Go to definition made easier for JS files using Ag
 "current new tab
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>tabclose<CR>endif<CR>
+
+" (?!(?:badword|second|\*)) search for not one of these words/characters
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>:if (line('$') == 1)
+            \<CR>tabclose<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>:if (line('$') == 1)
+            \<CR>bd<CR>endif<CR>
 "current window
-nnoremap gO lbve"by:AgNoLoc '(export) (?:\w+ .+ <C-r>b[ (]\|\w+ <C-r>b[ (]\|<C-r>b )'<CR>
+nnoremap gO lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
@@ -483,7 +489,8 @@ nnoremap c "_c
 vnoremap c "_c
 nnoremap x "_x
 vnoremap x "_x
-vnoremap p "_c<C-r>*<Esc>
+vnoremap p "_c<Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>
+
 
 " Paste on new line
 nnoremap ,p o<Esc>p
@@ -525,8 +532,10 @@ nmap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 "ALE
 "jump on next error
-map <leader>af <Plug>(ale_next_wrap)
-map <leader>aF <Plug>(ale_previous_wrap)
+map <leader>an <Plug>(ale_next_wrap)
+map <leader>aN <Plug>(ale_previous_wrap)
+"fix errors automatically
+map <leader>af :ALEFix<CR>
 "enable/disable
 map <leader>ae :ALEEnable<CR>
 map <leader>ad :ALEDisable<CR>
@@ -535,9 +544,9 @@ map <leader>ad :ALEDisable<CR>
 nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
 nmap / /\V
-nmap /? /\V<C-r>*<cr>
+nnoremap // :let @/='<C-r>*'<cr>n
 vmap / /\V
-vmap /? "by/\V<C-r>b<cr>
+vnoremap // "by:let @/='<C-r>b'<cr>n
 
 " Set marker
 nnoremap \ m
@@ -549,10 +558,8 @@ nmap M #
 vmap M #
 
 " Macro mappings
-nmap <leader>e @e
-nmap <leader>r @r
-vmap <leader>e :normal @e<CR>
-vmap <leader>r :normal @r<CR>
+" @*<CR> to apply macro in * for everyline in visual selection
+vnoremap @ :normal @
 
 " Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
@@ -585,9 +592,4 @@ nmap <leader>fr :call RenameCurrentFile()<cr>
 nmap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
-
-" Auto pairs
-ino (<CR> (<CR>)<ESC>O
-ino [<CR> [<CR>]<ESC>O
-ino {<CR> {<CR>}<ESC>O
 """ MAPPINGS"}}}
