@@ -21,7 +21,7 @@
 " U - removes file changes
 " p - stash -p
 
-" commentay.vim
+" commentary.vim
 " gcc - comment line (takes number as well)
 " gc - toggle comment (takes motion i{ for example)
 
@@ -112,7 +112,6 @@ set showcmd       " display incomplete commands
 set autowrite     " Automatically :write before running commands
 set clipboard=unnamed "Copy/paste to/from clipboard by default
 set hlsearch "highlight matches
-set diffopt+=vertical " vimdiff split direction
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
@@ -161,6 +160,9 @@ set path+=~/projects/entitlements/entitlements-web/**
 if executable('ag')
     set grepprg=ag
 endif
+
+"Vimdiff options
+set diffopt+=vertical,iwhite " vimdiff split direction and ignore whitespace
 
 "vim-stay settings
 set viewoptions=folds,cursor
@@ -472,6 +474,8 @@ nnoremap dl :diffget //3<CR>
 "Git (vim-fugitive) mappings
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
+nnoremap <leader>gw :Gwrite<CR>
+"use only for merge conflicts
 nmap <leader>gd <CR>:Gdiff<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 
@@ -489,12 +493,12 @@ nnoremap Y yg_
 vnoremap $ g_
 
 " Go to file under cursor
-"current window
-nnoremap go gf
 "current new tab
 nnoremap gf <c-w>gf
 "vertical split
 nnoremap gF :vertical wincmd f<CR>
+"current window
+nnoremap gO gf
 
 " Go to definition made easier for JS files using Ag
 "current new tab
@@ -504,7 +508,7 @@ nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|fun
 "vertical split
 nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:call OnNoVarDefinition('buf')<CR>
 "current window
-nnoremap gO lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>
+nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
