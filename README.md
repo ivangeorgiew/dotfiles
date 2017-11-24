@@ -1,6 +1,7 @@
 # dotfiles
 My dotfiles, some of which are borrowed from https://github.com/mscoutermarsh/dotfiles.
 Iterm font - Cousine for Powerline.
+Sup.
 
 You have to do these things in order:
 
