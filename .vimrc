@@ -72,6 +72,10 @@
 "<C-f> cycle between modes
 "<C-d> search by filename only
 "<C-z> mark mutliple files to be opened
+
+"Tab close direction by default is to the right
+"this is confusing since you open tabs to the right
+"use TabClose() function instad of tabclose to solve this
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -292,6 +296,34 @@ let g:gutentags_generate_on_empty_buffer = 1
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
+function! TabClose()
+  if winnr("$") == 1 && tabpagenr("$") > 1 && tabpagenr() > 1 && tabpagenr() < tabpagenr("$")
+    tabclose | tabprev
+  else
+    q
+  endif
+endfunction
+
+function! OnNoVarDefinition(type)
+    if (line('$') == 1)
+        if (a:type == 'tab')
+            call TabClose()
+        else
+            bd
+        endif
+    endif
+endfunction
+
+function! GitCommit()
+    call inputsave()
+    let message = input('Message: ')
+    call inputrestore()
+    if message == ''
+        let message = 'update'
+    endif
+    exec ':Gcommit -m "' . message . '"'
+endfunction
+
 function! MoveCurrentFile()
     let old_destination = expand('%:p:h')
     let filename = expand('%:t')
@@ -388,7 +420,7 @@ map <Space> <leader>
 map <silent> <leader>q :qall<CR>
 map <silent> <leader>w :update<CR>
 map <silent> <leader>d :bd<CR>
-map <silent> <leader>t :tabclose<CR>
+map <silent> <leader>t :call TabClose()<CR>
 
 "Folding mappings
 "Fold all
@@ -410,6 +442,9 @@ map <F10> :NERDTreeToggle<CR><C-W>=
 "X to increment
 nnoremap X <C-a>
 
+"r to redo instead of C-r
+nnoremap r <C-r>
+
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
@@ -425,16 +460,17 @@ map <leader>v gg^vGg_y
 nmap <leader>1 :call ToggleDiff()<cr>
 "close every buffer except the one you're in
 nmap <leader>o :only<CR>
-nmap <leader>[ ]c
-nmap <leader>] [c
+nmap <leader>[ ]cz.
+nmap <leader>] [cz.
 nnoremap du :diffupdate<CR>
-nnoremap dl :diffget //2<CR>
-nnoremap dr :diffget //3<CR>
+nnoremap dh :diffget //2<CR>
+nnoremap dl :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
 nmap <leader>gs :Gstatus<CR>
 nmap <leader>gl :Git log --pretty=oneline -10<CR>
 nmap <leader>gd <CR>:Gdiff<CR>
+nmap <leader>gc :call GitCommit()<CR>
 
 " Navigations between tabs
 nnoremap H gT
@@ -461,13 +497,11 @@ nnoremap gF :vertical wincmd f<CR>
 "current new tab
 
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>:if (line('$') == 1)
-            \<CR>tabclose<CR>endif<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:call OnNoVarDefinition('tab')<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>:if (line('$') == 1)
-            \<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:call OnNoVarDefinition('buf')<CR>
 "current window
-nnoremap gO lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function)(?:\*\| \* \| \*\| )(<C-r>b)'<CR>
+nnoremap gO lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
@@ -580,16 +614,34 @@ nnoremap <C-u> <C-u>z.
 " vim-stay remove files
 nmap <leader>C :CleanViewdir!<CR>
 
-" File manipulation
+" File manipulation "
 cnoremap <expr> %% expand('%:h').'/'
-" Open file for editing
+" Open file for editing "
 nmap <leader>fe :e %%
 nmap <leader>fv :vsplit %%
 nmap <leader>ft :tabe %%
-" Rename current file
+" Rename current file "
 nmap <leader>fr :call RenameCurrentFile()<cr>
-" Move current file
+" Move current file "
 nmap <leader>fm :call MoveCurrentFile()<cr>
-" Delete current file
+" Delete current file "
 nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
+
+" Auto pairs
+" ino ", "
+" ino " ""<left>
+" ino ', '
+" ino ' ''<left>
+" ino `, `
+" ino ` ``<left>
+" ino (, (
+" ino ( ()<left>
+" ino (<CR> (<CR>)<ESC>O
+" ino [, [
+" ino [ []<left>
+" ino [<CR> [<CR>]<ESC>O
+" ino {, {
+" ino { {}<left>
+" ino {<space> {  }<left><left>
+" ino {<CR> {<CR>}<ESC>O
 """ MAPPINGS"}}}
