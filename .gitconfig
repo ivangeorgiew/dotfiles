@@ -6,7 +6,7 @@
     ss = status
     df = diff
     ph = push origin HEAD
-    pl = pull --all
+    pl = pull
     fp = push --force origin HEAD
     lg = log --pretty=oneline -10
     ct = checkout
@@ -35,7 +35,6 @@
 [difftool "Kaleidoscope"]
     cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [merge]
-    ff = only
     tool = diffconflicts
 [mergetool]
     prompt = false

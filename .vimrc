@@ -557,8 +557,8 @@ nnoremap <leader>9 :let @a .= ', '<cr>lbve"Ay
 nnoremap <leader>0 "ap^ma
 
 " Space to new line in vis selection
-nnoremap K mb:s@ @\r@g<CR>V`b=:noh<CR>
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
+nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 
 " Indent correctly to the set mark(\a)
 nnoremap <leader>) V`a=
