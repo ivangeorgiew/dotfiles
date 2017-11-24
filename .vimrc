@@ -84,9 +84,6 @@ execute pathogen#infect()
 execute pathogen#helptags()
 
 colorscheme gruvbox
-
-"AG command
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 """ MISC"}}}
 
 """ SET VALUES"{{{
@@ -155,7 +152,7 @@ set completeopt=menuone,preview
 set splitbelow
 set splitright
 
-" For import aliases ( ../../../components => components)
+" In order for gf to work with import aliases ( ../../../components => components)
 set path=~/projects/entitlements/entitlements-web/app/js
 set path+=~/projects/entitlements/entitlements-web/app/js/**
 set path+=~/projects/entitlements/entitlements-web/**
@@ -221,6 +218,9 @@ augroup END
 """ AUGROUP"}}}
 
 """ GLOBAL"{{{
+" Leader
+let g:mapleader = ' '
+
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
@@ -416,11 +416,13 @@ endfunction
 
 """ MAPPINGS"{{{
 " Main leader Mappings
-map <Space> <leader>
-map <silent> <leader>q :qall<CR>
-map <silent> <leader>w :update<CR>
-map <silent> <leader>d :bd<CR>
-map <silent> <leader>t :call TabClose()<CR>
+nnoremap <silent> <leader>q :qall<CR>
+nnoremap <silent> <leader>w :update<CR>
+nnoremap <silent> <leader>d :bd<CR>
+nnoremap <silent> <leader>t :call TabClose()<CR>
+
+" Indent everything
+nnoremap <leader>I ggVG=
 
 "Folding mappings
 "Fold all
@@ -433,11 +435,11 @@ nnoremap Z za
 vnoremap Z zf
 
 "Close insert mode
-imap jk <Esc>
+inoremap jk <Esc>
 
 "NERDTree
-map <F9> :NERDTreeFind<CR><C-W>=
-map <F10> :NERDTreeToggle<CR><C-W>=
+noremap <F9> :NERDTreeFind<CR><C-W>=
+noremap <F10> :NERDTreeToggle<CR><C-W>=
 
 "X to increment
 nnoremap X <C-a>
@@ -451,26 +453,27 @@ nnoremap <Right>    :echoerr "Use l"<CR>
 nnoremap <Up>       :echoerr "Use k"<CR>
 nnoremap <Down>     :echoerr "Use j"<CR>
 nnoremap gt         :echoerr "use H or L"<CR>
+nnoremap gT         :echoerr "use H or L"<CR>
 
 " Copy whole file contents
-map <leader>v gg^vGg_y
+nnoremap <leader>v gg^vGg_y
 
 "Vimdiff
 "diff 2 buffers in vertical split
-nmap <leader>1 :call ToggleDiff()<cr>
+nnoremap <leader>1 :call ToggleDiff()<cr>
 "close every buffer except the one you're in
-nmap <leader>o :only<CR>
-nmap <leader>[ ]cz.
-nmap <leader>] [cz.
+nnoremap <leader>o :only<CR>
+nnoremap <leader>[ ]cz.
+nnoremap <leader>] [cz.
 nnoremap du :diffupdate<CR>
 nnoremap dh :diffget //2<CR>
 nnoremap dl :diffget //3<CR>
 
 "Git (vim-fugitive) mappings
-nmap <leader>gs :Gstatus<CR>
-nmap <leader>gl :Git log --pretty=oneline -10<CR>
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nmap <leader>gd <CR>:Gdiff<CR>
-nmap <leader>gc :call GitCommit()<CR>
+nnoremap <leader>gc :call GitCommit()<CR>
 
 " Navigations between tabs
 nnoremap H gT
@@ -535,61 +538,58 @@ nnoremap th :tabm -1<cr>
 nnoremap tl :tabm +1<cr>
 
 " Save session
-map <silent> <F7> :call SaveSession()<cr>
+noremap <silent> <F7> :call SaveSession()<cr>
 
 " Load previous session
-map <silent> <F5> :call OpenSession()<cr>
+noremap <silent> <F5> :call OpenSession()<cr>
 
 " Search for word under cursor
-nmap )) lbve"by:Ag! <C-r>b<cr>
-vmap )) "by:Ag! <C-r>b<cr>
-"specify folder
-nmap ) lbve"by:Ag! <C-r>b
-vmap ) "by:Ag! <C-r>b
+nnoremap ) lbve"by:Ag! <C-r>b<cr>
+vnoremap ) "by:Ag! <C-r>b<cr>
 
 " Copy multiple words to register
-nmap <leader>8 lbve"ay
-nmap <leader>9 :let @a .= ', '<cr>lbve"Ay
-nmap <leader>0 "ap^\a
+nnoremap <leader>8 lbve"ay
+nnoremap <leader>9 :let @a .= ', '<cr>lbve"Ay
+nnoremap <leader>0 "ap^ma
 
 " Space to new line in vis selection
-nmap K \b:s@ @\r@g<CR>V`b=:noh<CR>
-vmap K :<C-u>s@\%V @$%@g<cr>\b:s/$%/\r/g<cr>V`b=:noh<CR>
+nnoremap K mb:s@ @\r@g<CR>V`b=:noh<CR>
+vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 
 " Indent correctly to the set mark(\a)
-nmap <leader>) V`a=
+nnoremap <leader>) V`a=
 
 " Convert CamelCase/camelCase to NAMED_CONTANT
-nmap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+nnoremap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
 " Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
-nmap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
+nnoremap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 "ALE
 "jump on next error
-map <leader>an <Plug>(ale_next_wrap)
-map <leader>aN <Plug>(ale_previous_wrap)
+nnoremap <leader>an <Plug>(ale_next_wrap)
+nnoremap <leader>aN <Plug>(ale_previous_wrap)
 "fix errors automatically
-map <leader>af :ALEFix<CR>
+nnoremap <leader>af :ALEFix<CR>
 "enable/disable
-map <leader>ae :ALEEnable<CR>
-map <leader>ad :ALEDisable<CR>
+nnoremap <leader>ae :ALEEnable<CR>
+nnoremap <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
 nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
-nmap / /\V
+nnoremap / /\V
 nnoremap // :let @/='<C-r>*'<cr>n
-vmap / /\V
+vnoremap / /\V
 vnoremap // "by:let @/='<C-r>b'<cr>n
 
 " Set marker
 nnoremap \ m
 
 " Move to the next word as the one under cursor
-nmap m *
-vmap m *
-nmap M #
-vmap M #
+nnoremap m *
+vnoremap m *
+nnoremap M #
+vnoremap M #
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
@@ -612,7 +612,7 @@ nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
 " vim-stay remove files
-nmap <leader>C :CleanViewdir!<CR>
+nnoremap <leader>C :CleanViewdir!<CR>
 
 " File manipulation "
 cnoremap <expr> %% expand('%:h').'/'
@@ -621,11 +621,11 @@ nmap <leader>fe :e %%
 nmap <leader>fv :vsplit %%
 nmap <leader>ft :tabe %%
 " Rename current file "
-nmap <leader>fr :call RenameCurrentFile()<cr>
+nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
-nmap <leader>fm :call MoveCurrentFile()<cr>
+nnoremap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file "
-nmap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
+nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
 " ino ", "
