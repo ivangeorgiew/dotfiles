@@ -4,9 +4,6 @@ Iterm font - Cousine for Powerline.
 
 You have to do these things in order:
 
-
-You have to do these things in order:
-
 1) Install iTerm
 2) Install tmux
 3) Install Node.js
