@@ -151,6 +151,7 @@ set wildmode=longest:full,full
 
 " insert completion
 set completeopt=longest,menuone,preview
+set complete=.,t
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -313,7 +314,7 @@ let g:gutentags_generate_on_empty_buffer = 1
 " keys
 let g:ycm_key_list_select_completion = ['<C-n>']
 let g:ycm_key_list_previous_completion = ['<C-p>']
-let g:ycm_key_list_stop_completion = ['<C-y>']
+let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
 " completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -324,7 +325,6 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
-let g:ycm_use_ultisnips_completer = 1
 " Disable unhelpful semantic completions.
 let g:ycm_filetype_specific_completion_to_disable = { 'gitcommit': 1 }
 
@@ -348,16 +348,6 @@ function! TabClose()
   else
     q
   endif
-endfunction
-
-function! OnNoVarDefinition(type)
-    if (line('$') == 1)
-        if (a:type == 'tab')
-            call TabClose()
-        else
-            bd
-        endif
-    endif
 endfunction
 
 function! GitCommit()
@@ -405,14 +395,14 @@ function! SaveSession()
     if expand('%:p') =~ "projects"
         let choice = confirm('Save Session ?',"&Yes\n&No", 1)
         if choice == 1
-            execute 'mksession! ~/vim_session/'.dirPath
+            execute 'mksession! ~/.vim/session/'.dirPath
         endif
     endif
 endfunction
 
 function! OpenSession()
     let dirPath = fnamemodify('%', ':~:h:t')
-    let file = '~/vim_session/'.dirPath
+    let file = '~/.vim/session/'.dirPath
     if glob(file)!=#""
         execute 'source '.file
     endif
@@ -438,7 +428,7 @@ function! VisReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute "%s@\\%V".expression."@".replacement."@g"
+    execute "%s@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
@@ -483,7 +473,7 @@ nnoremap Z za
 vnoremap Z zf
 
 "Close insert mode
-" inoremap jk <Esc>
+inoremap jk <Esc>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -550,9 +540,9 @@ nnoremap gO gf
 "current new tab
 
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:call OnNoVarDefinition('tab')<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:call OnNoVarDefinition('buf')<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
 "current window
 nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>
 
@@ -616,8 +606,8 @@ nnoremap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 "ALE
 "jump on next error
-nnoremap <leader>an <Plug>(ale_next_wrap)
-nnoremap <leader>aN <Plug>(ale_previous_wrap)
+nmap <leader>an <Plug>(ale_next_wrap)
+nmap <leader>aN <Plug>(ale_previous_wrap)
 "fix errors automatically
 nnoremap <leader>af :ALEFix<CR>
 "enable/disable
@@ -661,9 +651,6 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-d> <C-d>z.
 nnoremap <C-u> <C-u>z.
 
-" vim-stay remove files
-nnoremap <leader>C :CleanViewdir!<CR>
-
 " File manipulation "
 cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing "
@@ -678,20 +665,20 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-" ino ", "
-" ino " ""<left>
-" ino ', '
-" ino ' ''<left>
-" ino `, `
-" ino ` ``<left>
-" ino (, (
-" ino ( ()<left>
-" ino (<CR> (<CR>)<ESC>O
-" ino [, [
-" ino [ []<left>
-" ino [<CR> [<CR>]<ESC>O
-" ino {, {
-" ino { {}<left>
-" ino {<space> {  }<left><left>
-" ino {<CR> {<CR>}<ESC>O
+ino ", "
+ino " ""<left>
+ino ', '
+ino ' ''<left>
+ino `, `
+ino ` ``<left>
+ino (, (
+ino ( ()<left>
+ino (<CR> (<CR>)<ESC>O
+ino [, [
+ino [ []<left>
+ino [<CR> [<CR>]<ESC>O
+ino {, {
+ino { {}<left>
+ino {<space> {  }<left><left>
+ino {<CR> {<CR>}<ESC>O
 """ MAPPINGS"}}}
