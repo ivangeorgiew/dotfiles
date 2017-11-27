@@ -76,6 +76,11 @@
 "Tab close direction by default is to the right
 "this is confusing since you open tabs to the right
 "use TabClose() function instad of tabclose to solve this
+
+" YouCompleteMe
+" <C-space> - semantic completion
+" <C-w> - remove word
+" <C-y> - accept completion
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -145,7 +150,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " insert completion
-set completeopt=menuone,preview
+set completeopt=longest,menuone,preview
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -193,6 +198,14 @@ augroup syntax
     au BufNewFile,BufRead *.js ALEEnable
     au BufNewFile,BufRead *.json ALEEnable
     au BufNewFile,BufRead *.css ALEEnable
+augroup END
+
+augroup UltiSnips
+    autocmd!
+    autocmd! User UltiSnipsEnterFirstSnippet
+    autocmd User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
+    autocmd! User UltiSnipsExitLastSnippet
+    autocmd User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
 augroup END
 
 augroup vimrcEx
@@ -277,7 +290,7 @@ let g:ag_prg = 'ag --column --nogroup --noheading'
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
 let g:airline#extensions#ale#enabled = 1
-let g:airline_section_y = ''
+" let g:airline_section_y = ''
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -295,6 +308,37 @@ endif
 " Gutentags settings
 let g:gutentags_project_root = ['package.json']
 let g:gutentags_generate_on_empty_buffer = 1
+
+" YouCompleteMe settings
+" keys
+let g:ycm_key_list_select_completion = ['<C-n>']
+let g:ycm_key_list_previous_completion = ['<C-p>']
+let g:ycm_key_list_stop_completion = ['<C-y>']
+" completions include
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+" remove preview window
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+" etc
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_cache_omnifunc = 1
+let g:ycm_use_ultisnips_completer = 1
+" Disable unhelpful semantic completions.
+let g:ycm_filetype_specific_completion_to_disable = { 'gitcommit': 1 }
+
+" UltiSnips
+" keys
+let g:UltiSnipsExpandTrigger = '<Tab>'
+let g:UltiSnipsJumpForwardTrigger = '<Tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<S-Tab>'
+" directory
+let g:UltiSnipsSnippetsDir = '~/.vim/ultisnips'
+let g:UltiSnipsSnippetDirectories = ['ultisnips']
+" Prevent UltiSnips from removing our carefully-crafted mappings.
+let g:UltiSnipsMappingsToIgnore = ['autocomplete']
+" needed for functions
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
@@ -423,8 +467,10 @@ nnoremap <silent> <leader>w :update<CR>
 nnoremap <silent> <leader>d :bd<CR>
 nnoremap <silent> <leader>t :call TabClose()<CR>
 
-" Indent everything
+" indent everything
 nnoremap <leader>I ggVG=
+" select everything
+nnoremap <leader>G ggVG
 
 "Folding mappings
 "Fold all
@@ -437,7 +483,7 @@ nnoremap Z za
 vnoremap Z zf
 
 "Close insert mode
-inoremap jk <Esc>
+" inoremap jk <Esc>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=

@@ -1,5 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_cnt =4
 let g:netrw_dirhist_1='/Users/ivangeorgiev/.vim/bundle/Vundle.vim'
 let g:netrw_dirhist_2='/Users/ivangeorgiev/projects/entitlements-web/app/js/components/RoleManagement/EditEGAssocToRole'
 let g:netrw_dirhist_3='/Users/ivangeorgiev/projects/entitlements-web/app/js/components/RoleManagement'
+let g:netrw_dirhist_4='/Users/ivangeorgiev/.vim/bundle/vim-sensible'
