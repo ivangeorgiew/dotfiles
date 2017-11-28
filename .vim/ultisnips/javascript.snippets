@@ -1,4 +1,4 @@
-snippet rcr "React Container" b
+snippet cr "React Container" b
 import React, { PureComponent as Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -25,6 +25,23 @@ export const ${1:`!v expand('%:t:r')`} = connect(
 	dispatch => bindActionCreators({
 	}, dispatch)
 )(_$1)
+endsnippet
+
+snippet ct "React Component" b
+import React, { PureComponent as Component } from 'react'
+import {} from 'prop-types'
+import {} from 'react-immutable-proptypes'
+
+export class ${1:`!v expand('%:t:r')`} extends Component {
+	render() {
+		return (
+			$0
+		)
+	}
+}
+
+$1.propTypes = {
+}
 endsnippet
 
 snippet cl "console.log"

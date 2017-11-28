@@ -19,6 +19,8 @@
 " [ ] - move between files in Gstatus
 " - - adds/removed file to commit
 " U - removes file changes
+" dp - show changes to uncommited files
+" D - open file with Gdiff
 " p - stash -p
 
 " commentary.vim
@@ -116,12 +118,12 @@ set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitigno
 set showcmd       " display incomplete commands
 set autowrite     " Automatically :write before running commands
 set clipboard=unnamed "Copy/paste to/from clipboard by default
-set hlsearch "highlight matches
+" set hlsearch "highlight matches
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces " Only one space when joining lines
 set list listchars=tab:»·,trail:· "show trailing whitespace
 set virtualedit=block " allow cursor to move where there is no text in v-block
-set textwidth=120
+set breakindent " wrapped line continues on the same indent level
 
 " Folding
 set foldmethod=manual "faster folds, created with zf
@@ -150,7 +152,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " insert completion
-set completeopt=longest,menuone,preview
+set completeopt=menu,menuone,longest,preview
 set complete=.,t
 
 " Open new split panes to right and bottom, which feels more natural
@@ -243,7 +245,7 @@ let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
 let g:NERDTreeWinSize=40
 let g:NERDTreeShowHidden=1
-let g:NERDTreeIgnore=['node_modules', '.git']
+let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
 " Indent Guides settings
 let g:indent_guides_guide_size = 1
@@ -511,9 +513,10 @@ nnoremap dl :diffget //3<CR>
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nnoremap <leader>gw :Gwrite<CR>
-"use only for merge conflicts
-nmap <leader>gd <CR>:Gdiff<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
+nnoremap <leader>gp :Gpush<CR>
+nnoremap <leader>gP :Gpull<CR>
+
 
 " Navigations between tabs
 nnoremap H gT
@@ -585,7 +588,7 @@ noremap <silent> <F5> :call OpenSession()<cr>
 
 " Search for word under cursor
 nnoremap ) lbve"by:Ag! <C-r>b<cr>
-vnoremap ) "by:Ag! <C-r>b<cr>
+vnoremap ) "by:Ag! "<C-r>b"<cr>
 
 " Copy multiple words to register
 nnoremap <leader>8 lbve"ay
