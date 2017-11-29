@@ -8,19 +8,19 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 ~/projects/entitlements/.git/index
+badd +1 app/js/containers/ApprovalRequests/FuncToEGApprReqBoxContainer.js
 argglobal
 silent! argdel *
-edit ~/projects/entitlements/.git/index
+edit app/js/containers/ApprovalRequests/FuncToEGApprReqBoxContainer.js
 set splitbelow splitright
 wincmd t
 set winminheight=1 winheight=1 winminwidth=1 winwidth=1
 argglobal
-let s:l = 7 - ((6 * winheight(0) + 31) / 62)
+let s:l = 31 - ((30 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-7
+31
 normal! 0
 tabnext 1
 if exists('s:wipebuf')

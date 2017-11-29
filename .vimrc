@@ -83,6 +83,13 @@
 " <C-space> - semantic completion
 " <C-w> - remove word
 " <C-y> - accept completion
+
+" EasyClip
+" C-n/C-p after paste - choose previous or next yank
+" Automatically indents - if not correct use <leader>cf
+" Built-in fixes for incorrect actions
+" r(motion) - replace with * buffer
+" "ar(motion) - replace with 'a' buffer
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -273,6 +280,8 @@ let g:ale_lint_on_text_changed = 'never'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
+    "use <C-t> for ctrlp invoking
+    let g:ctrlp_map = '<c-t>'
     " Use Ag over Grep
     let g:grep_cmd_opts = '--line-numbers --noheading'
 
@@ -341,6 +350,14 @@ let g:UltiSnipsSnippetDirectories = ['ultisnips']
 " Prevent UltiSnips from removing our carefully-crafted mappings.
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 " needed for functions
+
+" EasyClip settings
+let g:EasyClipAutoFormat = 1
+let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
+let g:EasyClipPreserveCursorPositionAfterYank = 1
+let g:EasyClipUseSubstituteDefaults = 0
+let g:EasyClipUseCutDefaults = 0
+let g:EasyClipUseGlobalPasteToggle = 0
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
@@ -484,14 +501,12 @@ noremap <F10> :NERDTreeToggle<CR><C-W>=
 "X to increment
 nnoremap X <C-a>
 
-"r to redo instead of C-r
-nnoremap r <C-r>
-
 " Get off my lawn
 nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
 nnoremap <Up>       :echoerr "Use k"<CR>
 nnoremap <Down>     :echoerr "Use j"<CR>
+nnoremap <C-R>      :echoerr "Use r"<CR>
 nnoremap gt         :echoerr "use H or L"<CR>
 nnoremap gT         :echoerr "use H or L"<CR>
 
@@ -516,20 +531,12 @@ nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gp :Gpush<CR>
 nnoremap <leader>gP :Gpull<CR>
-
+" show merge conflicts
+nnoremap <leader>gm :Gmerge<CR>
 
 " Navigations between tabs
 nnoremap H gT
 nnoremap L gt
-
-" Copy from *
-inoremap <C-e> <Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>a
-
-" Yank till the end of the line
-nnoremap Y yg_
-
-" Screw that newline character
-vnoremap $ g_
 
 " Go to file under cursor
 "current new tab
@@ -552,29 +559,28 @@ nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
-nnoremap <F12> :call MassReplaceIt()<cr>
 vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
+nnoremap <F12> :call MassReplaceIt()<cr>
 
+" " Copy from *
+imap <C-e> <plug>EasyClipInsertModePaste
+cmap <C-e> <plug>EasyClipCommandModePaste
 
-" Fix register copy/pasting
-nnoremap DD "*dd
-nnoremap D "*d
-vnoremap D "*d
-nnoremap d "_d
-nnoremap dd "_dd
-vnoremap d "_d
-nnoremap s "_s
-vnoremap s "_s
-nnoremap c "_c
-vnoremap c "_c
-nnoremap x "_x
-vnoremap x "_x
-vnoremap p "_c<Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>
+" Paste content before or after line
+nmap ,p o<Esc>p
+nmap ,P O<Esc>p
 
-
-" Paste on new line
-nnoremap ,p o<Esc>p
-nnoremap ,P O<Esc>p
+" EasyClip cut
+" cut
+nmap D <Plug>MoveMotionPlug
+xmap D <Plug>MoveMotionXPlug
+nmap DD <Plug>MoveMotionLinePlug
+" replace
+nmap <silent> r <plug>SubstituteOverMotionMap
+nmap rr <plug>SubstituteLine
+xmap r <plug>XEasyClipPaste
+" EasyClip autoformats on paste, turn it off after paste if incorrect
+nmap <leader>cf <plug>EasyClipToggleFormattedPaste
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>

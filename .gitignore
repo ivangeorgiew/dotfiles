@@ -11,3 +11,4 @@ tmp/**/*
 zeus.json
 .vim/undo
 .vim/view
+.vim/session
