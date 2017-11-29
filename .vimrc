@@ -84,12 +84,13 @@
 " <C-w> - remove word
 " <C-y> - accept completion
 
-" EasyClip
-" C-n/C-p after paste - choose previous or next yank
+" EasyClip - Built-in fixes for incorrect actions
 " Automatically indents - if not correct use <leader>cf
-" Built-in fixes for incorrect actions
 " r(motion) - replace with * buffer
 " "ar(motion) - replace with 'a' buffer
+" to enable C-n/C-p after paste choose previous or next yank
+" nmap <c-f> <plug>EasyClipSwapPasteForward
+" nmap <c-d> <plug>EasyClipSwapPasteBackwards
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -225,10 +226,7 @@ augroup vimrcEx
     autocmd BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
     autocmd BufEnter *.js match OverLength /\%121v.*/
 
-    "Save on focus lost
-    au FocusLost * :wa
-
-    " Remove saved view session older than 5 days
+    " vim-stay Remove saved .vim/view files older than 5 days
     au VimLeavePre * CleanViewdir! 5
 
     " Set format options
@@ -280,8 +278,6 @@ let g:ale_lint_on_text_changed = 'never'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-    "use <C-t> for ctrlp invoking
-    let g:ctrlp_map = '<c-t>'
     " Use Ag over Grep
     let g:grep_cmd_opts = '--line-numbers --noheading'
 
@@ -338,6 +334,8 @@ let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
 " Disable unhelpful semantic completions.
 let g:ycm_filetype_specific_completion_to_disable = { 'gitcommit': 1 }
+" Start vim faster
+" let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 
 " UltiSnips
 " keys
@@ -491,7 +489,7 @@ nnoremap Z za
 "fold visual selection
 vnoremap Z zf
 
-"Close insert mode
+" Close insert mode
 inoremap jk <Esc>
 
 "NERDTree
@@ -562,25 +560,27 @@ vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
 
-" " Copy from *
-imap <C-e> <plug>EasyClipInsertModePaste
-cmap <C-e> <plug>EasyClipCommandModePaste
-
-" Paste content before or after line
-nmap ,p o<Esc>p
-nmap ,P O<Esc>p
-
-" EasyClip cut
+" EasyClip
 " cut
 nmap D <Plug>MoveMotionPlug
 xmap D <Plug>MoveMotionXPlug
 nmap DD <Plug>MoveMotionLinePlug
 " replace
 nmap <silent> r <plug>SubstituteOverMotionMap
-nmap rr <plug>SubstituteLine
 xmap r <plug>XEasyClipPaste
+nmap <silent> R <plug>SubstituteToEndOfLine
+nmap rr <plug>SubstituteLine
 " EasyClip autoformats on paste, turn it off after paste if incorrect
 nmap <leader>cf <plug>EasyClipToggleFormattedPaste
+" Copy from *
+" <plug>EasyClipInsertModePaste
+imap <C-e> <C-r>*
+cmap <C-e> <plug>EasyClipCommandModePaste
+" Paste content before or after line
+" use EasyPlug's p command (that is why its nmap and not nnoremap)
+nmap ,p o<Esc>p
+nmap ,P O<Esc>p
+
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -674,20 +674,20 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-ino ", "
-ino " ""<left>
-ino ', '
-ino ' ''<left>
-ino `, `
-ino ` ``<left>
-ino (, (
-ino ( ()<left>
-ino (<CR> (<CR>)<ESC>O
-ino [, [
-ino [ []<left>
-ino [<CR> [<CR>]<ESC>O
-ino {, {
-ino { {}<left>
-ino {<space> {  }<left><left>
-ino {<CR> {<CR>}<ESC>O
+" ino ", "
+" ino " ""<left>
+" ino ', '
+" ino ' ''<left>
+" ino `, `
+" ino ` ``<left>
+" ino (, (
+" ino ( ()<left>
+" ino (<CR> (<CR>)<ESC>O
+" ino [, [
+" ino [ []<left>
+" ino [<CR> [<CR>]<ESC>O
+" ino {, {
+" ino { {}<left>
+" ino {<space> {  }<left><left>
+" ino {<CR> {<CR>}<ESC>O
 """ MAPPINGS"}}}

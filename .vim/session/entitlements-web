@@ -8,26 +8,52 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +1 app/js/containers/ApprovalRequests/FuncToEGApprReqBoxContainer.js
+badd +1 app/js/containers/ApprovalRequests/ApprovalRequestsPageContainer.js
+badd +1 app/js/components/ApprovalRequests/ApprovalRequestsPage.js
+badd +1 devServer/approvalRequestsController.js
 argglobal
 silent! argdel *
-edit app/js/containers/ApprovalRequests/FuncToEGApprReqBoxContainer.js
+set stal=2
+edit app/js/containers/ApprovalRequests/ApprovalRequestsPageContainer.js
 set splitbelow splitright
 wincmd t
 set winminheight=1 winheight=1 winminwidth=1 winwidth=1
 argglobal
-let s:l = 31 - ((30 * winheight(0) + 25) / 51)
+let s:l = 66 - ((18 * winheight(0) + 30) / 61)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-31
-normal! 0
-tabnext 1
+66
+normal! 018|
+tabedit app/js/components/ApprovalRequests/ApprovalRequestsPage.js
+set splitbelow splitright
+wincmd t
+set winminheight=1 winheight=1 winminwidth=1 winwidth=1
+argglobal
+let s:l = 71 - ((52 * winheight(0) + 30) / 61)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+71
+normal! 017|
+tabedit devServer/approvalRequestsController.js
+set splitbelow splitright
+wincmd t
+set winminheight=1 winheight=1 winminwidth=1 winwidth=1
+argglobal
+let s:l = 49 - ((48 * winheight(0) + 30) / 61)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+49
+normal! 04|
+tabnext 3
+set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
-set winheight=1 winwidth=20 shortmess=filnxtToO
+set winheight=1 winwidth=20 shortmess=filnxtToOc
 set winminheight=1 winminwidth=1
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if file_readable(s:sx)
