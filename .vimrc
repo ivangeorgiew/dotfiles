@@ -695,4 +695,12 @@ ino {, {
 ino { {}<left>
 ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
+
+" import-js mappings
+nnoremap <silent> <leader>ia :ImportJSWord<CR>
+nnoremap <silent> <leader>if :ImportJSFix<CR>
+nnoremap <silent> <leader>iF :ImportJSGoto<CR>
+
+" vim-stay
+nnoremap <leader>cv :CleanViewdir!<CR>
 """ MAPPINGS"}}}
