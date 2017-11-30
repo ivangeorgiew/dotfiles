@@ -227,7 +227,7 @@ augroup vimrcEx
     autocmd BufEnter *.js match OverLength /\%121v.*/
 
     " vim-stay Remove saved .vim/view files older than 5 days
-    au VimLeavePre * CleanViewdir! 5
+    au VimLeavePre * CleanViewdir! 2
 
     " Set format options
     au BufEnter * set formatoptions=cq
@@ -278,17 +278,17 @@ let g:ale_lint_on_text_changed = 'never'
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
+    " Custom ctlp mapping
+    " let g:ctrlp_map = '<C-p>'
     " Use Ag over Grep
     let g:grep_cmd_opts = '--line-numbers --noheading'
 
     " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+    let g:ctrlp_cmd='CtrlP :pwd'
     let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
 
     " ag is fast enough that CtrlP doesn't need to cache
     let g:ctrlp_use_caching = 0
-
-    " Ctrlp looks in directory you opened vim in
-    let g:ctrlp_working_path_mode = 0
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
@@ -321,7 +321,7 @@ let g:gutentags_generate_on_empty_buffer = 1
 " keys
 let g:ycm_key_list_select_completion = ['<C-n>']
 let g:ycm_key_list_previous_completion = ['<C-p>']
-let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
+let g:ycm_key_list_stop_completion = ['<C-y>']
 " completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -329,7 +329,7 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 " etc
-let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
 " Disable unhelpful semantic completions.
@@ -355,7 +355,11 @@ let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
-let g:EasyClipUseGlobalPasteToggle = 0
+let g:EasyClipUsePasteToggleDefaults = 0
+
+" Rooter
+let g:rooter_patterns = ['package.json']
+let g:rooter_silent_chdir = 1
 """ GLOBAL"}}}
 
 """ FUNCTIONS"{{{
@@ -570,11 +574,12 @@ nmap <silent> r <plug>SubstituteOverMotionMap
 xmap r <plug>XEasyClipPaste
 nmap <silent> R <plug>SubstituteToEndOfLine
 nmap rr <plug>SubstituteLine
+" change yank buffer
+nmap <C-F> <plug>EasyClipSwapPasteForward
 " EasyClip autoformats on paste, turn it off after paste if incorrect
 nmap <leader>cf <plug>EasyClipToggleFormattedPaste
 " Copy from *
-" <plug>EasyClipInsertModePaste
-imap <C-e> <C-r>*
+imap <C-e> <plug>EasyClipInsertModePaste
 cmap <C-e> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyPlug's p command (that is why its nmap and not nnoremap)
@@ -599,7 +604,7 @@ vnoremap ) "by:Ag! "<C-r>b"<cr>
 " Copy multiple words to register
 nnoremap <leader>8 lbve"ay
 nnoremap <leader>9 :let @a .= ', '<cr>lbve"Ay
-nnoremap <leader>0 "ap^ma
+nnoremap <leader>0 o<Esc>"ap==^ma
 
 " Space to new line in vis selection
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
@@ -674,20 +679,20 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " Auto pairs
-" ino ", "
-" ino " ""<left>
-" ino ', '
-" ino ' ''<left>
-" ino `, `
-" ino ` ``<left>
-" ino (, (
-" ino ( ()<left>
-" ino (<CR> (<CR>)<ESC>O
-" ino [, [
-" ino [ []<left>
-" ino [<CR> [<CR>]<ESC>O
-" ino {, {
-" ino { {}<left>
-" ino {<space> {  }<left><left>
-" ino {<CR> {<CR>}<ESC>O
+ino ", "
+ino " ""<left>
+ino ', '
+ino ' ''<left>
+ino `, `
+ino ` ``<left>
+ino (, (
+ino ( ()<left>
+ino (<CR> (<CR>)<ESC>O
+ino [, [
+ino [ []<left>
+ino [<CR> [<CR>]<ESC>O
+ino {, {
+ino { {}<left>
+ino {<space> {  }<left><left>
+ino {<CR> {<CR>}<ESC>O
 """ MAPPINGS"}}}
