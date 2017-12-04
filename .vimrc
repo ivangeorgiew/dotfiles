@@ -1,8 +1,7 @@
 """ COMMENTS"{{{
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-
-" vim-table mode
-" You can activate it with <leader>tm
+" ; to repeat f/t
+" C-g/C-t to go to next match while / searching
 
 " Macro
 " qe...q OR qr...q
@@ -15,9 +14,9 @@
 "Mundo (undo history)
 "press V for vimdiff
 
-"Git (vim-fugitive) commands in vim
-" [ ] - move between files in Gstatus
-" - - adds/removed file to commit
+"Gstatus (vim-fugitive) commands in vim
+" [ ] - move between files
+" - - adds/removes file to commit
 " U - removes file changes
 " dp - show changes to uncommited files
 " D - open file with Gdiff
@@ -30,8 +29,9 @@
 "Increment and Decrement numbers commands
 "X to increment, <C-x> to decrement
 
-" Mappings for vim-surround (* = [',",{, ...])
-" ys* - add surrounds
+" Mappings for vim-surround (* = [',",{,tag,...])
+" ys* - add surrounds for word
+" Ys* - add surrounds motion
 " cs* - change surrounds
 " ds* - delete surrounds
 " S* - add surrounds in visual mode
@@ -85,12 +85,10 @@
 " <C-y> - accept completion
 
 " EasyClip - Built-in fixes for incorrect actions
-" Automatically indents - if not correct use <leader>cf
+" Automatically indents - if not correct use <leader>ff
 " r(motion) - replace with * buffer
 " "ar(motion) - replace with 'a' buffer
-" to enable C-n/C-p after paste choose previous or next yank
-" nmap <c-f> <plug>EasyClipSwapPasteForward
-" nmap <c-d> <plug>EasyClipSwapPasteBackwards
+" C-f/C-n - after paste choose previous or next yank
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -106,7 +104,7 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set synmaxcol=128
+set synmaxcol=500
 set re=1
 " syntax sync minlines=128
 " set colorcolumn=120  " slows alot
@@ -118,23 +116,24 @@ set cursorline
 set smartcase
 set noignorecase
 set noantialias
-set scroll=10 " Set scroll lines
-set nocompatible  " Use Vim settings, rather then Vi settings
-set nobackup " dont make backups
-set nowritebackup "dont make backups
-set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
-set showcmd       " display incomplete commands
-set autowrite     " Automatically :write before running commands
-set clipboard=unnamed "Copy/paste to/from clipboard by default
-" set hlsearch "highlight matches
+set scroll=10                              " Set scroll lines
+set nocompatible                           " Use Vim settings, rather then Vi settings
+set nobackup                               " dont make backups
+set nowritebackup                          " dont make backups
+set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
+set showcmd                                " display incomplete commands
+set autowrite                              " Automatically :write before running commands
+set clipboard=unnamed                      " Copy/paste to/from clipboard by default
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
-set nojoinspaces " Only one space when joining lines
-set list listchars=tab:»·,trail:· "show trailing whitespace
-set virtualedit=block " allow cursor to move where there is no text in v-block
-set breakindent " wrapped line continues on the same indent level
+set nojoinspaces                           " Only one space when joining lines
+set list listchars=tab:»·,trail:·          " show trailing whitespace
+set virtualedit=block                      " allow cursor to move where there is no text in v-block
+set breakindent                            " wrapped line continues on the same indent level
+set timeoutlen=500                         " waittime for second mapping
+set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 
 " Folding
-set foldmethod=manual "faster folds, created with zf
+set foldmethod=manual "faster folds, created with Z
 set foldlevelstart=0 "all folds folded initially
 
 " Indentations
@@ -189,12 +188,18 @@ set statusline+=%{gutentags#statusline()}
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
+augroup vimrc-incsearch-highlight
+    autocmd!
+    autocmd CmdlineEnter /,\? :set hlsearch
+    autocmd CmdlineLeave /,\? :set nohlsearch
+augroup END
+
 augroup syntax
     au!
 
-    "Indent Guides colors
-    au VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
-    au VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
+    ""Indent Guides colors
+    "au VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
+    "au VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
 
     "Wrap character color
     au VimEnter,Colorscheme * :hi! NonText ctermfg=Red
@@ -253,8 +258,8 @@ let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
 " Indent Guides settings
-let g:indent_guides_guide_size = 1
-let g:indent_guides_auto_colors = 0
+" let g:indent_guides_guide_size = 1
+" let g:indent_guides_auto_colors = 0
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
@@ -292,7 +297,7 @@ if executable('ag')
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-let g:ag_prg = 'ag --column --nogroup --noheading'
+let g:ag_prg = 'ag --column --nogroup --noheading --case-sensitive'
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -332,6 +337,7 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
+let g:ycm_use_ultisnips_completer = 0
 " Disable unhelpful semantic completions.
 let g:ycm_filetype_specific_completion_to_disable = { 'gitcommit': 1 }
 " Start vim faster
@@ -347,7 +353,6 @@ let g:UltiSnipsSnippetsDir = '~/.vim/ultisnips'
 let g:UltiSnipsSnippetDirectories = ['ultisnips']
 " Prevent UltiSnips from removing our carefully-crafted mappings.
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
-" needed for functions
 
 " EasyClip settings
 let g:EasyClipAutoFormat = 1
@@ -449,7 +454,7 @@ function! VisReplaceIt()
     call inputsave()
     let replacement = input('Enter replacement: ')
     call inputrestore()
-    execute "%s@\\%V".expression."@".replacement."@gc"
+    execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
@@ -476,7 +481,7 @@ endfunction
 nnoremap <silent> <leader>q :qall<CR>
 nnoremap <silent> <leader>w :update<CR>
 nnoremap <silent> <leader>d :bd<CR>
-nnoremap <silent> <leader>t :call TabClose()<CR>
+nnoremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I ggVG=
@@ -492,9 +497,6 @@ nnoremap zn zR
 nnoremap Z za
 "fold visual selection
 vnoremap Z zf
-
-" Close insert mode
-inoremap jk <Esc>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -520,8 +522,8 @@ nnoremap <leader>v gg^vGg_y
 nnoremap <leader>1 :call ToggleDiff()<cr>
 "close every buffer except the one you're in
 nnoremap <leader>o :only<CR>
-nnoremap <leader>[ ]cz.
-nnoremap <leader>] [cz.
+nnoremap <leader>[ ]czz
+nnoremap <leader>] [czz
 nnoremap du :diffupdate<CR>
 nnoremap dh :diffget //2<CR>
 nnoremap dl :diffget //3<CR>
@@ -577,15 +579,22 @@ nmap rr <plug>SubstituteLine
 " change yank buffer
 nmap <C-F> <plug>EasyClipSwapPasteForward
 " EasyClip autoformats on paste, turn it off after paste if incorrect
-nmap <leader>cf <plug>EasyClipToggleFormattedPaste
+nmap <leader>ff <plug>EasyClipToggleFormattedPaste
 " Copy from *
 imap <C-e> <plug>EasyClipInsertModePaste
 cmap <C-e> <plug>EasyClipCommandModePaste
 " Paste content before or after line
-" use EasyPlug's p command (that is why its nmap and not nnoremap)
+" use EasyClip's p command (that is why its nmap and not nnoremap)
 nmap ,p o<Esc>p
 nmap ,P O<Esc>p
 
+" new line without entering insert mode
+nnoremap ,o o<Esc>
+nnoremap ,O O<Esc>
+
+
+" jk to exit insertmode
+inoremap jk <ESC>
 
 " Move tab left and right
 nnoremap th :tabm -1<cr>
@@ -602,9 +611,9 @@ nnoremap ) lbve"by:Ag! <C-r>b<cr>
 vnoremap ) "by:Ag! "<C-r>b"<cr>
 
 " Copy multiple words to register
-nnoremap <leader>8 lbve"ay
-nnoremap <leader>9 :let @a .= ', '<cr>lbve"Ay
-nnoremap <leader>0 o<Esc>"ap==^ma
+nnoremap <silent> <leader>8 lbve"ay
+nnoremap <silent> <leader>9 :let @a .= ', '<cr>lbve"Ay
+nnoremap <silent> <leader>0 o<Esc>"ap==^ma
 
 " Space to new line in vis selection
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
@@ -629,8 +638,9 @@ nnoremap <leader>ae :ALEEnable<CR>
 nnoremap <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
-nnoremap <silent> ? :noh<CR>
 " Seach the copied content in file
+nnoremap ? ?\V
+vnoremap ? ?\V
 nnoremap / /\V
 nnoremap // :let @/='<C-r>*'<cr>n
 vnoremap / /\V
@@ -662,8 +672,12 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
 " Center page when moving up or down
-nnoremap <C-d> <C-d>z.
-nnoremap <C-u> <C-u>z.
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+
+" Center page when moving to next search
+nnoremap n nzz
+nnoremap N Nzz
 
 " File manipulation "
 cnoremap <expr> %% expand('%:h').'/'
@@ -697,10 +711,13 @@ ino {<space> {  }<left><left>
 ino {<CR> {<CR>}<ESC>O
 
 " import-js mappings
-nnoremap <silent> <leader>ia :ImportJSWord<CR>
-nnoremap <silent> <leader>if :ImportJSFix<CR>
+nnoremap <silent> <leader>ia :ImportJSWord<CR>\|:w<CR>
+nnoremap <silent> <leader>if :ImportJSFix<CR>\|:w<CR>
 nnoremap <silent> <leader>iF :ImportJSGoto<CR>
 
 " vim-stay
 nnoremap <leader>cv :CleanViewdir!<CR>
+
+" Repeat last macro if in a normal buffer.
+nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 """ MAPPINGS"}}}
