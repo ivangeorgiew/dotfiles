@@ -89,6 +89,20 @@
 " r(motion) - replace with * buffer
 " "ar(motion) - replace with 'a' buffer
 " C-f/C-n - after paste choose previous or next yank
+
+" Convert words
+" snake_case (crs),
+" MixedCase (crm),
+" camelCase (crc),
+" snake_case (crs),
+" UPPER_CASE (cru),
+" dash-case (cr-),
+" dot.case (cr.),
+" space case (cr<space>),
+" Title Case (crt)
+
+" Subvert words
+" :%S/old_word{,s}/new_word{,s}/gc
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -131,6 +145,8 @@ set virtualedit=block                      " allow cursor to move where there is
 set breakindent                            " wrapped line continues on the same indent level
 set timeoutlen=500                         " waittime for second mapping
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
+set hlsearch                               " hightlight search
+set nowrapscan                             " dont continue incsearch after end of file
 
 " Folding
 set foldmethod=manual "faster folds, created with Z
@@ -188,11 +204,11 @@ set statusline+=%{gutentags#statusline()}
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
-augroup vimrc-incsearch-highlight
-    autocmd!
-    autocmd CmdlineEnter /,\? :set hlsearch
-    autocmd CmdlineLeave /,\? :set nohlsearch
-augroup END
+" augroup vimrc-incsearch-highlight
+"     autocmd!
+"     autocmd CmdlineEnter /,\? :set hlsearch
+"     autocmd CmdlineLeave /,\? :set nohlsearch
+" augroup END
 
 augroup syntax
     au!
@@ -209,27 +225,22 @@ augroup syntax
     au BufNewFile,BufRead *.babelrc set filetype=json
     au BufRead,BufNewFile *.sass setfiletype sass
     au BufNewFile,BufRead *.eslintrc set filetype=json
-
-    "ALE linting
-    au BufNewFile,BufRead *.js ALEEnable
-    au BufNewFile,BufRead *.json ALEEnable
-    au BufNewFile,BufRead *.css ALEEnable
 augroup END
 
 augroup UltiSnips
-    autocmd!
-    autocmd! User UltiSnipsEnterFirstSnippet
-    autocmd User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
-    autocmd! User UltiSnipsExitLastSnippet
-    autocmd User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
+    au!
+    au! User UltiSnipsEnterFirstSnippet
+    au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
+    au! User UltiSnipsExitLastSnippet
+    au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
 augroup END
 
 augroup vimrcEx
     au!
 
     " Show characters over 120 columns
-    autocmd BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
-    autocmd BufEnter *.js match OverLength /\%121v.*/
+    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
+    au BufEnter *.js match OverLength /\%121v.*/
 
     " vim-stay Remove saved .vim/view files older than 5 days
     au VimLeavePre * CleanViewdir! 2
@@ -278,8 +289,10 @@ let g:jsx_ext_required = 0
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_lint_on_enter = 1
-let g:ale_enabled = 0
-let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_linters_explicit = 1
+let g:ale_set_highlights = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -333,13 +346,15 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " remove preview window
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
+" enable ycm only in those filetypes
+let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1 }
 " etc
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
 let g:ycm_use_ultisnips_completer = 0
-" Disable unhelpful semantic completions.
-let g:ycm_filetype_specific_completion_to_disable = { 'gitcommit': 1 }
+" disable console logs
+let g:ycm_show_diagnostics_ui = 0
 " Start vim faster
 " let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 
@@ -533,8 +548,6 @@ nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
-nnoremap <leader>gp :Gpush<CR>
-nnoremap <leader>gP :Gpull<CR>
 " show merge conflicts
 nnoremap <leader>gm :Gmerge<CR>
 
@@ -622,10 +635,10 @@ nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 " Indent correctly to the set mark(\a)
 nnoremap <leader>) V`a=
 
-" Convert CamelCase/camelCase to NAMED_CONTANT
-nnoremap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
-" Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
-nnoremap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
+" " Convert CamelCase/camelCase to NAMED_CONTANT
+" nnoremap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
+" " Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
+" nnoremap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
 
 "ALE
 "jump on next error
@@ -639,11 +652,10 @@ nnoremap <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
 " Seach the copied content in file
-nnoremap ? ?\V
-vnoremap ? ?\V
-nnoremap / /\V
+nnoremap ? :noh<CR>
+nnoremap / /\V\c
 nnoremap // :let @/='<C-r>*'<cr>n
-vnoremap / /\V
+vnoremap / /\V\c
 vnoremap // "by:let @/='<C-r>b'<cr>n
 
 " Set marker
@@ -720,4 +732,7 @@ nnoremap <leader>cv :CleanViewdir!<CR>
 
 " Repeat last macro if in a normal buffer.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
+
+" Make using Ctrl+C do the same as Escape, to trigger autocmd commands
+inoremap <C-c> <Esc>
 """ MAPPINGS"}}}
