@@ -489,6 +489,17 @@ function! ToggleDiff()
         execute "windo diffthis"
     endif
 endfunction
+
+function! s:align()
+    let p = '^\s*|\s.*\s|\s*$'
+    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        Tabularize/|/l1
+        normal! 0
+        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+    endif
+endfunction
 """ FUNCTIONS"}}}
 
 """ MAPPINGS"{{{
@@ -735,4 +746,7 @@ nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd commands
 inoremap <C-c> <Esc>
+
+" tabular + vim-cucumber mapping
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 """ MAPPINGS"}}}
