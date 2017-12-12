@@ -1,0 +1,82 @@
+snippet cr "React Container" b
+import React, { PureComponent as Component } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import {} from 'prop-types'
+import {} from 'react-immutable-proptypes'
+import {} from 'actions'
+import {} from 'reducers'
+import {} from 'components'
+
+class _$1 extends Component {
+	render() {
+		return (
+			$0
+		)
+	}
+}
+
+_$1.propTypes = {
+}
+
+export const ${1:`!v expand('%:t:r')`} = connect(
+	state => ({
+	}),
+	dispatch => bindActionCreators({
+	}, dispatch)
+)(_$1)
+endsnippet
+
+snippet ct "React Component" b
+import React, { PureComponent as Component } from 'react'
+import {} from 'prop-types'
+import {} from 'react-immutable-proptypes'
+
+export class ${1:`!v expand('%:t:r')`} extends Component {
+	render() {
+		return (
+			$0
+		)
+	}
+}
+
+$1.propTypes = {
+}
+endsnippet
+
+snippet cl "console.log"
+console.log(${1})
+endsnippet
+
+snippet "i(mp)?" "import" !br
+import { ${1} } from '${2}/$1'
+endsnippet
+
+snippet cwrp "componentWillReceiveProps" b
+componentWillReceiveProps({ ${1} }) {
+	const { ${2:$1} } = this.props
+	$0
+}
+endsnippet
+
+snippet cdm "componentDidMount" b
+componentDidMount() {
+	const { ${1} } = this.props
+	$0
+}
+endsnippet
+
+snippet fg "function generator" b
+function * ${1} ({ payload: { ${2} } }) {
+	try {
+		yield put(startLoading({ loader: ${3:DEFAULT}_IS_LOADING }))
+
+		$0
+	} catch (error) {
+		yield call(handleSagaError, { error })
+	} finally {
+		yield put(stopLoading({ loader: $3_IS_LOADING }))
+	}
+}
+
+endsnippet

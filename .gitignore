@@ -9,7 +9,7 @@ tags
 tmp/**/*
 !tmp/cache/.keep
 zeus.json
-.vim/undo
-.vim/view
-.vim/session
-.vim/ultisnips
+.vim/undo/*
+.vim/view/*
+.vim/session/*
+.vim/.viminfo
