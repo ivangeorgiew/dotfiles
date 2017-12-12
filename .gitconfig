@@ -3,23 +3,30 @@
 [color]
     ui = auto
 [alias]
-    ss = status
-    df = diff
-    ph = push origin HEAD
-    pl = pull
-    fp = push --force origin HEAD
-    lg = log --pretty=oneline -10
-    ct = checkout
     ac = !git add . && git commit -m
-    re = rebase
-    me = merge --ff
-    rc = !git add . && git rebase --continue
-    pre = checkout @{-1}
+    cn = clean -df
+    cl = clone
+    ct = checkout
+    df = diff
     dl = branch -D
     dr = push origin --delete
-    rh = reset HEAD~1
     ma = merge --abort
-    updatevim = !sudo rm -fr ~/dotfiles/.vim && sudo cp -R ~/.vim ~/dotfiles/ && cp ~/.vimrc ~/dotfiles/
+    me = merge --ff
+    lg = log --graph --full-history --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
+    lga = log --graph --full-history --all --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
+    ph = push
+    pl = pull
+    pre = checkout @{-1}
+    rt = reset HEAD~1
+    as = submodule add
+    rs = rm --cached
+    ss = status
+    sch = !git branch --all | grep
+    sh = stash
+    sha = stash apply
+    updatevim = !sudo rm -fr ~/dotfiles/.vim && rm -fr ~/.vim/view/* && rm -fr ~/.vim/undo/* && sudo cp -R ~/.vim ~/dotfiles/ && cp ~/.vimrc ~/dotfiles/
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
