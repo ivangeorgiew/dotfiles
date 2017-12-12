@@ -1,5 +1,0 @@
-      nnoremap <silent> <buffer> <C-x>  <C-W><CR><C-w>k<C-w>J<C-w>k
-      nnoremap <silent> <buffer> <C-o>  <CR>
-      nnoremap <silent> <buffer> <C-t>  <C-w><CR><C-w>T
-      nnoremap <silent> <buffer> <C-r>  <C-w><CR><C-w>TgT<C-W><C-W>
-      nnoremap <silent> <buffer> <C-v>  <C-w><CR><C-w>L<C-w>h<C-w>j<C-w>J6<C-w>-<C-w>k10<C-w>l
