@@ -16,7 +16,8 @@ You have to do these things in order:
 11) Install import-js globally
 12) `git clone https://github.com/ivangeorgiew/dotfiles.git ~/dotfiles`
 13) `cd ~/dotfiles`
-14) `git submodule update --init --recursive`
-15) `./install.sh`
-16) Follow the YouCompleteMe installation instructions
-17) Update stuff you want to update
+14) If you want to remove any of the plugins in vim/bundle DO IT NOW
+15) `git submodule update --init --recursive`
+16) `./install`
+17) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
+18) Update stuff you want to update
