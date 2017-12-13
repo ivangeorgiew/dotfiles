@@ -16,7 +16,7 @@
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
     lga = log --graph --full-history --all --color \
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
-    ph = push
+    ph = push -u
     pl = pull
     pre = checkout @{-1}
     rt = reset HEAD~1
@@ -26,7 +26,6 @@
     sch = !git branch --all | grep
     sh = stash
     sha = stash apply
-    updatevim = !sudo rm -fr ~/dotfiles/.vim && rm -fr ~/.vim/view/* && rm -fr ~/.vim/undo/* && sudo cp -R ~/.vim ~/dotfiles/ && cp ~/.vimrc ~/dotfiles/
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input

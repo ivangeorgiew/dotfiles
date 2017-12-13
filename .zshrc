@@ -11,12 +11,11 @@ ZSH_THEME="bullet-train"
 BULLETTRAIN_PROMPT_ORDER=(
     status
     custom
-    context
     dir
     perl
     ruby
     virtualenv
-    nvm
+    #nvm
     go
     git
     hg
@@ -96,14 +95,9 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-#
-export PATH="$PATH:`yarn global bin`"
+
+# export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"
-export PATH="$PATH:/Users/ivangeorgiev/bin"
 
-lazy_source () {
-    eval "$1 () { [ -f $2 ] && source $2 && $1 \$@ }"
-}
-
-NVM_SOURCE=$HOME/.nvm/nvm.sh
-lazy_source nvm $NVM_SOURCE
+export NVM_DIR="$HOME/.nvm"
+alias loadnvm=". /usr/local/opt/nvm/nvm.sh"

@@ -1,30 +1,47 @@
-const path = require('path')
-
 module.exports = {
-    excludes: [
-        'tests/*',
-        '.git/*',
-        'build-assets/*'
-    ],
-    aliases: {
-        actions: path.resolve(__dirname, 'app/js/actions/'),
-        components: path.resolve(__dirname, 'app/js/components/'),
-        constants: path.resolve(__dirname, 'app/js/constants/'),
-        containers: path.resolve(__dirname, 'app/js/containers/'),
-        higherOrderComponents: path.resolve(__dirname, 'app/js/higherOrderComponents/'),
-        reducers: path.resolve(__dirname, 'app/js/reducers/'),
-        saga: path.resolve(__dirname, 'app/js/saga/'),
-        store: path.resolve(__dirname, 'app/js/store/'),
-        utils: path.resolve(__dirname, 'app/js/utils/')
-    },
-    environments: ['browser', 'node'],
-    declarationKeyword: 'import',
+    // aliases: {
+    //     $: 'third-party-libs/jquery',
+    //     _: 'third-party-libs/underscore',
+    // },
+    // ignorePackagePrefixes: ['my-company-'],
+    // logLevel: 'debug',
+    // mergableOptions: {
+    //     aliases: true,
+    //     coreModules: true,
+    //     namedExports: true,
+    //     globals: true,
+    // }
+    excludes: [ './tests/**', './build-assets/**', './e2e/node_modules/**', './mockData/*', '../mockData/*' ],
+    importFunction: 'require',
     sortImports: false,
+    groupImports: true,
     importDevDependencies: true,
-    useRelativePaths: true,
+    stripFileExtensions: ['.jsx', '.js'],
     maxLineLength: 120,
-    importStatementFormatter({ importStatement }) {
-        return importStatement.replace(/;$/, '').replace(/(\.+\/)/g, '');
+    tab: '    ',
+    environments: ['browser', 'node', 'mocha', 'es2017'],
+    useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
+        if (pathToCurrentFile.includes('app')) {
+            return false
+        }
+
+        return true
     },
-    tab: '\t'
+    declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
+        if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
+            return 'import'
+        }
+
+        return 'const'
+    },
+    moduleNameFormatter({ moduleName, pathToCurrentFile, pathToImportedModule }) {
+        if (moduleName.startsWith('app/js/')) {
+            return moduleName.replace('app/js/', '')
+        }
+
+        return moduleName
+    },
+    importStatementFormatter({ importStatement }) {
+        return importStatement.replace(/;$/, '');
+    }
 }
