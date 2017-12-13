@@ -11,9 +11,9 @@ You have to do these things in order:
 6) Configure oh-my-zsh theme
 7) Install https://github.com/Lokaltog/powerline-fonts. I use cousine for powerline
 8) Install macvim --with-override-system-vim
-9) ln -s (symbolic link) the contents of dotfiles/ into ~/
-10) Inside .vim/bundle (where necessary): git submodule update --init --recursive
-11) Follow the YouCompleteMe installation instructions
-12) Update stuff you want to update
-13) Install Exuberant Ctags with brew
-14) Install import-js from my fork(in case they haven't fixed the bugs)
+9) Install Exuberant Ctags with brew
+10) Install import-js from my fork(in case they haven't fixed the bugs)
+10) Make all files symbolic links: cd ~/dotfiles | ./install.sh
+11) Inside .vim/bundle (where necessary): git submodule update --init --recursive
+12) Follow the YouCompleteMe installation instructions
+13) Update stuff you want to update
