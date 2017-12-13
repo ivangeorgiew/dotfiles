@@ -204,11 +204,11 @@ set statusline+=%{gutentags#statusline()}
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
-" augroup vimrc-incsearch-highlight
-"     autocmd!
-"     autocmd CmdlineEnter /,\? :set hlsearch
-"     autocmd CmdlineLeave /,\? :set nohlsearch
-" augroup END
+augroup vimrc-incsearch-highlight
+    au!
+    au CmdlineEnter /,\? :set hlsearch
+    au CmdlineLeave /,\? :set nohlsearch
+augroup END
 
 augroup syntax
     au!
@@ -229,6 +229,7 @@ augroup END
 
 augroup UltiSnips
     au!
+
     au! User UltiSnipsEnterFirstSnippet
     au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
     au! User UltiSnipsExitLastSnippet
@@ -504,10 +505,10 @@ endfunction
 
 """ MAPPINGS"{{{
 " Main leader Mappings
-nnoremap <silent> <leader>q :qall<CR>
-nnoremap <silent> <leader>w :update<CR>
-nnoremap <silent> <leader>d :bd<CR>
-nnoremap <silent> <leader>t :tabclose<CR>
+noremap <silent> <leader>q :qall<CR>
+noremap <silent> <leader>w :update<CR>
+noremap <silent> <leader>d :bd<CR>
+noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I ggVG=
@@ -536,12 +537,8 @@ nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
 nnoremap <Up>       :echoerr "Use k"<CR>
 nnoremap <Down>     :echoerr "Use j"<CR>
-nnoremap <C-R>      :echoerr "Use r"<CR>
 nnoremap gt         :echoerr "use H or L"<CR>
 nnoremap gT         :echoerr "use H or L"<CR>
-
-" Copy whole file contents
-nnoremap <leader>v gg^vGg_y
 
 "Vimdiff
 "diff 2 buffers in vertical split
@@ -663,7 +660,8 @@ nnoremap <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
 " Seach the copied content in file
-nnoremap ? :noh<CR>
+nnoremap ? ?\V\c
+vnoremap ? ?\V\c
 nnoremap / /\V\c
 nnoremap // :let @/='<C-r>*'<cr>n
 vnoremap / /\V\c
@@ -706,9 +704,9 @@ nnoremap N Nzz
 cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing "
 nmap <leader>fe :e %%
+nmap <leader>ft :tabe %%
 nmap <leader>fs :sav! %%
 nmap <leader>fv :vsplit %%
-nmap <leader>ft :tabe %%
 " Rename current file "
 nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
@@ -745,7 +743,7 @@ nnoremap <leader>cv :CleanViewdir!<CR>
 " Repeat last macro if in a normal buffer.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
-" Make using Ctrl+C do the same as Escape, to trigger autocmd commands
+" Make using Ctrl+C do the same as Escape, to trigger autocmd
 inoremap <C-c> <Esc>
 
 " tabular + vim-cucumber mapping
