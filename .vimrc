@@ -378,7 +378,7 @@ let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
 
 " Rooter
-let g:rooter_patterns = ['package.json']
+let g:rooter_patterns = ['pom.xml']
 let g:rooter_silent_chdir = 1
 """ GLOBAL"}}}
 
@@ -706,6 +706,7 @@ nnoremap N Nzz
 cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing "
 nmap <leader>fe :e %%
+nmap <leader>fs :sav! %%
 nmap <leader>fv :vsplit %%
 nmap <leader>ft :tabe %%
 " Rename current file "
