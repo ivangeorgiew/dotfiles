@@ -103,6 +103,14 @@
 
 " Subvert words
 " :%S/old_word{,s}/new_word{,s}/gc
+
+" auto-pairs
+" <C-&> toggle auto-pairs
+" There are alot more settings in the github page
+" deleting the first character of a pair deletes the whole pair
+" space and enter add niceness
+" pressing twice the symbol doest add two pairs (YAY)
+" don't add closing pair when needed
 """ COMMENTS"}}}
 
 """ MISC"{{{
@@ -204,11 +212,11 @@ set statusline+=%{gutentags#statusline()}
 """ SET VALUES"}}}
 
 """ AUGROUP"{{{
-augroup vimrc-incsearch-highlight
-    au!
-    au CmdlineEnter /,\? :set hlsearch
-    au CmdlineLeave /,\? :set nohlsearch
-augroup END
+" augroup vimrc-incsearch-highlight
+"     au!
+"     au CmdlineEnter /,\? :set hlsearch
+"     au CmdlineLeave /,\? :set nohlsearch
+" augroup END
 
 augroup syntax
     au!
@@ -257,7 +265,7 @@ augroup vimrcEx
 augroup END
 """ AUGROUP"}}}
 
-""" GLOBAL"{{{
+""" SETTINGS"{{{
 " Leader
 let g:mapleader = ' '
 
@@ -324,6 +332,9 @@ endif
 let g:airline_theme = 'gruvbox'
 let g:airline_symbols.space = "\ua0"
 
+" Gruvbox
+let g:gruvbox_contrast_dark = 'medium'
+
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
 
@@ -381,7 +392,14 @@ let g:EasyClipUsePasteToggleDefaults = 0
 " Rooter
 let g:rooter_patterns = ['pom.xml']
 let g:rooter_silent_chdir = 1
-""" GLOBAL"}}}
+
+" auto-pairs settings
+let g:AutoPairsShortcutToggle = '<C-&>'
+let g:AutoPairsShortcutJump = ''
+let g:AutoPairsShortcutFastWrap = ''
+let g:AutoPairsShortcutBackInsert = ''
+let g:AutoPairsCenterLine = 0
+""" SETTINGS"}}}
 
 """ FUNCTIONS"{{{
 function! TabClose()
@@ -606,13 +624,8 @@ imap <C-e> <plug>EasyClipInsertModePaste
 cmap <C-e> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
-nmap ,p o<Esc>p
-nmap ,P O<Esc>p
-
-" new line without entering insert mode
-nnoremap ,o o<Esc>
-nnoremap ,O O<Esc>
-
+nmap <leader>p o<Esc>p
+nmap <leader>P O<Esc>p
 
 " jk to exit insertmode
 inoremap jk <ESC>
@@ -643,11 +656,6 @@ nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 " Indent correctly to the set mark(\a)
 nnoremap <leader>) V`a=
 
-" " Convert CamelCase/camelCase to NAMED_CONTANT
-" nnoremap <leader>2 lbve:s#\%V\(\<\u\l\+\\|\l\+\)\(\u\)#\l\1_\l\2#g<cr><C-o>veU
-" " Convert each NAME_LIKE_THIS to nameLikeThis in the current line.
-" nnoremap <leader>3 lbve:s#\%V_*\(\u\)\(\u*\)#\1\L\2#g<cr><C-o>vu
-
 "ALE
 "jump on next error
 nmap <leader>an <Plug>(ale_next_wrap)
@@ -660,8 +668,7 @@ nnoremap <leader>ad :ALEDisable<CR>
 
 "Turn off highlighting until next search
 " Seach the copied content in file
-nnoremap ? ?\V\c
-vnoremap ? ?\V\c
+nnoremap <silent> ? :noh<CR>
 nnoremap / /\V\c
 nnoremap // :let @/='<C-r>*'<cr>n
 vnoremap / /\V\c
@@ -714,24 +721,6 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file "
 nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
-" Auto pairs
-ino ", "
-ino " ""<left>
-ino ', '
-ino ' ''<left>
-ino `, `
-ino ` ``<left>
-ino (, (
-ino ( ()<left>
-ino (<CR> (<CR>)<ESC>O
-ino [, [
-ino [ []<left>
-ino [<CR> [<CR>]<ESC>O
-ino {, {
-ino { {}<left>
-ino {<space> {  }<left><left>
-ino {<CR> {<CR>}<ESC>O
-
 " import-js mappings
 nnoremap <silent> <leader>ia :ImportJSWord<CR>\|:w<CR>
 nnoremap <silent> <leader>if :ImportJSFix<CR>\|:w<CR>
@@ -748,4 +737,7 @@ inoremap <C-c> <Esc>
 
 " tabular + vim-cucumber mapping
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+" don't go to the end of line char
+vnoremap $ g_
 """ MAPPINGS"}}}

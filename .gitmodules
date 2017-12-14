@@ -112,3 +112,6 @@
 [submodule ".vim/bundle/vitality.vim"]
 	path = .vim/bundle/vitality.vim
 	url = https://github.com/sjl/vitality.vim.git
+[submodule ".vim/bundle/auto-pairs"]
+	path = .vim/bundle/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs.git

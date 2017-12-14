@@ -12,9 +12,13 @@
     dr = push origin --delete
     ma = merge --abort
     me = merge --ff
-    lg = log --graph --full-history --color \
+    lg = log --graph -10 --color \
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
-    lga = log --graph --full-history --all --color \
+    lga = log --graph -10 --all --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
+    lgf = log --graph --full-history --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
+    lgfa = log --graph --full-history --all --color \
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
     ph = push -u
     pl = pull
