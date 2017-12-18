@@ -1,6 +1,6 @@
 """ COMMENTS"{{{
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-" ; to repeat f/t
+" ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
 
 " Macro
@@ -153,8 +153,8 @@ set virtualedit=block                      " allow cursor to move where there is
 set breakindent                            " wrapped line continues on the same indent level
 set timeoutlen=500                         " waittime for second mapping
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
-set hlsearch                               " hightlight search
-set nowrapscan                             " dont continue incsearch after end of file
+set nohlsearch                             " hightlight search
+set nowrapscan                             " incsearch after end of file
 
 " Folding
 set foldmethod=manual "faster folds, created with Z
@@ -298,7 +298,7 @@ let g:jsx_ext_required = 0
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_lint_on_enter = 1
-let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_linters_explicit = 1
 let g:ale_set_highlights = 0
@@ -365,6 +365,8 @@ let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
 let g:ycm_use_ultisnips_completer = 0
+let g:ycm_max_num_candidates = 10
+let g:ycm_max_num_identifier_candidates = 5
 " disable console logs
 let g:ycm_show_diagnostics_ui = 0
 " Start vim faster
@@ -399,6 +401,9 @@ let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutBackInsert = ''
 let g:AutoPairsCenterLine = 0
+
+" gruvbox
+let g:gruvbox_bold = 0
 """ SETTINGS"}}}
 
 """ FUNCTIONS"{{{
@@ -666,9 +671,9 @@ nnoremap <leader>af :ALEFix<CR>
 nnoremap <leader>ae :ALEEnable<CR>
 nnoremap <leader>ad :ALEDisable<CR>
 
-"Turn off highlighting until next search
+"Toggle incsearch highlight
+nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 " Seach the copied content in file
-nnoremap <silent> ? :noh<CR>
 nnoremap / /\V\c
 nnoremap // :let @/='<C-r>*'<cr>n
 vnoremap / /\V\c
