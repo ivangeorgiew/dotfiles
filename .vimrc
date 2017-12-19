@@ -4,8 +4,8 @@
 " C-g/C-t to go to next match while / searching
 
 " Macro
-" qe...q OR qr...q
-" qE...q to append
+" qe...q (e can be any letter)
+" qE...q to append (E can be any letter)
 " :let @e='<c-r><c-r>e then edit and append '<CR>
 
 "Emmet
@@ -24,20 +24,19 @@
 
 " commentary.vim
 " gcc - comment line (takes number as well)
-" gc - toggle comment (takes motion i{ for example)
 
 "Increment and Decrement numbers commands
 "X to increment, <C-x> to decrement
 
 " Mappings for vim-surround (* = [',",{,tag,...])
 " ys* - add surrounds for word
-" Ys* - add surrounds motion
+" S* - add surrounds motion
 " cs* - change surrounds
 " ds* - delete surrounds
 " S* - add surrounds in visual mode
 
 " Go back to previous location <C-o>
-" Reverse of <C-o> is <C-i>
+" Go to next location<C-i>
 
 " :e! to reload file
 " <C-w> in command line deletes word backwards
@@ -49,8 +48,8 @@
 "du - re-scan the files for differences
 "do - diff obtain (2 windows)
 "dp - diff put (2 windows)
-"dl - get code from left (3 windows)
-"dr - get code from right (3 windows)
+"dh - get code from left (3 windows)
+"dl - get code from right (3 windows)
 "<leader>[ - next difference
 "<leader>] - previous difference
 
@@ -68,7 +67,7 @@
 "<C-x><C-o> omnicompletion
 "<C-n> normal completion
 "<C-y> selected value and close completion
-"<C-e> initila value and close completion
+"<C-e> initial value and close completion
 
 "Ctrl-p shortcuts
 "<C-f> cycle between modes
@@ -154,7 +153,7 @@ set breakindent                            " wrapped line continues on the same 
 set timeoutlen=500                         " waittime for second mapping
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set nohlsearch                             " hightlight search
-set nowrapscan                             " incsearch after end of file
+set wrapscan                               " incsearch after end of file
 
 " Folding
 set foldmethod=manual "faster folds, created with Z
@@ -260,14 +259,16 @@ augroup vimrcEx
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
 
-    " .vimrc folding
-    au FileType vim set foldmethod=marker
+    au BufNewFile,BufRead .vimrc,*.steps.js set foldmethod=marker
 augroup END
 """ AUGROUP"}}}
 
 """ SETTINGS"{{{
 " Leader
 let g:mapleader = ' '
+
+" variable for ToggleWrapscan function
+let g:wrapscanVariable = 1
 
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
@@ -332,9 +333,6 @@ endif
 let g:airline_theme = 'gruvbox'
 let g:airline_symbols.space = "\ua0"
 
-" Gruvbox
-let g:gruvbox_contrast_dark = 'medium'
-
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
 
@@ -359,7 +357,7 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 " enable ycm only in those filetypes
-let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1 }
+let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
 " etc
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
@@ -392,11 +390,11 @@ let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
 
 " Rooter
-let g:rooter_patterns = ['pom.xml']
+let g:rooter_patterns = ['package.json']
 let g:rooter_silent_chdir = 1
 
 " auto-pairs settings
-let g:AutoPairsShortcutToggle = '<C-&>'
+let g:AutoPairsShortcutToggle = '<C-7>'
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutBackInsert = ''
@@ -404,6 +402,7 @@ let g:AutoPairsCenterLine = 0
 
 " gruvbox
 let g:gruvbox_bold = 0
+let g:gruvbox_contrast_dark = 'medium'
 """ SETTINGS"}}}
 
 """ FUNCTIONS"{{{
@@ -514,6 +513,18 @@ function! ToggleDiff()
     endif
 endfunction
 
+function! ToggleWrapscan()
+    if g:wrapscanVariable == 0
+        let g:wrapscanVariable = 1
+        execute "set wrapscan"
+        echo 'Wrapscan Enabled'
+    else
+        let g:wrapscanVariable = 0
+        execute "set nowrapscan"
+        echo 'Wrapscan Disabled'
+    endif
+endfunction
+
 function! s:align()
     let p = '^\s*|\s.*\s|\s*$'
     if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
@@ -535,8 +546,6 @@ noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I ggVG=
-" select everything
-nnoremap <leader>G ggVG
 
 "Folding mappings
 "Fold all
@@ -658,7 +667,7 @@ nnoremap <silent> <leader>0 o<Esc>"ap==^ma
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 
-" Indent correctly to the set mark(\a)
+" Indent correctly to already set mark(\a)
 nnoremap <leader>) V`a=
 
 "ALE
@@ -671,13 +680,14 @@ nnoremap <leader>af :ALEFix<CR>
 nnoremap <leader>ae :ALEEnable<CR>
 nnoremap <leader>ad :ALEDisable<CR>
 
-"Toggle incsearch highlight
+"Incsearch
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-" Seach the copied content in file
-nnoremap / /\V\c
+nnoremap / /\V
+vnoremap / "by:let @/='<C-r>b'<cr>n
 nnoremap // :let @/='<C-r>*'<cr>n
-vnoremap / /\V\c
-vnoremap // "by:let @/='<C-r>b'<cr>n
+
+"Toggle wrapscan
+nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 
 " Set marker
 nnoremap \ m
