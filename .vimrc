@@ -1,4 +1,4 @@
-""" COMMENTS"{{{
+"COMMENTS region
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
@@ -55,12 +55,6 @@
 
 "To enable Indent Guides use <leader>ig
 
-"Folding
-" zd - delete fold
-" zE - delete all folds
-" Z - toggle fold/ create fold
-" zj/zk - move between folds
-
 "Completion
 "<C-x><C-l> line completion
 "<C-x><C-f> filename completion
@@ -110,17 +104,25 @@
 " space and enter add niceness
 " pressing twice the symbol doest add two pairs (YAY)
 " don't add closing pair when needed
-""" COMMENTS"}}}
 
-""" MISC"{{{
+" Folding
+" custom markers for compatibility with WebStorm
+" to leave non-empty comments upon fold deletion - change parameter 0 to 1 in mappings DeleteFold and DeleteAllFolds
+" zd - delete fold
+" zD - delete all folds
+" Z - toggle fold || create fold(vis selection)
+" zj/zk - move between folds
+"COMMENTS endregion
+
+"MISC region
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
 
 colorscheme gruvbox
-""" MISC"}}}
+"MISC endregion
 
-""" SET VALUES"{{{
+"SET region
 " Fix lag in vim
 set shell=bash
 set lazyredraw
@@ -156,8 +158,9 @@ set nohlsearch                             " hightlight search
 set wrapscan                               " incsearch after end of file
 
 " Folding
-set foldmethod=manual "faster folds, created with Z
-set foldlevelstart=0 "all folds folded initially
+set foldmethod=marker           " faster folds, created with Z
+set foldlevelstart=0            " all folds folded initially
+set foldmarker=region,endregion " markers for folding
 
 " Indentations
 set tabstop=4
@@ -208,9 +211,9 @@ set viewoptions=folds,cursor
 " tags settings
 set tags=./tags;
 set statusline+=%{gutentags#statusline()}
-""" SET VALUES"}}}
+"SET endregion
 
-""" AUGROUP"{{{
+"AUGROUP region
 " augroup vimrc-incsearch-highlight
 "     au!
 "     au CmdlineEnter /,\? :set hlsearch
@@ -258,12 +261,10 @@ augroup vimrcEx
 
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
-
-    au BufNewFile,BufRead .vimrc,*.steps.js set foldmethod=marker
 augroup END
-""" AUGROUP"}}}
+"AUGROUP endregion
 
-""" SETTINGS"{{{
+"SETTINGS region
 " Leader
 let g:mapleader = ' '
 
@@ -357,7 +358,9 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 " enable ycm only in those filetypes
-let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
+" let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
+" remove semantic competion in javascript
+let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
 " etc
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
@@ -390,7 +393,7 @@ let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
 
 " Rooter
-let g:rooter_patterns = ['package.json']
+let g:rooter_patterns = ['pom.xml']
 let g:rooter_silent_chdir = 1
 
 " auto-pairs settings
@@ -403,9 +406,9 @@ let g:AutoPairsCenterLine = 0
 " gruvbox
 let g:gruvbox_bold = 0
 let g:gruvbox_contrast_dark = 'medium'
-""" SETTINGS"}}}
+"SETTINGS endregion
 
-""" FUNCTIONS"{{{
+"FUNCTIONS region
 function! TabClose()
   if winnr("$") == 1 && tabpagenr("$") > 1 && tabpagenr() > 1 && tabpagenr() < tabpagenr("$")
     tabclose | tabprev
@@ -535,9 +538,92 @@ function! s:align()
         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
     endif
 endfunction
-""" FUNCTIONS"}}}
 
-""" MAPPINGS"{{{
+function! AddMarker(line, position)
+    let string = ""
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+    let actualLine = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
+    let oldLine = getline(actualLine)
+    let lineText = oldLine
+    if len(comments) > 1
+        let lineText = substitute(lineText, escape(comments[1], '/\^$.*~[]&') . "$", "", "")
+    endif
+    if len(comments) > 0 && lineText !~ escape(comments[0], '/\^$.*~[]&')
+        let string .= comments[0]
+    endif
+    if oldLine !~ comments[0]
+        if a:position == 'open'
+            call inputsave()
+            let b:foldAddedComment = input('Enter comment: ', '')
+            call inputrestore()
+        endif
+        let string .= ' ' . b:foldAddedComment
+    endif
+    let string .= ' '
+    let string .= a:position == 'close' ? markers[1] : markers[0]
+    if len(comments) > 1
+        let string .= ' ' . comments[1]
+    endif
+    let lineText = substitute(lineText, ' $', '', 'g')
+    if a:position == 'open'
+        if oldLine !~ comments[0]
+            call setline(actualLine, string)
+            call append(actualLine, oldLine)
+        else
+            call setline(actualLine, lineText . string)
+        endif
+    else
+        if oldLine !~ comments[0]
+            call append(actualLine, string)
+        else
+            call setline(actualLine, lineText . string)
+        endif
+    endif
+endfunction
+
+function! MakeFold() range
+    let first_line = a:firstline
+    let last_line = a:lastline
+    if first_line == last_line | return | endif
+    call AddMarker(first_line, 'open')
+    call AddMarker(last_line, 'close')
+endfunction
+
+function! DeleteFold(leaveComments)
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+
+    let first_line = search(comments[0] . '.*' . markers[0], "ncWb")
+    let firstText = substitute(getline(first_line), ' ' . markers[0], '', 'g')
+    if firstText =~ '\w\+' && a:leaveComments == 1
+        call setline(first_line, firstText)
+    else
+        call search(getline(first_line), "cWb")
+        execute ":d"
+    endif
+
+    let last_line = search(comments[0] . '.*' . markers[1], "ncW")
+    let lastText = substitute(getline(last_line), ' ' . markers[1], '', 'g')
+    if lastText =~ '\w\+' && a:leaveComments == 1
+        call setline(last_line, lastText)
+    else
+        call search(getline(last_line), "cW")
+        execute ":d"
+    endif
+endfunction
+
+function! DeleteAllFolds(leaveComments)
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+
+    while search(comments[0] . '.*' . markers[0], "c") > 0
+        call DeleteFold(a:leaveComments)
+    endwhile
+endfunction
+"FUNCTIONS endregion
+
+"MAPPINGS region
 " Main leader Mappings
 noremap <silent> <leader>q :qall<CR>
 noremap <silent> <leader>w :update<CR>
@@ -547,15 +633,19 @@ noremap <silent> <leader>t :tabclose<CR>
 " indent everything
 nnoremap <leader>I ggVG=
 
-"Folding mappings
-"Fold all
+" Folding mappings
+" Fold all
 nnoremap zm zM
 "Unfold all
 nnoremap zn zR
 "open/close fold
 nnoremap Z za
 "fold visual selection
-vnoremap Z zf
+vnoremap <silent> Z :call MakeFold()<CR>zc==
+"delete fold
+nnoremap <silent> zd $:call DeleteFold(0)<CR>^
+"delete all folds
+nnoremap <silent> zD :call DeleteAllFolds(0)<CR>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -683,8 +773,8 @@ nnoremap <leader>ad :ALEDisable<CR>
 "Incsearch
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap / /\V
-vnoremap / "by:let @/='<C-r>b'<cr>n
-nnoremap // :let @/='<C-r>*'<cr>n
+vnoremap / "by/<C-r>b<cr>n
+nnoremap // /<C-r>*<cr>n
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
@@ -755,4 +845,8 @@ inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
 " don't go to the end of line char
 vnoremap $ g_
-""" MAPPINGS"}}}
+
+" don't enter insert mode after adding a line
+nnoremap o o<Esc>
+nnoremap O O<Esc>
+"MAPPINGS endregion

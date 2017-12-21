@@ -92,3 +92,9 @@ endsnippet
 snippet given "Given" b
 this.Given(/^${1}$/, ${2:()} => {$0})
 endsnippet
+
+snippet wait "browser.waitUntil" b
+browser.waitUntil(() => {
+	return ${2:browser.isExisting('$0')}
+}, TIMEOUT, 'expected ${1:something}')
+endsnippet

@@ -20,7 +20,8 @@
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
     lgfa = log --graph --full-history --all --color \
         --pretty=format:"%x1b[35m%h%x20%x1b[0m%s%n%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n"
-    push = push -u
+    ph = push -u
+    pl = pull
     pre = checkout @{-1}
     rt = reset HEAD~1
     as = submodule add
