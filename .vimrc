@@ -479,31 +479,31 @@ function! FileReplaceIt(visual)
     let expression = @b
     if a:visual == 0
         call inputsave()
-        let expression = input('Enter expression: ')
+        let expression = input('Enter expression:')
         call inputrestore()
     endif
     call inputsave()
-    let replacement = input('Enter replacement: ')
+    let replacement = input('Enter replacement:')
     call inputrestore()
     execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
 
 function! VisReplaceIt()
     call inputsave()
-    let expression = input('Enter expression: ')
+    let expression = input('Enter expression:')
     call inputrestore()
     call inputsave()
-    let replacement = input('Enter replacement: ')
+    let replacement = input('Enter replacement:')
     call inputrestore()
     execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
     call inputsave()
-    let expression = input('Enter expression: ')
+    let expression = input('Enter expression:')
     call inputrestore()
     call inputsave()
-    let replacement = input('Enter replacement: ')
+    let replacement = input('Enter replacement:')
     call inputrestore()
     execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
 endfunction
@@ -543,41 +543,35 @@ function! AddMarker(line, position)
     let string = ""
     let comments = split(&l:commentstring, '%s')
     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
-    let actualLine = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
-    let oldLine = getline(actualLine)
+    let lineNumber = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
+    let oldLine = getline(lineNumber)
     let lineText = oldLine
-    if len(comments) > 1
-        let lineText = substitute(lineText, escape(comments[1], '/\^$.*~[]&') . "$", "", "")
-    endif
-    if len(comments) > 0 && lineText !~ escape(comments[0], '/\^$.*~[]&')
-        let string .= comments[0]
-    endif
+    let lineText = substitute(lineText, "^.*" . escape(comments[0], '/\^$.*~[]&') . " \\=", "", "")
+    let string .= substitute(comments[0], " ", "", "") . ' '
+    let string .= a:position == 'close' ? markers[1] : markers[0]
     if oldLine !~ comments[0]
         if a:position == 'open'
             call inputsave()
-            let b:foldAddedComment = input('Enter comment: ', '')
+            let b:foldAddedComment = input('Enter comment:', '')
             call inputrestore()
         endif
         let string .= ' ' . b:foldAddedComment
     endif
-    let string .= ' '
-    let string .= a:position == 'close' ? markers[1] : markers[0]
-    if len(comments) > 1
+    if len(comments) > 1 &&  lineText !~ '\w\+'
         let string .= ' ' . comments[1]
     endif
-    let lineText = substitute(lineText, ' $', '', 'g')
     if a:position == 'open'
         if oldLine !~ comments[0]
-            call setline(actualLine, string)
-            call append(actualLine, oldLine)
+            call setline(lineNumber, string)
+            call append(lineNumber, oldLine)
         else
-            call setline(actualLine, lineText . string)
+            call setline(lineNumber, string . ' ' . lineText)
         endif
     else
         if oldLine !~ comments[0]
-            call append(actualLine, string)
+            call append(lineNumber, string)
         else
-            call setline(actualLine, lineText . string)
+            call setline(lineNumber, string . ' ' . lineText)
         endif
     endif
 endfunction
@@ -594,7 +588,7 @@ function! DeleteFold(leaveComments)
     let comments = split(&l:commentstring, '%s')
     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
 
-    let first_line = search(comments[0] . '.*' . markers[0], "ncWb")
+    let first_line = search(comments[0] . '.*' . markers[0] . '.*', "ncWb")
     let firstText = substitute(getline(first_line), ' ' . markers[0], '', 'g')
     if firstText =~ '\w\+' && a:leaveComments == 1
         call setline(first_line, firstText)
@@ -603,7 +597,7 @@ function! DeleteFold(leaveComments)
         execute ":d"
     endif
 
-    let last_line = search(comments[0] . '.*' . markers[1], "ncW")
+    let last_line = search(comments[0] . '.*' . markers[1] . '.*', "ncW")
     let lastText = substitute(getline(last_line), ' ' . markers[1], '', 'g')
     if lastText =~ '\w\+' && a:leaveComments == 1
         call setline(last_line, lastText)
@@ -617,9 +611,17 @@ function! DeleteAllFolds(leaveComments)
     let comments = split(&l:commentstring, '%s')
     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
 
-    while search(comments[0] . '.*' . markers[0], "c") > 0
+    while search(comments[0] . ' ' . markers[0] . '.*', "c") > 0
         call DeleteFold(a:leaveComments)
     endwhile
+endfunction
+
+function! IndentWithI()
+    if len(getline('.')) == 0 && empty(&buftype)
+        return "\"_cc"
+    else
+        return "i"
+    endif
 endfunction
 "FUNCTIONS endregion
 
@@ -643,9 +645,9 @@ nnoremap Z za
 "fold visual selection
 vnoremap <silent> Z :call MakeFold()<CR>zc==
 "delete fold
-nnoremap <silent> zd $:call DeleteFold(0)<CR>^
+nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
 "delete all folds
-nnoremap <silent> zD :call DeleteAllFolds(0)<CR>
+nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -728,8 +730,8 @@ imap <C-e> <plug>EasyClipInsertModePaste
 cmap <C-e> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
-nmap <leader>p o<Esc>p
-nmap <leader>P O<Esc>p
+nmap ,p o<Esc>p
+nmap ,P O<Esc>p
 
 " jk to exit insertmode
 inoremap jk <ESC>
@@ -846,7 +848,10 @@ inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 " don't go to the end of line char
 vnoremap $ g_
 
-" don't enter insert mode after adding a line
+" dont enter insert mode on new line
 nnoremap o o<Esc>
 nnoremap O O<Esc>
+
+"smart indent when entering insert mode with i on empty lines
+nnoremap <expr> i IndentWithI()
 "MAPPINGS endregion
