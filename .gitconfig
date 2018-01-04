@@ -24,7 +24,8 @@
     pl = pull
     pre = checkout @{-1}
     rt = reset HEAD~1
-    as = submodule add
+    sa = submodule add
+    su = !git submodule update --init --recursive
     rs = rm --cached
     ss = status
     sch = !git branch --all | grep
