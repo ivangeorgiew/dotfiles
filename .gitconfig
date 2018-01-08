@@ -31,6 +31,7 @@
     sch = !git branch --all | grep
     sh = stash
     sha = stash apply
+    fa = fetch --all
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input

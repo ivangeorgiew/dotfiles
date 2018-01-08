@@ -158,7 +158,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 
 " Folding
-set foldmethod=marker             " faster folds, created with Z
+set foldmethod=manual             " faster folds, created with Z
 set foldlevelstart=0            " all folds folded initially
 set foldmarker=region,endregion " markers for folding
 
@@ -214,12 +214,6 @@ set statusline+=%{gutentags#statusline()}
 "SET endregion
 
 "AUGROUP region
-" augroup vimrc-incsearch-highlight
-"     au!
-"     au CmdlineEnter /,\? :set hlsearch
-"     au CmdlineLeave /,\? :set nohlsearch
-" augroup END
-
 augroup syntax
     au!
 
@@ -251,7 +245,11 @@ augroup vimrcEx
 
     " Show characters over 120 columns
     au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
-    au BufEnter *.js match OverLength /\%121v.*/
+    au BufEnter *.js match OverLength /\%122v.*/
+
+    " Show characters over 80 columns
+    au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929
+    au BufEnter *.md match OverLength /\%82v.*/
 
     " vim-stay Remove saved .vim/view files older than 5 days
     " au VimLeavePre * CleanViewdir! 5
@@ -263,6 +261,8 @@ augroup vimrcEx
     au VimLeavePre * call SaveSession()
 
     au BufEnter .vimrc,*.js set foldmethod=marker
+
+    au BufRead,BufNewFile *.md setlocal textwidth=80
 augroup END
 
 augroup folding
@@ -306,13 +306,16 @@ let g:mundo_close_on_revert = 1
 let g:jsx_ext_required = 0
 
 " ALE configurations
+let g:ale_linters_explicit = 1
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
+let g:ale_enabled = 1
 let g:ale_lint_on_enter = 1
+let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 1
-let g:ale_linters_explicit = 1
-let g:ale_set_highlights = 0
+let g:ale_lint_on_insert_leave = 0
+let g:ale_set_highlights = 1
+let g:ale_set_signs = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -725,6 +728,13 @@ nnoremap <Down>     :echoerr "Use j"<CR>
 nnoremap gt         :echoerr "use H or L"<CR>
 nnoremap gT         :echoerr "use H or L"<CR>
 
+" Cmd navigation
+cnoremap <C-A> <Home>
+cnoremap <C-B> <S-Left>
+cnoremap <C-F> <S-Right>
+cnoremap <C-H> <Left>
+cnoremap <C-L> <Right>
+
 "Vimdiff
 "diff 2 buffers in vertical split
 nnoremap <leader>1 :call ToggleDiff()<cr>
@@ -741,6 +751,7 @@ nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
+nnoremap <leader>gb :Gblame<CR>
 " show merge conflicts
 nnoremap <leader>gm :Gmerge<CR>
 
@@ -783,6 +794,7 @@ nmap <silent> R <plug>SubstituteToEndOfLine
 nmap rr <plug>SubstituteLine
 " change yank buffer
 nmap <C-F> <plug>EasyClipSwapPasteForward
+nmap <C-B> <plug>EasyClipSwapPasteBackwards
 " EasyClip autoformats on paste, turn it off after paste if incorrect
 nmap <leader>ff <plug>EasyClipToggleFormattedPaste
 " Copy from *
@@ -893,8 +905,8 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
-nnoremap <silent> <leader>ia :ImportJSWord<CR>\|:w<CR>
-nnoremap <silent> <leader>if :ImportJSFix<CR>\|:w<CR>
+nnoremap <silent> <leader>ia :ImportJSWord<CR>
+nnoremap <silent> <leader>if :ImportJSFix<CR>
 nnoremap <silent> <leader>iF :ImportJSGoto<CR>
 
 " vim-stay
