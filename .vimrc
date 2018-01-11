@@ -11,9 +11,6 @@
 "Emmet
 "to use type <c-z>,
 
-"Mundo (undo history)
-"press V for vimdiff
-
 "Gstatus (vim-fugitive) commands in vim
 " [ ] - move between files
 " - - adds/removes file to commit
@@ -158,8 +155,6 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 
 " Folding
-set foldmethod=manual             " faster folds, created with Z
-set foldlevelstart=0            " all folds folded initially
 set foldmarker=region,endregion " markers for folding
 
 " Indentations
@@ -206,7 +201,7 @@ endif
 set diffopt+=vertical,iwhite " vimdiff split direction and ignore whitespace
 
 "vim-stay settings
-set viewoptions=folds,cursor
+set viewoptions=cursor,folds
 
 " tags settings
 set tags=./tags;
@@ -240,6 +235,16 @@ augroup UltiSnips
     au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
 augroup END
 
+augroup folding
+    au!
+
+    au BufEnter .vimrc set foldmethod=marker
+
+    au FileType cucumber set foldmethod=expr
+    au FileType cucumber set foldexpr=FoldExprCucumber()
+    au FileType cucumber set foldtext=FoldTextCucumber()
+augroup END
+
 augroup vimrcEx
     au!
 
@@ -251,8 +256,8 @@ augroup vimrcEx
     au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929
     au BufEnter *.md match OverLength /\%82v.*/
 
-    " vim-stay Remove saved .vim/view files older than 5 days
-    " au VimLeavePre * CleanViewdir! 5
+    " vim-stay Remove saved .vim/view files older than 3 days
+    au VimLeavePre * CleanViewdir! 3
 
     " Set format options
     au BufEnter * set formatoptions=rqj
@@ -260,16 +265,7 @@ augroup vimrcEx
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
 
-    au BufEnter .vimrc,*.js set foldmethod=marker
-
     au BufRead,BufNewFile *.md setlocal textwidth=80
-augroup END
-
-augroup folding
-    au!
-
-    au BufEnter *.js set foldexpr=FoldExprJS()
-    au BufEnter *.feature set foldexpr=FoldExprFeature()
 augroup END
 " AUGROUP endregion
 
@@ -333,7 +329,7 @@ if executable('ag')
 endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-let g:ag_prg = 'ag --column --nogroup --noheading --case-sensitive'
+let g:ag_prg = 'ag --column --nogroup --noheading -s'
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -418,6 +414,10 @@ let g:AutoPairsCenterLine = 0
 " gruvbox
 let g:gruvbox_bold = 0
 let g:gruvbox_contrast_dark = 'medium'
+
+" FastFold
+let g:fastfold_fold_command_suffixes = []
+let g:fastfold_fold_movement_commands = []
 "SETTINGS endregion
 
 "FUNCTIONS region
@@ -628,6 +628,40 @@ endfunction
 "     endwhile
 " endfunction
 
+function! FoldExprCucumber()
+    let l = getline(v:lnum)
+    let nl = getline(v:lnum + 1)
+
+    if l =~ '^\s*#*\s*\(Scenario\)'
+        return '1>'
+    endif
+
+    if nl =~ '^\s*$'
+        return '<1'
+    endif
+
+    return '='
+endfunction
+
+function! FoldTextCucumber()
+    return '+-- ' . substitute(getline(v:foldstart), '^\s*', '', 'g')
+endfunction
+
+function! FoldExprCucumber()
+    let l = getline(v:lnum)
+    let nl = getline(v:lnum + 1)
+
+    if l =~ '^\s*#*\s*\(Scenario\)'
+        return '1>'
+    endif
+
+    if nl =~ '^\s*$'
+        return '<1'
+    endif
+
+    return '='
+endfunction
+
 function! FoldExprJS()
     let pl = getline(v:lnum - 1)
     let plind = indent(v:lnum - 1)
@@ -699,19 +733,21 @@ noremap <silent> <leader>t :tabclose<CR>
 nnoremap <leader>I ggVG=
 
 " Folding mappings
+" manually update folds
+nmap zuz <Plug>(FastFoldUpdate)
 " Fold all
 nnoremap zm zM
-"Unfold all
+" Unfold all
 nnoremap zn zR
-"open/close fold
+" open/close fold
 nnoremap Z za
 "fold visual selection
-" :call MakeFold()<CR>zc==
-vnoremap <silent> Z zf
+" vnoremap <silent> Z :call MakeFold()<CR>zc==
+" vnoremap <silent> Z zf
 "delete fold
-"nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
+" nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
 "delete all folds
-"nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
+" nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=

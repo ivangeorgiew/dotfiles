@@ -115,3 +115,6 @@
 [submodule ".vim/bundle/auto-pairs"]
 	path = .vim/bundle/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs.git
+[submodule ".vim/bundle/FastFold"]
+	path = .vim/bundle/FastFold
+	url = https://github.com/Konfekt/FastFold.git

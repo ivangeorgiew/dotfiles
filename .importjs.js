@@ -28,7 +28,7 @@ module.exports = {
         return true
     },
     declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
-        if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
+        if (pathToCurrentFile.includes('app')) {
             return 'import'
         }
 

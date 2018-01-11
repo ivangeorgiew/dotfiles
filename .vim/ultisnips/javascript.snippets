@@ -98,3 +98,11 @@ browser.waitUntil(() => {
 	return ${2:browser.isExisting('$0')}
 }, TIMEOUT, 'expected ${1:something}')
 endsnippet
+
+snippet cwu "componentWillUnmount" b
+componentWillUnmount() {
+	const { ${1} } = this.props
+
+	$0
+}
+endsnippet
