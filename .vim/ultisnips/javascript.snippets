@@ -82,15 +82,18 @@ function * ${1} ({ payload: { ${2} } }) {
 endsnippet
 
 snippet then "Then" b
-this.Then(/^${1}$/, ${2:()} => {$0})
+this.Then(/^${1}$/, ${2:()} => {
+})
 endsnippet
 
 snippet when "When" b
-this.When(/^${1}$/, ${2:()} => {$0})
+this.When(/^${1}$/, ${2:()} => {
+})
 endsnippet
 
 snippet given "Given" b
-this.Given(/^${1}$/, ${2:()} => {$0})
+this.Given(/^${1}$/, ${2:()} => {
+})
 endsnippet
 
 snippet wait "browser.waitUntil" b

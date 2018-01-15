@@ -1,4 +1,4 @@
-"COMMENTS region
+"COMMENTS {{{
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
@@ -109,17 +109,17 @@
 " zD - delete all folds
 " Z - toggle fold || create fold(vis selection)
 " zj/zk - move between folds
-"COMMENTS endregion
+"COMMENTS }}}
 
-"MISC region
+"MISC {{{
 " Add pathogen execution on startup
 execute pathogen#infect()
 execute pathogen#helptags()
 
 colorscheme gruvbox
-"MISC endregion
+"MISC }}}
 
-"SET region
+"SET {{{
 " Fix lag in vim
 set shell=bash
 set lazyredraw
@@ -206,9 +206,9 @@ set viewoptions=cursor,folds
 " tags settings
 set tags=./tags;
 set statusline+=%{gutentags#statusline()}
-"SET endregion
+"SET }}}
 
-"AUGROUP region
+"AUGROUP {{{
 augroup syntax
     au!
 
@@ -238,11 +238,17 @@ augroup END
 augroup folding
     au!
 
+    au BufEnter .vimrc set foldmarker={{{,}}}
     au BufEnter .vimrc set foldmethod=marker
+
+    au FileType javascript.jsx set foldmethod=expr
+    au FileType javascript.jsx set foldexpr=FoldExprJS()
+    au FileType javascript.jsx set foldtext=FoldText()
+    au FileType javascript.jsx set foldlevelstart=3
 
     au FileType cucumber set foldmethod=expr
     au FileType cucumber set foldexpr=FoldExprCucumber()
-    au FileType cucumber set foldtext=FoldTextCucumber()
+    au FileType cucumber set foldtext=FoldText()
 augroup END
 
 augroup vimrcEx
@@ -267,12 +273,9 @@ augroup vimrcEx
 
     au BufRead,BufNewFile *.md setlocal textwidth=80
 augroup END
-" AUGROUP endregion
+" AUGROUP }}}
 
-"SETTINGS region
-" Leader
-let g:mapleader = ' '
-
+"SETTINGS {{{
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
 
@@ -416,11 +419,12 @@ let g:gruvbox_bold = 0
 let g:gruvbox_contrast_dark = 'medium'
 
 " FastFold
+let g:fastfold_savehook = 1
 let g:fastfold_fold_command_suffixes = []
 let g:fastfold_fold_movement_commands = []
-"SETTINGS endregion
+"SETTINGS }}}
 
-"FUNCTIONS region
+"FUNCTIONS {{{
 function! TabClose()
   if winnr("$") == 1 && tabpagenr("$") > 1 && tabpagenr() > 1 && tabpagenr() < tabpagenr("$")
     tabclose | tabprev
@@ -628,22 +632,7 @@ endfunction
 "     endwhile
 " endfunction
 
-function! FoldExprCucumber()
-    let l = getline(v:lnum)
-    let nl = getline(v:lnum + 1)
-
-    if l =~ '^\s*#*\s*\(Scenario\)'
-        return '1>'
-    endif
-
-    if nl =~ '^\s*$'
-        return '<1'
-    endif
-
-    return '='
-endfunction
-
-function! FoldTextCucumber()
+function! FoldText()
     return '+-- ' . substitute(getline(v:foldstart), '^\s*', '', 'g')
 endfunction
 
@@ -663,50 +652,48 @@ function! FoldExprCucumber()
 endfunction
 
 function! FoldExprJS()
-    let pl = getline(v:lnum - 1)
-    let plind = indent(v:lnum - 1)
+    let pl = getline(v:lnum -1)
     let l = getline(v:lnum)
-    let lind = indent(v:lnum)
-    let nl = getline(v:lnum +  1)
-    let nlind = indent(v:lnum + 1)
+    let lind = indent(v:lnum) / 4 + 1
+    let nl = getline(v:lnum + 1)
+    let shouldFoldImport = v:lnum == 1 || getline(v:lnum - 1) =~ '^\(\/\/ \|\/\* \)'
+    let importString = '^\(\/\/ \|\/\* \)*\(import\)'
+    let fromString = "\\( from '.*'\\)"
+    let marker1 = '^\s*\(\/\/ \|\/\* \)\s*\(region\)\s*'
+    let marker2 = '^\s*\(\/\/ \|\/\* \)\s*\(endregion\)\s*'
 
-    if v:lnum == 0 && l =~ '^\(import\)'
+    if l =~ importString && shouldFoldImport
+        return '3>'
     endif
 
-    if getline
+    if l =~ fromString && nl =~ '^\s*$'
+        return '<3'
+    endif
 
-    " fold preamble
-    if v:lnum == 1
+    if pl=~ fromString && l =~ '^\s*$'
+        return '0'
+    endif
+
+    if l =~ marker1
+        let g:inMarker = 1
         return '1>'
     endif
 
-    if l !~ s:docstring_oneline
-        if l =~ s:docstring_start
-            return 'a1'
-        elseif l =~ s:docstring_end
-            return 's1'
-        endif
+    if l =~ marker2
+        let g:inMarker = 0
+        return '<1'
     endif
 
-    if l =~ s:decorator && pl !~ s:decorator
-        return 'a1'
-    endif
+    if !g:inMarker
+        let startBracket = '\({\|(\)$'
+        let endBracket = '^\s*\(}\|)\)'
 
-    " if, elif, else, def, class, ...
-    if l =~ ':$' && pl !~ s:decorator
-        return 'a1'
-    endif
-
-
-    if l =~ '^\s*$'
-        " two consecutive empty lines
-        if pl =~ '^\s*$' && nl !~ '^\s*$'
-            return '<1'
+        if l =~ startBracket && l !~ importString && lind < 3 && nl !~ marker1
+            return lind . '>'
         endif
 
-        " space between two function
-        if plind > nlind
-            return 's1'
+        if l =~ endBracket && l !~ fromString && lind < 3 && foldlevel(v:lnum - 1) != 0
+            return '<' . lind
         endif
     endif
 
@@ -720,9 +707,10 @@ function! IndentWithI()
         return "i"
     endif
 endfunction
-"FUNCTIONS endregion
+"FUNCTIONS }}}
 
-"MAPPINGS region
+"MAPPINGS {{{
+map <Space> <leader>
 " Main leader Mappings
 noremap <silent> <leader>q :qall<CR>
 noremap <silent> <leader>w :update<CR>
@@ -739,15 +727,12 @@ nmap zuz <Plug>(FastFoldUpdate)
 nnoremap zm zM
 " Unfold all
 nnoremap zn zR
+" unmap it
+nnoremap Z <ESC>
 " open/close fold
-nnoremap Z za
-"fold visual selection
-" vnoremap <silent> Z :call MakeFold()<CR>zc==
-" vnoremap <silent> Z zf
-"delete fold
-" nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
-"delete all folds
-" nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
+nnoremap z; za
+" open/close fold recursively
+nnoremap zl zA
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -883,10 +868,13 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap / /\V\c
-vnoremap / "by/<C-r>b<cr>n
-nnoremap // /<C-r>*<cr>n
+"toggle search highlight
+nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+"search the copied content
+nnoremap // /\V\c<C-r>*<cr>
+"search in visual selection
+vnoremap // <ESC>/\%V\c
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
@@ -959,4 +947,4 @@ vnoremap $ g_
 
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
-"MAPPINGS endregion
+"MAPPINGS }}}
