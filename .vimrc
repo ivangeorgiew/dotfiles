@@ -1,4 +1,13 @@
 "COMMENTS {{{
+" Execute this for profiling which slows down vim
+
+" :profile start profile.log
+" :profile func *
+" :profile file *
+" " At this point do slow actions
+" :profile pause
+" :noautocmd qall!
+
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
@@ -116,7 +125,7 @@
 execute pathogen#infect()
 execute pathogen#helptags()
 
-colorscheme gruvbox
+" colorscheme gruvbox
 "MISC }}}
 
 "SET {{{
@@ -126,7 +135,8 @@ set lazyredraw
 set nocursorcolumn
 set synmaxcol=500
 set re=1
-" syntax sync minlines=128
+let loaded_matchparen = 1
+" syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 
 " Affects lag
@@ -241,14 +251,14 @@ augroup folding
     au BufEnter .vimrc set foldmarker={{{,}}}
     au BufEnter .vimrc set foldmethod=marker
 
-    au FileType javascript.jsx set foldmethod=expr
-    au FileType javascript.jsx set foldexpr=FoldExprJS()
-    au FileType javascript.jsx set foldtext=FoldText()
-    au FileType javascript.jsx set foldlevelstart=3
+    au FileType javascript.jsx set foldmethod=expr |
+                \ set foldexpr=FoldExprJS() |
+                \ set foldtext=FoldText() |
+                \ set foldlevelstart=3
 
-    au FileType cucumber set foldmethod=expr
-    au FileType cucumber set foldexpr=FoldExprCucumber()
-    au FileType cucumber set foldtext=FoldText()
+    au FileType cucumber set foldmethod=expr |
+                \ set foldexpr=FoldExprCucumber()
+                \ set foldtext=FoldText()
 augroup END
 
 augroup vimrcEx
@@ -342,7 +352,7 @@ let g:airline#extensions#ale#enabled = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_theme = 'gruvbox'
+" let g:airline_theme = 'luna'
 let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
@@ -382,7 +392,7 @@ let g:ycm_max_num_identifier_candidates = 5
 " disable console logs
 let g:ycm_show_diagnostics_ui = 0
 " Start vim faster
-" let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
+let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 
 " UltiSnips
 " keys
@@ -415,13 +425,13 @@ let g:AutoPairsShortcutBackInsert = ''
 let g:AutoPairsCenterLine = 0
 
 " gruvbox
-let g:gruvbox_bold = 0
-let g:gruvbox_contrast_dark = 'medium'
+" let g:gruvbox_bold = 0
+" let g:gruvbox_contrast_dark = 'medium'
 
 " FastFold
-let g:fastfold_savehook = 1
-let g:fastfold_fold_command_suffixes = []
-let g:fastfold_fold_movement_commands = []
+" let g:fastfold_savehook = 1
+" let g:fastfold_fold_command_suffixes = []
+" let g:fastfold_fold_movement_commands = []
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -632,6 +642,14 @@ endfunction
 "     endwhile
 " endfunction
 
+function! IndentWithI()
+    if len(getline('.')) == 0 && empty(&buftype)
+        return "\"_cc"
+    else
+        return "i"
+    endif
+endfunction
+
 function! FoldText()
     return '+-- ' . substitute(getline(v:foldstart), '^\s*', '', 'g')
 endfunction
@@ -656,13 +674,12 @@ function! FoldExprJS()
     let l = getline(v:lnum)
     let lind = indent(v:lnum) / 4 + 1
     let nl = getline(v:lnum + 1)
-    let shouldFoldImport = v:lnum == 1 || getline(v:lnum - 1) =~ '^\(\/\/ \|\/\* \)'
     let importString = '^\(\/\/ \|\/\* \)*\(import\)'
     let fromString = "\\( from '.*'\\)"
     let marker1 = '^\s*\(\/\/ \|\/\* \)\s*\(region\)\s*'
     let marker2 = '^\s*\(\/\/ \|\/\* \)\s*\(endregion\)\s*'
 
-    if l =~ importString && shouldFoldImport
+    if l =~ importString && v:lnum == 1 || pl =~ '^\(\/\/ \|\/\* \)'
         return '3>'
     endif
 
@@ -699,14 +716,6 @@ function! FoldExprJS()
 
     return '='
 endfunction
-
-function! IndentWithI()
-    if len(getline('.')) == 0 && empty(&buftype)
-        return "\"_cc"
-    else
-        return "i"
-    endif
-endfunction
 "FUNCTIONS }}}
 
 "MAPPINGS {{{
@@ -722,7 +731,7 @@ nnoremap <leader>I ggVG=
 
 " Folding mappings
 " manually update folds
-nmap zuz <Plug>(FastFoldUpdate)
+" nmap zuz <Plug>(FastFoldUpdate)
 " Fold all
 nnoremap zm zM
 " Unfold all
