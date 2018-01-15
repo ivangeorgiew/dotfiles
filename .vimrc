@@ -125,9 +125,13 @@
 execute pathogen#infect()
 execute pathogen#helptags()
 
-set t_Co=256
+" set Vim-specific sequences for RGB colors
+" let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+" let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" set t_Co=256
+" set termguicolors
 set background=dark
-colorscheme seagrey-dark
+colorscheme gruvbox
 "MISC }}}
 
 "SET {{{
@@ -165,11 +169,10 @@ set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
-set termguicolors                          " use GUI colors for colorscheme
 
 " Folding
 set foldmarker=region,endregion " markers for folding
-set foldlevel=2
+set foldlevel=0
 
 " Indentations
 set tabstop=4
@@ -210,9 +213,6 @@ endif
 
 "Vimdiff options
 set diffopt+=vertical,iwhite " vimdiff split direction and ignore whitespace
-
-"vim-stay settings
-set viewoptions=cursor
 
 " tags settings
 set tags=./tags;
@@ -269,9 +269,6 @@ augroup vimrcEx
     au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929
     au BufEnter *.md match OverLength /\%82v.*/
 
-    " vim-stay Remove saved .vim/view files older than 3 days
-    au VimLeavePre * CleanViewdir! 3
-
     " Set format options
     au BufEnter * set formatoptions=rqj
 
@@ -288,9 +285,6 @@ let loaded_matchparen = 1
 
 " Variable for FoldExprJS
 let g:inMarker = 0
-
-" Lightline config
-" let g:lightline = { 'colorscheme': 'stellarized_dark' }
 
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
@@ -423,6 +417,20 @@ let g:AutoPairsCenterLine = 0
 let g:fastfold_savehook = 1
 let g:fastfold_fold_command_suffixes =  []
 let g:fastfold_fold_movement_commands = []
+
+" Airline
+let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
+let g:airline_extensions = [ 'ctrlp', 'ale' ]
+let g:airline_section_y = ''
+let g:airline_highlighting_cache = 0
+let g:airline_theme = 'gruvbox'
+
+" gruvbox
+let g:gruvbox_bold = 0
+let g:gruvbox_italic = 0
+let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_contrast_light = 'soft'
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -661,28 +669,32 @@ function! FoldExprCucumber()
 endfunction
 
 function! FoldExprJS()
-    let pl = getline(v:lnum -1)
+    let pl = getline(v:lnum - 1)
     let l = getline(v:lnum)
-    let lind = indent(v:lnum) / 4 + 1
     let nl = getline(v:lnum + 1)
     let importString = '^\(\/\/ \|\/\* \)*\(import\)'
     let fromString = "\\( from '.*'\\)"
-    let marker1 = '^\s*\(\/\/ \|\/\* \)\s*\(region\)\s*'
-    let marker2 = '^\s*\(\/\/ \|\/\* \)\s*\(endregion\)\s*'
 
     if l =~ importString && v:lnum == 1 || pl =~ '^\(\/\/ \|\/\* \)'
-        return '3>'
+        setl foldlevel=1
+        return '2>'
     endif
 
     if l =~ fromString && nl =~ '^\s*$'
-        return '<3'
+        return '<2'
     endif
 
     if pl=~ fromString && l =~ '^\s*$'
         return '0'
     endif
 
+    let marker1 = '^\s*\(\/\/ \|\/\* \)\s*\(region\)\s*'
+    let marker2 = '^\s*\(\/\/ \|\/\* \)\s*\(endregion\)\s*'
+
     if l =~ marker1
+        if !exists(g:inMarker)
+            setl foldlevel=0
+        endif
         let g:inMarker = 1
         return '1>'
     endif
@@ -695,12 +707,16 @@ function! FoldExprJS()
     if !g:inMarker
         let startBracket = '\({\|(\)$'
         let endBracket = '^\s*\(}\|)\)'
+        let fpl = foldlevel(v:lnum - 1)
+        let lind = indent(v:lnum) / 4 + 1
+        " let endBracketLineNr = search('^' . repeat(' ', indent(v:lnum)) . '\(}\|)\)', 'nW')
+        " let linesBetween = endBracketLineNr - v:lnum
 
         if l =~ startBracket && l !~ importString && lind < 3 && nl !~ marker1
             return lind . '>'
         endif
 
-        if l =~ endBracket && l !~ fromString && lind < 3 && foldlevel(v:lnum - 1) != 0
+        if l =~ endBracket && l !~ fromString && lind < 3 && fpl != 0
             return '<' . lind
         endif
     endif
@@ -721,8 +737,8 @@ noremap <silent> <leader>t :tabclose<CR>
 nnoremap <leader>I ggVG=
 
 " Folding mappings
-" manually update folds
-nmap zuz <Plug>(FastFoldUpdate)
+" force fold update folds
+nmap zf <Plug>(FastFoldUpdate)
 " Fold all
 nnoremap zm zM
 " Unfold all
@@ -930,9 +946,6 @@ nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 nnoremap <silent> <leader>ia :ImportJSWord<CR>
 nnoremap <silent> <leader>if :ImportJSFix<CR>
 nnoremap <silent> <leader>iF :ImportJSGoto<CR>
-
-" vim-stay
-nnoremap <leader>cv :CleanViewdir!<CR>
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd
 inoremap <C-c> <Esc>
