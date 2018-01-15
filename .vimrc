@@ -125,7 +125,9 @@
 execute pathogen#infect()
 execute pathogen#helptags()
 
-" colorscheme gruvbox
+set t_Co=256
+set background=dark
+colorscheme seagrey-dark
 "MISC }}}
 
 "SET {{{
@@ -135,7 +137,6 @@ set lazyredraw
 set nocursorcolumn
 set synmaxcol=500
 set re=1
-let loaded_matchparen = 1
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 
@@ -163,17 +164,17 @@ set timeoutlen=500                         " waittime for second mapping
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
+set noshowmode                             " dont show vim mode
+set termguicolors                          " use GUI colors for colorscheme
 
 " Folding
 set foldmarker=region,endregion " markers for folding
+set foldlevel=2
 
 " Indentations
 set tabstop=4
 set shiftwidth=4
 set expandtab
-
-" Colorscheme
-set background=dark
 
 " Numbers
 set number
@@ -211,7 +212,7 @@ endif
 set diffopt+=vertical,iwhite " vimdiff split direction and ignore whitespace
 
 "vim-stay settings
-set viewoptions=cursor,folds
+set viewoptions=cursor
 
 " tags settings
 set tags=./tags;
@@ -221,10 +222,6 @@ set statusline+=%{gutentags#statusline()}
 "AUGROUP {{{
 augroup syntax
     au!
-
-    ""Indent Guides colors
-    "au VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=Red
-    "au VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=Yellow
 
     "Wrap character color
     au VimEnter,Colorscheme * :hi! NonText ctermfg=Red
@@ -251,13 +248,13 @@ augroup folding
     au BufEnter .vimrc set foldmarker={{{,}}}
     au BufEnter .vimrc set foldmethod=marker
 
-    au FileType javascript.jsx set foldmethod=expr |
+    au FileType javascript.jsx set foldlevelstart=3 |
+                \ set foldmethod=expr |
                 \ set foldexpr=FoldExprJS() |
-                \ set foldtext=FoldText() |
-                \ set foldlevelstart=3
+                \ set foldtext=FoldText()
 
     au FileType cucumber set foldmethod=expr |
-                \ set foldexpr=FoldExprCucumber()
+                \ set foldexpr=FoldExprCucumber() |
                 \ set foldtext=FoldText()
 augroup END
 
@@ -286,6 +283,15 @@ augroup END
 " AUGROUP }}}
 
 "SETTINGS {{{
+" Disabled matching of paranteses for folding speed
+let loaded_matchparen = 1
+
+" Variable for FoldExprJS
+let g:inMarker = 0
+
+" Lightline config
+" let g:lightline = { 'colorscheme': 'stellarized_dark' }
+
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
 
@@ -343,17 +349,6 @@ endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 let g:ag_prg = 'ag --column --nogroup --noheading -s'
-
-" Airline
-let g:airline_powerline_fonts = 1
-let g:airline_skip_empty_sections = 1
-let g:airline#extensions#ale#enabled = 1
-" let g:airline_section_y = ''
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-" let g:airline_theme = 'luna'
-let g:airline_symbols.space = "\ua0"
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -424,14 +419,10 @@ let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutBackInsert = ''
 let g:AutoPairsCenterLine = 0
 
-" gruvbox
-" let g:gruvbox_bold = 0
-" let g:gruvbox_contrast_dark = 'medium'
-
 " FastFold
-" let g:fastfold_savehook = 1
-" let g:fastfold_fold_command_suffixes = []
-" let g:fastfold_fold_movement_commands = []
+let g:fastfold_savehook = 1
+let g:fastfold_fold_command_suffixes =  []
+let g:fastfold_fold_movement_commands = []
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -731,7 +722,7 @@ nnoremap <leader>I ggVG=
 
 " Folding mappings
 " manually update folds
-" nmap zuz <Plug>(FastFoldUpdate)
+nmap zuz <Plug>(FastFoldUpdate)
 " Fold all
 nnoremap zm zM
 " Unfold all
@@ -755,8 +746,6 @@ nnoremap <Left>     :echoerr "Use h"<CR>
 nnoremap <Right>    :echoerr "Use l"<CR>
 nnoremap <Up>       :echoerr "Use k"<CR>
 nnoremap <Down>     :echoerr "Use j"<CR>
-nnoremap gt         :echoerr "use H or L"<CR>
-nnoremap gT         :echoerr "use H or L"<CR>
 
 " Cmd navigation
 cnoremap <C-A> <Home>
