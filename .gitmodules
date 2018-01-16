@@ -105,7 +105,7 @@
 	url = https://github.com/jiangmiao/auto-pairs.git
 [submodule ".vim/bundle/FastFold"]
 	path = .vim/bundle/FastFold
-	url = https://github.com/Konfekt/FastFold.git
+	url = https://github.com/ivangeorgiew/FastFold.git
 [submodule ".vim/bundle/vim-airline"]
 	path = .vim/bundle/vim-airline
 	url = https://github.com/vim-airline/vim-airline.git

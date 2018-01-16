@@ -169,10 +169,7 @@ set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
-
-" Folding
-set foldmarker=region,endregion " markers for folding
-set foldlevel=0
+set foldmarker=region,endregion            " markers for folding
 
 " Indentations
 set tabstop=4
@@ -245,8 +242,10 @@ augroup END
 augroup folding
     au!
 
-    au BufEnter .vimrc set foldmarker={{{,}}}
-    au BufEnter .vimrc set foldmethod=marker
+    au BufReadPre,BufNewFile * set foldlevel=0
+
+    au BufEnter .vimrc set foldmarker={{{,}}} |
+                \ set foldmethod=marker
 
     au FileType javascript.jsx set foldlevelstart=3 |
                 \ set foldmethod=expr |
@@ -262,12 +261,12 @@ augroup vimrcEx
     au!
 
     " Show characters over 120 columns
-    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
-    au BufEnter *.js match OverLength /\%122v.*/
+    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929 |
+                \ match OverLength /\%122v.*/
 
     " Show characters over 80 columns
-    au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929
-    au BufEnter *.md match OverLength /\%82v.*/
+    au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929 |
+                \ match OverLength /\%82v.*/
 
     " Set format options
     au BufEnter * set formatoptions=rqj
@@ -285,6 +284,7 @@ let loaded_matchparen = 1
 
 " Variable for FoldExprJS
 let g:inMarker = 0
+let g:bracketIndent = -1
 
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
@@ -416,7 +416,7 @@ let g:AutoPairsCenterLine = 0
 " FastFold
 let g:fastfold_savehook = 1
 let g:fastfold_fold_command_suffixes =  []
-let g:fastfold_fold_movement_commands = []
+let g:fastfold_fold_movement_commands = [ 'zj', 'zk' ]
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -431,6 +431,11 @@ let g:gruvbox_bold = 0
 let g:gruvbox_italic = 0
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
+
+" lastplace
+let g:lastplace_open_folds = 1
+" let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
+" let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -564,82 +569,82 @@ function! s:align()
     endif
 endfunction
 
-" function! AddMarker(line, position)
-"     let string = ""
-"     let comments = split(&l:commentstring, '%s')
-"     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
-"     let lineNumber = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
-"     let oldLine = getline(lineNumber)
-"     let lineText = oldLine
-"     let lineText = substitute(lineText, "^.*" . escape(comments[0], '/\^$.*~[]&') . " \\=", "", "")
-"     let string .= substitute(comments[0], " ", "", "") . ' '
-"     let string .= a:position == 'close' ? markers[1] : markers[0]
-"     if oldLine !~ comments[0]
-"         if a:position == 'open'
-"             call inputsave()
-"             let b:foldAddedComment = input('Enter comment:', '')
-"             call inputrestore()
-"         endif
-"         let string .= ' ' . b:foldAddedComment
-"     endif
-"     if len(comments) > 1 &&  lineText !~ '\w\+'
-"         let string .= ' ' . comments[1]
-"     endif
-"     if a:position == 'open'
-"         if oldLine !~ comments[0]
-"             call setline(lineNumber, string)
-"             call append(lineNumber, oldLine)
-"         else
-"             call setline(lineNumber, string . ' ' . lineText)
-"         endif
-"     else
-"         if oldLine !~ comments[0]
-"             call append(lineNumber, string)
-"         else
-"             call setline(lineNumber, string . ' ' . lineText)
-"         endif
-"     endif
-" endfunction
+function! AddMarker(line, position)
+    let string = ""
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+    let lineNumber = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
+    let oldLine = getline(lineNumber)
+    let lineText = oldLine
+    let lineText = substitute(lineText, "^.*" . escape(comments[0], '/\^$.*~[]&') . " \\=", "", "")
+    let string .= substitute(comments[0], " ", "", "") . ' '
+    let string .= a:position == 'close' ? markers[1] : markers[0]
+    if oldLine !~ comments[0]
+        if a:position == 'open'
+            call inputsave()
+            let b:foldAddedComment = input('Enter comment:', '')
+            call inputrestore()
+        endif
+        let string .= ' ' . b:foldAddedComment
+    endif
+    if len(comments) > 1 &&  lineText !~ '\w\+'
+        let string .= ' ' . comments[1]
+    endif
+    if a:position == 'open'
+        if oldLine !~ comments[0]
+            call setline(lineNumber, string)
+            call append(lineNumber, oldLine)
+        else
+            call setline(lineNumber, string . ' ' . lineText)
+        endif
+    else
+        if oldLine !~ comments[0]
+            call append(lineNumber, string)
+        else
+            call setline(lineNumber, string . ' ' . lineText)
+        endif
+    endif
+endfunction
 
-" function! MakeFold() range
-"     let first_line = a:firstline
-"     let last_line = a:lastline
-"     if first_line == last_line | return | endif
-"     call AddMarker(first_line, 'open')
-"     call AddMarker(last_line, 'close')
-" endfunction
+function! MakeFold() range
+    let first_line = a:firstline
+    let last_line = a:lastline
+    if first_line == last_line | return | endif
+    call AddMarker(first_line, 'open')
+    call AddMarker(last_line, 'close')
+endfunction
 
-" function! DeleteFold(leaveComments)
-"     let comments = split(&l:commentstring, '%s')
-"     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+function! DeleteFold(leaveComments)
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
 
-"     let first_line = search(comments[0] . '.*' . markers[0] . '.*', "ncWb")
-"     let firstText = substitute(getline(first_line), ' ' . markers[0], '', 'g')
-"     if firstText =~ '\w\+' && a:leaveComments == 1
-"         call setline(first_line, firstText)
-"     else
-"         call search(getline(first_line), "cWb")
-"         execute ":d"
-"     endif
+    let first_line = search(comments[0] . '.*' . markers[0] . '.*', "ncWb")
+    let firstText = substitute(getline(first_line), ' ' . markers[0], '', 'g')
+    if firstText =~ '\w\+' && a:leaveComments == 1
+        call setline(first_line, firstText)
+    else
+        call search(getline(first_line), "cWb")
+        execute ":d"
+    endif
 
-"     let last_line = search(comments[0] . '.*' . markers[1] . '.*', "ncW")
-"     let lastText = substitute(getline(last_line), ' ' . markers[1], '', 'g')
-"     if lastText =~ '\w\+' && a:leaveComments == 1
-"         call setline(last_line, lastText)
-"     else
-"         call search(getline(last_line), "cW")
-"         execute ":d"
-"     endif
-" endfunction
+    let last_line = search(comments[0] . '.*' . markers[1] . '.*', "ncW")
+    let lastText = substitute(getline(last_line), ' ' . markers[1], '', 'g')
+    if lastText =~ '\w\+' && a:leaveComments == 1
+        call setline(last_line, lastText)
+    else
+        call search(getline(last_line), "cW")
+        execute ":d"
+    endif
+endfunction
 
-" function! DeleteAllFolds(leaveComments)
-"     let comments = split(&l:commentstring, '%s')
-"     let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
+function! DeleteAllFolds(leaveComments)
+    let comments = split(&l:commentstring, '%s')
+    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
 
-"     while search(comments[0] . ' ' . markers[0] . '.*', "c") > 0
-"         call DeleteFold(a:leaveComments)
-"     endwhile
-" endfunction
+    while search(comments[0] . ' ' . markers[0] . '.*', "c") > 0
+        call DeleteFold(a:leaveComments)
+    endwhile
+endfunction
 
 function! IndentWithI()
     if len(getline('.')) == 0 && empty(&buftype)
@@ -675,7 +680,7 @@ function! FoldExprJS()
     let importString = '^\(\/\/ \|\/\* \)*\(import\)'
     let fromString = "\\( from '.*'\\)"
 
-    if l =~ importString && v:lnum == 1 || pl =~ '^\(\/\/ \|\/\* \)'
+    if  v:lnum == 1 && l =~ importString || l =~ '^\(\/\/ \|\/\* \)'
         setl foldlevel=1
         return '2>'
     endif
@@ -693,31 +698,34 @@ function! FoldExprJS()
 
     if l =~ marker1
         if !exists(g:inMarker)
-            setl foldlevel=0
+            setl foldlevel=1
         endif
         let g:inMarker = 1
-        return '1>'
+        return 'a1'
     endif
 
     if l =~ marker2
         let g:inMarker = 0
-        return '<1'
+        return 's1'
     endif
 
     if !g:inMarker
-        let startBracket = '\({\|(\)$'
-        let endBracket = '^\s*\(}\|)\)'
-        let fpl = foldlevel(v:lnum - 1)
+        let startBracket = '^\s*\w\+.\+\({\|(\|[\)$'
+        let endBracket = '^\s*\(}\|)\]\)$'
         let lind = indent(v:lnum) / 4 + 1
-        " let endBracketLineNr = search('^' . repeat(' ', indent(v:lnum)) . '\(}\|)\)', 'nW')
-        " let linesBetween = endBracketLineNr - v:lnum
 
-        if l =~ startBracket && l !~ importString && lind < 3 && nl !~ marker1
-            return lind . '>'
+        " let linesToEndBracket = search('^' . repeat(' ', indent(v:lnum)) . '\(}\|)\)', 'nW') - v:lnum
+        if l =~ startBracket && l !~ importString && lind < 3
+            " let g:bracketIndent = lind
+            return 'a1'
         endif
 
+        let fpl = foldlevel(v:lnum - 1)
+        " let linesToStartBracket = search('^' . repeat(' ', indent(v:lnum)) . '.*\({\|(\)$', 'nW') - v:lnum
+        " let startBracketNr = search('^' . repeat(' ', indent(v:lnum)) . startBracket, 'nW')
+        " let shouldEndFold = foldlevel(startBracketNr) > foldlevel(startBracketNr - 1)
         if l =~ endBracket && l !~ fromString && lind < 3 && fpl != 0
-            return '<' . lind
+            return 's1'
         endif
     endif
 
@@ -737,8 +745,6 @@ noremap <silent> <leader>t :tabclose<CR>
 nnoremap <leader>I ggVG=
 
 " Folding mappings
-" force fold update folds
-nmap zf <Plug>(FastFoldUpdate)
 " Fold all
 nnoremap zm zM
 " Unfold all
@@ -749,6 +755,14 @@ nnoremap Z <ESC>
 nnoremap z; za
 " open/close fold recursively
 nnoremap zl zA
+" force fold update folds
+nmap zuz <Plug>(FastFoldUpdate)
+"fold visual selection
+vnoremap <silent> zf :call MakeFold()<CR>zc==
+"delete fold
+nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
+"delete all folds
+nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -853,10 +867,6 @@ noremap <silent> <F7> :call SaveSession()<cr>
 " Load previous session
 noremap <silent> <F5> :call OpenSession()<cr>
 
-" Search for word under cursor
-nnoremap ) lbve"by:Ag! <C-r>b<cr>
-vnoremap ) "by:Ag! "<C-r>b"<cr>
-
 " Copy multiple words to register
 nnoremap <silent> <leader>8 lbve"ay
 nnoremap <silent> <leader>9 :let @a .= ', '<cr>lbve"Ay
@@ -913,6 +923,9 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 nnoremap <F3> :Ag! -F<SPACE>
+" Search for word under cursor
+vnoremap <F3> "by:Ag! "<C-r>b"<cr>
+
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -940,7 +953,7 @@ nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
 nnoremap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file "
-nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
+nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
 nnoremap <silent> <leader>ia :ImportJSWord<CR>
