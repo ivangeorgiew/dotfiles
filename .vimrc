@@ -169,7 +169,10 @@ set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
+
+" Folding
 set foldmarker=region,endregion            " markers for folding
+set foldlevelstart=0
 
 " Indentations
 set tabstop=4
@@ -241,8 +244,6 @@ augroup END
 
 augroup folding
     au!
-
-    au BufReadPre,BufNewFile * set foldlevel=0
 
     au BufEnter .vimrc set foldmarker={{{,}}} |
                 \ set foldmethod=marker
@@ -681,7 +682,7 @@ function! FoldExprJS()
     let fromString = "\\( from '.*'\\)"
 
     if  v:lnum == 1 && l =~ importString || l =~ '^\(\/\/ \|\/\* \)'
-        setl foldlevel=1
+        setl foldlevel=99
         return '2>'
     endif
 
@@ -828,7 +829,7 @@ nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
-vnoremap <F4> :<C-u>call VisReplaceIt()<cr>
+vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
 
 " EasyClip
@@ -922,9 +923,8 @@ noremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
 nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
-nnoremap <F3> :Ag! -F<SPACE>
-" Search for word under cursor
-vnoremap <F3> "by:Ag! "<C-r>b"<cr>
+nnoremap ) :Ag! -F<SPACE>
+vnoremap ) "by:Ag! "<C-r>b"<cr>
 
 
 " Quicker window movement
