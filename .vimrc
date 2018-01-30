@@ -1,12 +1,9 @@
 "COMMENTS {{{
 " Execute this for profiling which slows down vim
 
-" :profile start profile.log
-" :profile func *
-" :profile file *
+" :profile start profile.log | profile func * | profile file *
 " " At this point do slow actions
-" :profile pause
-" :noautocmd qall!
+" :profile pause | noautocmd qall!
 
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
@@ -250,11 +247,10 @@ augroup folding
     au BufEnter .vimrc setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
-    au FileType javascript.jsx setl foldmethod=marker
-    " au FileType javascript.jsx setl foldlevelstart=3 |
-    "             \ setl foldmethod=expr |
-    "             \ setl foldexpr=FoldExprJS() |
-    "             \ setl foldtext=FoldText()
+    au FileType javascript.jsx setl foldlevelstart=3 |
+                \ setl foldmethod=expr |
+                \ setl foldexpr=FoldExprJS() |
+                \ setl foldtext=FoldText()
 
     au FileType cucumber setl foldmethod=expr |
                 \ setl foldexpr=FoldExprCucumber() |
@@ -290,8 +286,15 @@ augroup END
 let loaded_matchparen = 1
 
 " Variable for FoldExprJS
-let g:inMarker = 0
-let g:bracketIndent = -1
+let s:inMarker = 0
+let s:comment = '\s*\(\/\/ \|\/\* \|\*\/ \)'
+let s:importString = '^' . s:comment . '*\s*\(import\)'
+let s:fromString = "\\( from '.*'\\)"
+let s:marker1 = '^' . s:comment . '\s*\(region\)\s*'
+let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
+let s:elseStatement = '\s*\(else\)\s*'
+let s:startBracket = '\w.*\({\|(\|[\)$'
+let s:endBracket = '^' . s:comment . '*\s*\(}\|)\]\)'
 
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
@@ -607,55 +610,46 @@ function! FoldExprJS()
     let pl = getline(v:lnum - 1)
     let l = getline(v:lnum)
     let nl = getline(v:lnum + 1)
-    let importString = '^\(\/\/ \|\/\* \)*\(import\)'
-    let fromString = "\\( from '.*'\\)"
 
-    if  v:lnum == 1 && l =~ importString || l =~ '^\(\/\/ \|\/\* \)'
+    if  v:lnum == 1 && l =~ s:importString || l =~ '^\(\/\/ \|\/\* \)'
         setl foldlevel=1
         return '2>'
     endif
 
-    if l =~ fromString && nl =~ '^\s*$'
+    if l =~ s:fromString && nl =~ '^\s*$'
         return '<2'
     endif
 
-    if pl=~ fromString && l =~ '^\s*$'
+    if pl =~ s:fromString && l =~ '^\s*$'
         return '0'
     endif
 
-    let marker1 = '^\s*\(\/\/ \|\/\* \)\s*\(region\)\s*'
-    let marker2 = '^\s*\(\/\/ \|\/\* \)\s*\(endregion\)\s*'
 
-    if l =~ marker1
-        if !exists(g:inMarker)
+    if l =~ s:marker1
+        if !exists(s:inMarker)
             setl foldlevel=1
         endif
-        let g:inMarker = 1
+        let s:inMarker = 1
         return 'a1'
     endif
 
-    if l =~ marker2
-        let g:inMarker = 0
+    if l =~ s:marker2
+        let s:inMarker = 0
         return 's1'
     endif
 
-    if !g:inMarker
-        let startBracket = '^\s*\w\+.\+\({\|(\|[\)$'
-        let endBracket = '^\s*\(}\|)\]\)$'
+    if !s:inMarker
         let lind = indent(v:lnum) / 4 + 1
 
-        " let linesToEndBracket = search('^' . repeat(' ', indent(v:lnum)) . '\(}\|)\)', 'nW') - v:lnum
-        if l =~ startBracket && l !~ importString && lind < 3
-            " let g:bracketIndent = lind
-            return 'a1'
+        " Keep the startBracket check last for performance
+        if lind < 3 && l !~ s:importString && l !~ s:elseStatement && l =~ s:startBracket
+            " let s:bracketIndent = lind
+            return lind . '>'
         endif
 
-        let fpl = foldlevel(v:lnum - 1)
-        " let linesToStartBracket = search('^' . repeat(' ', indent(v:lnum)) . '.*\({\|(\)$', 'nW') - v:lnum
-        " let startBracketNr = search('^' . repeat(' ', indent(v:lnum)) . startBracket, 'nW')
-        " let shouldEndFold = foldlevel(startBracketNr) > foldlevel(startBracketNr - 1)
-        if l =~ endBracket && l !~ fromString && lind < 3 && fpl != 0
-            return 's1'
+        " Keep the endBracket check last for performance
+        if l !~ s:fromString && lind < 3 && l !~ s:elseStatement && l =~ s:endBracket
+            return '<' . lind
         endif
     endif
 
