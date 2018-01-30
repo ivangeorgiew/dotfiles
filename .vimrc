@@ -169,6 +169,8 @@ set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
+set updatetime=1000                        " time after with the CursorHold events will fire
+set wrap                                   " wrap too long lines
 
 " Folding
 set foldmarker=region,endregion            " markers for folding
@@ -212,7 +214,7 @@ if executable('ag')
 endif
 
 "Vimdiff options
-set diffopt+=vertical,iwhite " vimdiff split direction and ignore whitespace
+set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespace
 
 " tags settings
 set tags=./tags;
@@ -224,13 +226,13 @@ augroup syntax
     au!
 
     "Wrap character color
-    au VimEnter,Colorscheme * :hi! NonText ctermfg=Red
+    au VimEnter,Colorscheme * :hi! NonText ctermfg=Red guifg=#592929
 
     " Switch syntax for strange file endings
-    au BufNewFile,BufRead *.ejs set filetype=html
-    au BufNewFile,BufRead *.babelrc set filetype=json
-    au BufRead,BufNewFile *.sass setfiletype sass
-    au BufNewFile,BufRead *.eslintrc set filetype=json
+    au BufNewFile,BufRead *.ejs setl filetype=html
+    au BufNewFile,BufRead *.babelrc setl filetype=json
+    au BufNewFile,BufRead *.sass setl filetype sass
+    au BufNewFile,BufRead *.eslintrc setl filetype=json
 augroup END
 
 augroup UltiSnips
@@ -245,29 +247,33 @@ augroup END
 augroup folding
     au!
 
-    au BufEnter .vimrc set foldmarker={{{,}}} |
-                \ set foldmethod=marker
+    au BufEnter .vimrc setl foldmarker={{{,}}} |
+                \ setl foldmethod=marker
 
-    au FileType javascript.jsx set foldlevelstart=3 |
-                \ set foldmethod=expr |
-                \ set foldexpr=FoldExprJS() |
-                \ set foldtext=FoldText()
+    au FileType javascript.jsx setl foldmethod=marker
+    " au FileType javascript.jsx setl foldlevelstart=3 |
+    "             \ setl foldmethod=expr |
+    "             \ setl foldexpr=FoldExprJS() |
+    "             \ setl foldtext=FoldText()
 
-    au FileType cucumber set foldmethod=expr |
-                \ set foldexpr=FoldExprCucumber() |
-                \ set foldtext=FoldText()
+    au FileType cucumber setl foldmethod=expr |
+                \ setl foldexpr=FoldExprCucumber() |
+                \ setl foldtext=FoldText()
 augroup END
 
 augroup vimrcEx
     au!
 
+    au BufEnter *.json setl tabstop=2 | setl shiftwidth=2
+    au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
+
     " Show characters over 120 columns
-    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929 |
-                \ match OverLength /\%122v.*/
+    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
+    au BufEnter *.js match OverLength /\%122v.*/
 
     " Show characters over 80 columns
     au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929 |
-                \ match OverLength /\%82v.*/
+    au BufEnter *.md match OverLength /\%82v.*/
 
     " Set format options
     au BufEnter * set formatoptions=rqj
@@ -275,7 +281,7 @@ augroup vimrcEx
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
 
-    au BufRead,BufNewFile *.md setlocal textwidth=80
+    au BufRead,BufNewFile *.md setl textwidth=80
 augroup END
 " AUGROUP }}}
 
@@ -304,7 +310,7 @@ let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-z>' "<C-z>, to activate
+let g:user_emmet_leader_key='<C-y>' "<C-y>, to activate
 
 "Mundo (undo history) settings
 let g:mundo_width = 40
@@ -325,7 +331,7 @@ let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_set_highlights = 1
-let g:ale_set_signs = 0
+let g:ale_set_signs = 1
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -570,83 +576,6 @@ function! s:align()
     endif
 endfunction
 
-function! AddMarker(line, position)
-    let string = ""
-    let comments = split(&l:commentstring, '%s')
-    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
-    let lineNumber = getline(a:line) !~ comments[0] && a:position == 'close' ? a:line + 1 : a:line
-    let oldLine = getline(lineNumber)
-    let lineText = oldLine
-    let lineText = substitute(lineText, "^.*" . escape(comments[0], '/\^$.*~[]&') . " \\=", "", "")
-    let string .= substitute(comments[0], " ", "", "") . ' '
-    let string .= a:position == 'close' ? markers[1] : markers[0]
-    if oldLine !~ comments[0]
-        if a:position == 'open'
-            call inputsave()
-            let b:foldAddedComment = input('Enter comment:', '')
-            call inputrestore()
-        endif
-        let string .= ' ' . b:foldAddedComment
-    endif
-    if len(comments) > 1 &&  lineText !~ '\w\+'
-        let string .= ' ' . comments[1]
-    endif
-    if a:position == 'open'
-        if oldLine !~ comments[0]
-            call setline(lineNumber, string)
-            call append(lineNumber, oldLine)
-        else
-            call setline(lineNumber, string . ' ' . lineText)
-        endif
-    else
-        if oldLine !~ comments[0]
-            call append(lineNumber, string)
-        else
-            call setline(lineNumber, string . ' ' . lineText)
-        endif
-    endif
-endfunction
-
-function! MakeFold() range
-    let first_line = a:firstline
-    let last_line = a:lastline
-    if first_line == last_line | return | endif
-    call AddMarker(first_line, 'open')
-    call AddMarker(last_line, 'close')
-endfunction
-
-function! DeleteFold(leaveComments)
-    let comments = split(&l:commentstring, '%s')
-    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
-
-    let first_line = search(comments[0] . '.*' . markers[0] . '.*', "ncWb")
-    let firstText = substitute(getline(first_line), ' ' . markers[0], '', 'g')
-    if firstText =~ '\w\+' && a:leaveComments == 1
-        call setline(first_line, firstText)
-    else
-        call search(getline(first_line), "cWb")
-        execute ":d"
-    endif
-
-    let last_line = search(comments[0] . '.*' . markers[1] . '.*', "ncW")
-    let lastText = substitute(getline(last_line), ' ' . markers[1], '', 'g')
-    if lastText =~ '\w\+' && a:leaveComments == 1
-        call setline(last_line, lastText)
-    else
-        call search(getline(last_line), "cW")
-        execute ":d"
-    endif
-endfunction
-
-function! DeleteAllFolds(leaveComments)
-    let comments = split(&l:commentstring, '%s')
-    let markers = split(substitute(&l:foldmarker, ' ', '', 'g'), ',')
-
-    while search(comments[0] . ' ' . markers[0] . '.*', "c") > 0
-        call DeleteFold(a:leaveComments)
-    endwhile
-endfunction
-
 function! IndentWithI()
     if len(getline('.')) == 0 && empty(&buftype)
         return "\"_cc"
@@ -682,7 +611,7 @@ function! FoldExprJS()
     let fromString = "\\( from '.*'\\)"
 
     if  v:lnum == 1 && l =~ importString || l =~ '^\(\/\/ \|\/\* \)'
-        setl foldlevel=99
+        setl foldlevel=1
         return '2>'
     endif
 
@@ -758,12 +687,6 @@ nnoremap z; za
 nnoremap zl zA
 " force fold update folds
 nmap zuz <Plug>(FastFoldUpdate)
-"fold visual selection
-vnoremap <silent> zf :call MakeFold()<CR>zc==
-"delete fold
-nnoremap <silent> zd zo$:call DeleteFold(0)<CR>^
-"delete all folds
-nnoremap <silent> zD zR:call DeleteAllFolds(0)<CR>
 
 "NERDTree
 noremap <F9> :NERDTreeFind<CR><C-W>=
@@ -793,8 +716,8 @@ nnoremap <leader>o :only<CR>
 nnoremap <leader>[ ]czz
 nnoremap <leader>] [czz
 nnoremap du :diffupdate<CR>
-nnoremap dh :diffget //2<CR>
-nnoremap dl :diffget //3<CR>
+nnoremap dh :diffget //2<CR>\|:diffupdate<CR>
+nnoremap dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
 nnoremap <leader>gs :Gstatus<CR>
@@ -883,7 +806,7 @@ nnoremap <leader>) V`a=
 "ALE
 "jump on next error
 nmap <leader>an <Plug>(ale_next_wrap)
-nmap <leader>aN <Plug>(ale_previous_wrap)
+nmap <leader>ap <Plug>(ale_previous_wrap)
 "fix errors automatically
 nnoremap <leader>af :ALEFix<CR>
 "enable/disable
@@ -897,7 +820,7 @@ nnoremap / /\V\c
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 "search the copied content
-nnoremap // /\V\c<C-r>*<cr>
+nnoremap <silent><expr> // "/\\V\\c" . escape(@*, '\\/.*$^~[]') . "<CR>"
 "search in visual selection
 vnoremap // <ESC>/\%V\c
 

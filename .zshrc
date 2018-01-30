@@ -95,6 +95,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias kT="killall java && killall 2.33-x64-chromedriver && killall Google\ Chrome"
 
 # export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"

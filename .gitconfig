@@ -28,6 +28,7 @@
     sh = stash
     sha = stash apply
     fa = fetch --all
+    cp = cherry-pick
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
