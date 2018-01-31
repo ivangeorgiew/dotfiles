@@ -172,7 +172,7 @@ set wrap                                   " wrap too long lines
 " Folding
 set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
-set foldlevelstart=1
+set foldlevelstart=0
 
 " Indentations
 set tabstop=4
@@ -249,10 +249,10 @@ augroup folding
                 \ setl foldmethod=marker
 
     " au FileType javascript.jsx setl foldmethod=marker
-    " au FileType javascript.jsx setl foldlevelstart=3 |
-    "             \ setl foldmethod=expr |
-    "             \ setl foldexpr=FoldExprJS() |
-    "             \ setl foldtext=FoldText()
+    au FileType javascript.jsx setl foldlevelstart=3 |
+                \ setl foldmethod=expr |
+                \ setl foldexpr=FoldExprJS() |
+                \ setl foldtext=FoldText()
 
     au FileType cucumber setl foldmethod=expr |
                 \ setl foldexpr=FoldExprCucumber() |
@@ -335,7 +335,7 @@ let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_set_highlights = 1
-let g:ale_set_signs = 1
+let g:ale_set_signs = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
@@ -444,7 +444,7 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 " lastplace
-let g:lastplace_open_folds = 0
+let g:lastplace_open_folds = 1
 let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
 let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
@@ -613,7 +613,7 @@ function! FoldExprJS()
     let nl = getline(v:lnum + 1)
 
     if !s:inImportFold && l =~ s:importString
-        setl foldlevel=2
+        setl foldlevel=1
         let s:inImportFold = 1
         return '>3'
     endif
@@ -644,8 +644,9 @@ function! FoldExprJS()
         let lind = indent(v:lnum) / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 3 && l !~ s:endBracket && l =~ s:startBracket
+        if lind < 3 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
             let s:bracketIndent = lind
+
             return 'a1'
         endif
 
@@ -672,10 +673,10 @@ noremap <silent> <leader>t :tabclose<CR>
 nnoremap <leader>I ggVG=
 
 " Folding mappings
-" Fold all
-nnoremap zm zM
+" fold less
+nnoremap zN zN
 " Unfold all
-nnoremap zn zR
+nnoremap zn zr
 " unmap it
 nnoremap Z <ESC>
 " open/close fold
@@ -740,11 +741,11 @@ nnoremap gO gf
 " Go to definition made easier for JS files using Ag
 "current new tab
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>:if (line('$') == 1)<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz:if (line('$') == 1)<CR>bd<CR>endif<CR>
 "current window
-nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>
+nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
