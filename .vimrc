@@ -249,7 +249,7 @@ augroup folding
                 \ setl foldmethod=marker
 
     " au FileType javascript.jsx setl foldmethod=marker
-    au FileType javascript.jsx setl foldlevelstart=3 |
+    au FileType javascript.jsx setl foldlevelstart=2 |
                 \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
                 \ setl foldtext=FoldText()
@@ -589,7 +589,7 @@ function! IndentWithI()
 endfunction
 
 function! FoldText()
-    return '+-- ' . substitute(getline(v:foldstart), '^\s*', '', 'g')
+    return getline(v:foldstart)
 endfunction
 
 function! FoldExprCucumber()
@@ -613,7 +613,7 @@ function! FoldExprJS()
     let nl = getline(v:lnum + 1)
 
     if !s:inImportFold && l =~ s:importString
-        setl foldlevel=1
+        setl foldlevel=2
         let s:inImportFold = 1
         return '>3'
     endif
@@ -644,14 +644,14 @@ function! FoldExprJS()
         let lind = indent(v:lnum) / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 3 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
+        if lind < 4 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
             let s:bracketIndent = lind
 
             return 'a1'
         endif
 
         " Keep the endBracket check last for performance
-        if lind < 3 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+        if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
             let s:bracketIndent = s:bracketIndent - 1
             return 's1'
         endif
@@ -674,9 +674,9 @@ nnoremap <leader>I ggVG=
 
 " Folding mappings
 " fold less
-nnoremap zN zN
-" Unfold all
 nnoremap zn zr
+" Unfold all
+nnoremap zN zR
 " unmap it
 nnoremap Z <ESC>
 " open/close fold
