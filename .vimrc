@@ -170,8 +170,9 @@ set updatetime=1000                        " time after with the CursorHold even
 set wrap                                   " wrap too long lines
 
 " Folding
+set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
-set foldlevelstart=0
+set foldlevelstart=1
 
 " Indentations
 set tabstop=4
@@ -247,10 +248,11 @@ augroup folding
     au BufEnter .vimrc setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
-    au FileType javascript.jsx setl foldlevelstart=3 |
-                \ setl foldmethod=expr |
-                \ setl foldexpr=FoldExprJS() |
-                \ setl foldtext=FoldText()
+    " au FileType javascript.jsx setl foldmethod=marker
+    " au FileType javascript.jsx setl foldlevelstart=3 |
+    "             \ setl foldmethod=expr |
+    "             \ setl foldexpr=FoldExprJS() |
+    "             \ setl foldtext=FoldText()
 
     au FileType cucumber setl foldmethod=expr |
                 \ setl foldexpr=FoldExprCucumber() |
@@ -285,16 +287,19 @@ augroup END
 " Disabled matching of paranteses for folding speed
 let loaded_matchparen = 1
 
-" Variable for FoldExprJS
+" Variables for FoldExprJS
+let s:bracketIndent = -1
 let s:inMarker = 0
-let s:comment = '\s*\(\/\/ \|\/\* \|\*\/ \)'
+let s:inImportFold = 0
+let s:comment = '\s*\(\/\/\|\/\*\|\*\/\)'
 let s:importString = '^' . s:comment . '*\s*\(import\)'
 let s:fromString = "\\( from '.*'\\)"
 let s:marker1 = '^' . s:comment . '\s*\(region\)\s*'
 let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
 let s:elseStatement = '\s*\(else\)\s*'
 let s:startBracket = '\w.*\({\|(\|[\)$'
-let s:endBracket = '^' . s:comment . '*\s*\(}\|)\]\)'
+let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
+" '^\s*\(\/\/\|\/\*\|\*\/\)*\s*\(}\|)\|]\)'
 
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
@@ -306,10 +311,6 @@ let g:NERDTreeMapOpenVSplit='<C-v>'
 let g:NERDTreeWinSize=40
 let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
-
-" Indent Guides settings
-" let g:indent_guides_guide_size = 1
-" let g:indent_guides_auto_colors = 0
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
@@ -443,9 +444,9 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 " lastplace
-let g:lastplace_open_folds = 1
-" let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
-" let g:lastplace_ignore_buftype = "quickfix,nofile,help"
+let g:lastplace_open_folds = 0
+let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
+let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -611,19 +612,20 @@ function! FoldExprJS()
     let l = getline(v:lnum)
     let nl = getline(v:lnum + 1)
 
-    if  v:lnum == 1 && l =~ s:importString || l =~ '^\(\/\/ \|\/\* \)'
-        setl foldlevel=1
-        return '2>'
+    if !s:inImportFold && l =~ s:importString
+        setl foldlevel=2
+        let s:inImportFold = 1
+        return '>3'
     endif
 
     if l =~ s:fromString && nl =~ '^\s*$'
-        return '<2'
+        return '<3'
     endif
 
     if pl =~ s:fromString && l =~ '^\s*$'
+        let s:inImportFold = 0
         return '0'
     endif
-
 
     if l =~ s:marker1
         if !exists(s:inMarker)
@@ -638,18 +640,19 @@ function! FoldExprJS()
         return 's1'
     endif
 
-    if !s:inMarker
+    if !s:inMarker && !s:inImportFold
         let lind = indent(v:lnum) / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 3 && l !~ s:importString && l !~ s:elseStatement && l =~ s:startBracket
-            " let s:bracketIndent = lind
-            return lind . '>'
+        if lind < 3 && l !~ s:endBracket && l =~ s:startBracket
+            let s:bracketIndent = lind
+            return 'a1'
         endif
 
         " Keep the endBracket check last for performance
-        if l !~ s:fromString && lind < 3 && l !~ s:elseStatement && l =~ s:endBracket
-            return '<' . lind
+        if lind < 3 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+            let s:bracketIndent = s:bracketIndent - 1
+            return 's1'
         endif
     endif
 
@@ -676,9 +679,9 @@ nnoremap zn zR
 " unmap it
 nnoremap Z <ESC>
 " open/close fold
-nnoremap z; za
+nnoremap z; zA
 " open/close fold recursively
-nnoremap zl zA
+nnoremap zl za
 " force fold update folds
 nmap zuz <Plug>(FastFoldUpdate)
 

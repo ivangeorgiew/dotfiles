@@ -25,7 +25,7 @@
     rs = rm --cached
     ss = status
     sch = !git branch --all | grep
-    sh = stash
+    sh = !git stash && git clean -df
     sha = stash apply
     fa = fetch --all
     cp = cherry-pick
