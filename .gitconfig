@@ -4,7 +4,6 @@
     ui = auto
 [alias]
     ac = !git add . && git commit -m
-    cn = clean -df
     cl = clone
     ct = checkout
     df = diff

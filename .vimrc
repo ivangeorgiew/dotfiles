@@ -217,6 +217,9 @@ set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespa
 " tags settings
 set tags=./tags;
 set statusline+=%{gutentags#statusline()}
+
+" vim-stay
+set viewoptions=folds,cursor
 "SET }}}
 
 "AUGROUP {{{
@@ -427,7 +430,7 @@ let g:AutoPairsCenterLine = 0
 " FastFold
 let g:fastfold_savehook = 1
 let g:fastfold_fold_command_suffixes =  []
-let g:fastfold_fold_movement_commands = [ 'zj', 'zk' ]
+let g:fastfold_fold_movement_commands = []
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -444,9 +447,9 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 " lastplace
-let g:lastplace_open_folds = 1
-let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
-let g:lastplace_ignore_buftype = "quickfix,nofile,help"
+" let g:lastplace_open_folds = 1
+" let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
+" let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -644,14 +647,14 @@ function! FoldExprJS()
         let lind = indent(v:lnum) / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 4 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
+        if lind < 3 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
             let s:bracketIndent = lind
 
             return 'a1'
         endif
 
         " Keep the endBracket check last for performance
-        if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+        if lind < 3 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
             let s:bracketIndent = s:bracketIndent - 1
             return 's1'
         endif
@@ -680,9 +683,9 @@ nnoremap zN zR
 " unmap it
 nnoremap Z <ESC>
 " open/close fold
-nnoremap z; zA
+nnoremap zl zA
 " open/close fold recursively
-nnoremap zl za
+nnoremap z; za
 " force fold update folds
 nmap zuz <Plug>(FastFoldUpdate)
 
@@ -814,13 +817,13 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V\c
+nnoremap / /\V
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 "search the copied content
-nnoremap <silent><expr> // "/\\V\\c" . escape(@*, '\\/.*$^~[]') . "<CR>"
+nnoremap <silent><expr> // "/\\V" . escape(@*, '\\/.*$^~[]') . "<CR>"
 "search in visual selection
-vnoremap // <ESC>/\%V\c
+vnoremap // <ESC>/\%V
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
@@ -845,7 +848,8 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 nnoremap ) :Ag! -F<SPACE>
-vnoremap ) "by:Ag! "<C-r>b"<cr>
+vnoremap ) "by:Ag! -F "<C-r>b"<cr>
+vnoremap )) "by:Ag! '<C-r>b'<cr>
 
 
 " Quicker window movement
