@@ -217,9 +217,6 @@ set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespa
 " tags settings
 set tags=./tags;
 set statusline+=%{gutentags#statusline()}
-
-" vim-stay
-set viewoptions=folds,cursor
 "SET }}}
 
 "AUGROUP {{{
@@ -252,7 +249,7 @@ augroup folding
                 \ setl foldmethod=marker
 
     " au FileType javascript.jsx setl foldmethod=marker
-    au FileType javascript.jsx setl foldlevelstart=2 |
+    au FileType javascript.jsx setl foldlevel=2 |
                 \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
                 \ setl foldtext=FoldText()
@@ -447,9 +444,9 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 " lastplace
-" let g:lastplace_open_folds = 1
-" let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
-" let g:lastplace_ignore_buftype = "quickfix,nofile,help"
+let g:lastplace_open_folds = 1
+let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
+let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -616,7 +613,6 @@ function! FoldExprJS()
     let nl = getline(v:lnum + 1)
 
     if !s:inImportFold && l =~ s:importString
-        setl foldlevel=2
         let s:inImportFold = 1
         return '>3'
     endif
@@ -631,9 +627,6 @@ function! FoldExprJS()
     endif
 
     if l =~ s:marker1
-        if !exists(s:inMarker)
-            setl foldlevel=1
-        endif
         let s:inMarker = 1
         return 'a1'
     endif
