@@ -248,8 +248,7 @@ augroup folding
     au BufEnter .vimrc setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
-    " au FileType javascript.jsx setl foldmethod=marker
-    au FileType javascript.jsx setl foldlevel=2 |
+    au FileType javascript.jsx setl foldlevel=1 |
                 \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
                 \ setl foldtext=FoldText()
