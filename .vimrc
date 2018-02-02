@@ -296,9 +296,8 @@ let s:fromString = "\\( from '.*'\\)"
 let s:marker1 = '^' . s:comment . '\s*\(region\)\s*'
 let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
 let s:elseStatement = '\s*\(else\)\s*'
-let s:startBracket = '\w.*\({\|(\|[\)$'
+let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-" '^\s*\(\/\/\|\/\*\|\*\/\)*\s*\(}\|)\|]\)'
 
 " variable for ToggleWrapscan function
 let g:wrapscanVariable = 1
@@ -418,6 +417,8 @@ let g:rooter_silent_chdir = 1
 
 " auto-pairs settings
 let g:AutoPairsShortcutToggle = '<C-7>'
+let g:AutoPairsMapCh = 0
+let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutBackInsert = ''
@@ -442,8 +443,8 @@ let g:gruvbox_italic = 0
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
-" lastplace
-let g:lastplace_open_folds = 1
+" vim-lastplace
+let g:lastplace_open_folds = 0
 let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
 let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
@@ -718,6 +719,9 @@ nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gb :Gblame<CR>
+"See the diff between the opened file and the one in develop
+nnoremap <leader>gd :Gdiff develop<CR>
+nnoremap <leader>gD :Gdiff<SPACE>
 " show merge conflicts
 nnoremap <leader>gm :Gmerge<CR>
 
@@ -809,13 +813,14 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V
+nnoremap / /\V\c
+"search in visual selection
+vnoremap / <ESC>/\%V\c
+"search the copied content
+nnoremap <silent> // :let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // y:let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-"search the copied content
-nnoremap <silent><expr> // "/\\V" . escape(@*, '\\/.*$^~[]') . "<CR>"
-"search in visual selection
-vnoremap // <ESC>/\%V
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
@@ -823,11 +828,11 @@ nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 " Set marker
 nnoremap \ m
 
-" Move to the next word as the one under cursor
+" Move to the next word such word
 nnoremap m *
-vnoremap m *
+vnoremap <silent> m y:let @/ = '\<' . escape(@*, '\\/.*$^~[]') . '\>'<CR>n
 nnoremap M #
-vnoremap M #
+vnoremap <silent> M y:let @/ = '\<' . escape(@*, '\\/.*$^~[]') . '\>'<CR>N
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
@@ -873,9 +878,9 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
-nnoremap <silent> <leader>ia :ImportJSWord<CR>
-nnoremap <silent> <leader>if :ImportJSFix<CR>
-nnoremap <silent> <leader>iF :ImportJSGoto<CR>
+nnoremap <silent> <leader>ia :ImportJSWord<CR><Plug>(FastFoldUpdate)
+nnoremap <silent> <leader>if :ImportJSFix<CR><Plug>(FastFoldUpdate)
+nnoremap <silent> <leader>ig :ImportJSGoto<CR>
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd
 inoremap <C-c> <Esc>
