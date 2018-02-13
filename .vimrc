@@ -1,5 +1,5 @@
 "COMMENTS {{{
-" Execute this for profiling which slows down vim
+" Execute this for profiling what slows down vim
 
 " :profile start profile.log | profile func * | profile file *
 " " At this point do slow actions
@@ -13,9 +13,6 @@
 " qe...q (e can be any letter)
 " qE...q to append (E can be any letter)
 " :let @e='<c-r><c-r>e then edit and append '<CR>
-
-"Emmet
-"to use type <c-z>,
 
 "Gstatus (vim-fugitive) commands in vim
 " [ ] - move between files
@@ -55,8 +52,6 @@
 "dl - get code from right (3 windows)
 "<leader>[ - next difference
 "<leader>] - previous difference
-
-"To enable Indent Guides use <leader>ig
 
 "Completion
 "<C-x><C-l> line completion
@@ -101,7 +96,6 @@
 " :%S/old_word{,s}/new_word{,s}/gc
 
 " auto-pairs
-" <C-&> toggle auto-pairs
 " There are alot more settings in the github page
 " deleting the first character of a pair deletes the whole pair
 " space and enter adds niceness
@@ -110,9 +104,8 @@
 
 " Folding
 " custom markers for compatibility with WebStorm
-" to leave non-empty comments upon fold deletion - change parameter 0 to 1 in mappings DeleteFold and DeleteAllFolds
-" zd - delete fold
-" zD - delete all folds
+" z; - fold/unfold
+" zl - fold/unfold deeply
 " Z - toggle fold || create fold(vis selection)
 " zj/zk - move between folds
 "COMMENTS }}}
@@ -298,9 +291,10 @@ let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
 let s:elseStatement = '\s*\(else\)\s*'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\)'
 
 " variable for ToggleWrapscan function
-let g:wrapscanVariable = 1
+let s:wrapscanVariable = 1
 
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
@@ -348,10 +342,10 @@ if executable('ag')
 
     " ag is fast enough that CtrlP doesn't need to cache
     let g:ctrlp_use_caching = 0
-endif
 
-" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-let g:ag_prg = 'ag --column --nogroup --noheading -s'
+    " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+    let g:ag_prg = 'ag --column --nogroup --noheading -s'
+endif
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -558,12 +552,12 @@ function! ToggleDiff()
 endfunction
 
 function! ToggleWrapscan()
-    if g:wrapscanVariable == 0
-        let g:wrapscanVariable = 1
+    if s:wrapscanVariable == 0
+        let s:wrapscanVariable = 1
         execute "set wrapscan"
         echo 'Wrapscan Enabled'
     else
-        let g:wrapscanVariable = 0
+        let s:wrapscanVariable = 0
         execute "set nowrapscan"
         echo 'Wrapscan Disabled'
     endif
@@ -617,7 +611,7 @@ function! FoldExprJS()
         return '>3'
     endif
 
-    if l =~ s:fromString && nl =~ '^\s*$'
+    if l =~ s:fromString && nl !~ s:importString
         return '<3'
     endif
 
@@ -640,9 +634,8 @@ function! FoldExprJS()
         let lind = indent(v:lnum) / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 3 && l !~ '^\(||\|&&\).*' && l !~ s:endBracket && l =~ s:startBracket
+        if lind < 3 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
             let s:bracketIndent = lind
-
             return 'a1'
         endif
 
@@ -675,9 +668,9 @@ nnoremap zn zr
 nnoremap zN zR
 " unmap it
 nnoremap Z <ESC>
-" open/close fold
-nnoremap zl zA
 " open/close fold recursively
+nnoremap zl zA
+" open/close fold
 nnoremap z; za
 " force fold update folds
 nmap zuz <Plug>(FastFoldUpdate)
@@ -686,7 +679,7 @@ nmap zuz <Plug>(FastFoldUpdate)
 noremap <F9> :NERDTreeFind<CR><C-W>=
 noremap <F10> :NERDTreeToggle<CR><C-W>=
 
-"X to increment
+"C-X to decrement, X to increment
 nnoremap X <C-a>
 
 " Get off my lawn
@@ -715,7 +708,6 @@ nnoremap dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
 nnoremap <leader>gs :Gstatus<CR>
-nnoremap <leader>gl :Git log --pretty=oneline -10<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gb :Gblame<CR>
@@ -751,6 +743,21 @@ nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
+
+" Fix register copy/pasting
+" nnoremap DD "*dd
+" nnoremap D "*d
+" vnoremap D "*d
+" nnoremap d "_d
+" nnoremap dd "_dd
+" vnoremap d "_d
+" nnoremap s "_s
+" vnoremap s "_s
+" nnoremap c "_c
+" vnoremap c "_c
+" nnoremap x "_x
+" vnoremap x "_x
+" vnoremap p "_c<Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>
 
 " EasyClip
 " cut
@@ -813,12 +820,12 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V\c
+nnoremap / /\V
 "search in visual selection
-vnoremap / <ESC>/\%V\c
+vnoremap / <ESC>/\%V
 "search the copied content
-nnoremap <silent> // :let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
-vnoremap <silent> // y:let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // y:let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
