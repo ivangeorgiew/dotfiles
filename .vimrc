@@ -165,7 +165,8 @@ set wrap                                   " wrap too long lines
 " Folding
 set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
-set foldlevelstart=0
+set foldlevelstart=2
+set foldlevel=2
 
 " Indentations
 set tabstop=4
@@ -238,11 +239,11 @@ augroup END
 augroup folding
     au!
 
-    au BufEnter .vimrc setl foldmarker={{{,}}} |
+    au BufEnter .vimrc setl foldlevel=0 |
+                \ setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
-    au FileType javascript.jsx setl foldlevel=1 |
-                \ setl foldmethod=expr |
+    au FileType javascript.jsx setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
                 \ setl foldtext=FoldText()
 
@@ -631,7 +632,8 @@ function! FoldExprJS()
     endif
 
     if !s:inMarker && !s:inImportFold
-        let lind = indent(v:lnum) / 4 + 1
+        " gotta catch comments as well
+        let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / 4 + 1
 
         " Keep the startBracket check last for performance
         if lind < 3 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
