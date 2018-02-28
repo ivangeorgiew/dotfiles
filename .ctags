@@ -19,5 +19,4 @@
 --langmap=javascript:.js.es6.es.jsx
 --javascript-kinds=-c-f-m-p-v
 
---regex-javascript=/^[ \t]*export[ \t]?(var|let|const|function|class)?(\* | \* | \*| )([a-zA-Z0-9_$]+)/\3/E,Export,Exports/
-
+--regex-javascript=/^\s*export\s*?(var|let|const|function|class)?(\* | \* | \*| )([a-zA-Z0-9_$]+)/\3/E,Export,Exports/

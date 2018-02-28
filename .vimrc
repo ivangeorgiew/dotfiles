@@ -135,7 +135,7 @@ set re=1
 " set colorcolumn=120  " slows alot
 
 " Affects lag
-set cursorline
+" set cursorline
 
 " Common
 set smartcase
@@ -165,8 +165,7 @@ set wrap                                   " wrap too long lines
 " Folding
 set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
-set foldlevelstart=2
-set foldlevel=2
+set foldlevelstart=1
 
 " Indentations
 set tabstop=4
@@ -243,7 +242,8 @@ augroup folding
                 \ setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
-    au FileType javascript.jsx setl foldmethod=expr |
+    au FileType javascript.jsx setl foldlevel=1 |
+                \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
                 \ setl foldtext=FoldText()
 
@@ -292,7 +292,7 @@ let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
 let s:elseStatement = '\s*\(else\)\s*'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\)'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\)'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
@@ -379,9 +379,9 @@ let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
-let g:ycm_use_ultisnips_completer = 0
+let g:ycm_use_ultisnips_completer = 1
 let g:ycm_max_num_candidates = 10
-let g:ycm_max_num_identifier_candidates = 5
+let g:ycm_max_num_identifier_candidates = 10
 " disable console logs
 let g:ycm_show_diagnostics_ui = 0
 " Start vim faster
@@ -399,7 +399,7 @@ let g:UltiSnipsSnippetDirectories = ['ultisnips']
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
-let g:EasyClipAutoFormat = 1
+let g:EasyClipAutoFormat = 0
 let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
@@ -734,11 +734,11 @@ nnoremap gO gf
 " Go to definition made easier for JS files using Ag
 "current new tab
 " (?!(?:badword|second|\*)) search for not one of these words/characters
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
+nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
 "vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz:if (line('$') == 1)<CR>bd<CR>endif<CR>
+nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz:if (line('$') == 1)<CR>bd<CR>endif<CR>
 "current window
-nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b )'<CR>zz
+nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
@@ -824,10 +824,10 @@ nnoremap <leader>al :ALELint<CR>
 "Incsearch
 nnoremap / /\V
 "search in visual selection
-vnoremap / <ESC>/\%V
+vnoremap / <ESC>/\%V\V
 "search the copied content
 nnoremap <silent> // :let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
-vnoremap <silent> // y:let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
@@ -839,9 +839,9 @@ nnoremap \ m
 
 " Move to the next word such word
 nnoremap m *
-vnoremap <silent> m y:let @/ = '\<' . escape(@*, '\\/.*$^~[]') . '\>'<CR>n
+vnoremap <silent> m "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
 nnoremap M #
-vnoremap <silent> M y:let @/ = '\<' . escape(@*, '\\/.*$^~[]') . '\>'<CR>N
+vnoremap <silent> M "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
@@ -854,8 +854,8 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 nnoremap ) :Ag! -F<SPACE>
-vnoremap ) "by:Ag! -F "<C-r>b"<cr>
-vnoremap )) "by:Ag! '<C-r>b'<cr>
+vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<cr>
 
 
 " Quicker window movement
