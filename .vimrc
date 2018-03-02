@@ -122,21 +122,22 @@ execute pathogen#helptags()
 " set termguicolors
 set background=dark
 colorscheme gruvbox
-"MISC }}}
 
-"SET {{{
 " Fix lag in vim
 set shell=bash
 set lazyredraw
 set nocursorcolumn
 set synmaxcol=500
 set re=1
+set norelativenumber
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 
 " Affects lag
 " set cursorline
+"MISC }}}
 
+"SET {{{
 " Common
 set smartcase
 set noignorecase
@@ -166,6 +167,7 @@ set wrap                                   " wrap too long lines
 set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
 set foldlevelstart=1
+set foldtext=FoldText()
 
 " Indentations
 set tabstop=4
@@ -238,18 +240,17 @@ augroup END
 augroup folding
     au!
 
-    au BufEnter .vimrc setl foldlevel=0 |
+    au FileType vim setl foldlevel=0 |
                 \ setl foldmarker={{{,}}} |
                 \ setl foldmethod=marker
 
     au FileType javascript.jsx setl foldlevel=1 |
                 \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprJS() |
-                \ setl foldtext=FoldText()
 
-    au FileType cucumber setl foldmethod=expr |
+    au FileType cucumber  setl foldlevel=0 |
+                \ setl foldmethod=expr |
                 \ setl foldexpr=FoldExprCucumber() |
-                \ setl foldtext=FoldText()
 augroup END
 
 augroup vimrcEx
@@ -285,14 +286,14 @@ let s:bracketIndent = -1
 let s:inMarker = 0
 let s:inImportFold = 0
 let s:comment = '\s*\(\/\/\|\/\*\|\*\/\)'
-let s:importString = '^' . s:comment . '*\s*\(import\)'
+let s:importString = '^' . s:comment . '*\s*\(import \)'
 let s:fromString = "\\( from '.*'\\)"
-let s:marker1 = '^' . s:comment . '\s*\(region\)\s*'
-let s:marker2 = '^' . s:comment . '\s*\(endregion\)\s*'
-let s:elseStatement = '\s*\(else\)\s*'
+let s:marker1 = '^' . s:comment . '\s*\(region \)'
+let s:marker2 = '^' . s:comment . '\s*\(endregion \)'
+let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\)'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\)\s*'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
@@ -822,14 +823,15 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V
+nnoremap / /\V\c
 "search in visual selection
-vnoremap / <ESC>/\%V\V
+vnoremap / <ESC>/\%V\V\c
 "search the copied content
-nnoremap <silent> // :let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
-vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+vnoremap ? <C-C>
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
