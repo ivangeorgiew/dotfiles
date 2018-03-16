@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
+# vim:set ts=4 sw=4:
 
 main () {
-    echo "~/dotfiles -> ~/ are you sure? [Y/n]: \c"
+    echo "~/dotfiles -> ~/ are you sure? [y/n]: \c"
     read line
-    if [[ "$line" == Y* ]] || [[ "$line" == y* ]] || [ -z "$line" ]; then
+    if [[ "$OSTYPE" == darwin* ]] && [[ "$line" == y* ]]; then
         rm -fr ~/.vim
-        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.tern-config ~/.tmux.conf ~/.vimrc ~/.zprofile ~/.zshenv ~/.zshrc
+        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.tmux.conf ~/.vimrc ~/.zshrc
 
         ln -s ~/dotfiles/.agignore ~/.agignore
         ln -s ~/dotfiles/.ctags ~/.ctags
@@ -16,8 +17,20 @@ main () {
         ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
         ln -s ~/dotfiles/.vim ~/.vim
         ln -s ~/dotfiles/.vimrc ~/.vimrc
-        ln -s ~/dotfiles/.zprofile ~/.zprofile
-        ln -s ~/dotfiles/.zshenv ~/.zshenv
+        ln -s ~/dotfiles/.zshrc ~/.zshrc
+    elif [[ "$OSTYPE" == linux* ]] && [[ "$line" == y* ]]; then
+        rm -fr ~/.vim
+        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.vimrc ~/.zshrc ~/.xinitrc ~/.Xmodmap
+
+        ln -s ~/dotfiles/.xinitrc ~/.xinitrc
+        ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap
+        ln -s ~/dotfiles/.agignore ~/.agignore
+        ln -s ~/dotfiles/.ctags ~/.ctags
+        ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+        ln -s ~/dotfiles/.gitignore ~/.gitignore
+        ln -s ~/dotfiles/.importjs.js ~/.importjs.js
+        ln -s ~/dotfiles/.vim ~/.vim
+        ln -s ~/dotfiles/.vimrc ~/.vimrc
         ln -s ~/dotfiles/.zshrc ~/.zshrc
     else
         echo "You said no, man"

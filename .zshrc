@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/ivangeorgiev/.oh-my-zsh
+export ZSH=/usr/share/oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -63,7 +63,7 @@ BULLETTRAIN_PROMPT_ORDER=(
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git archlinux)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,6 +99,7 @@ alias kT="killall java && killall 2.33-x64-chromedriver && killall Google\ Chrom
 
 # export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"
+export PATH=~/.npm-global/bin:$PATH
 
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
