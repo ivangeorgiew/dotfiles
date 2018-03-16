@@ -5,8 +5,12 @@ main () {
     echo "~/dotfiles -> ~/ are you sure? [y/n]: \c"
     read line
     if [[ "$OSTYPE" == darwin* ]] && [[ "$line" == y* ]]; then
+        echo "Installing dotfiles on MacOS"
         rm -fr ~/.vim
         rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.tmux.conf ~/.vimrc ~/.zshrc
+
+        mkdir ~/dotfiles/.vim/undo
+        mkdir ~/dotfiles/.vim/session
 
         ln -s ~/dotfiles/.agignore ~/.agignore
         ln -s ~/dotfiles/.ctags ~/.ctags
@@ -19,8 +23,12 @@ main () {
         ln -s ~/dotfiles/.vimrc ~/.vimrc
         ln -s ~/dotfiles/.zshrc ~/.zshrc
     elif [[ "$OSTYPE" == linux* ]] && [[ "$line" == y* ]]; then
+        echo "Installing dotfiles on Linux"
         rm -fr ~/.vim
         rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.vimrc ~/.zshrc ~/.xinitrc ~/.Xmodmap
+
+        mkdir ~/dotfiles/.vim/undo
+        mkdir ~/dotfiles/.vim/session
 
         ln -s ~/dotfiles/.xinitrc ~/.xinitrc
         ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap
