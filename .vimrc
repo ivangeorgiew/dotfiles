@@ -116,10 +116,10 @@ execute pathogen#infect()
 execute pathogen#helptags()
 
 " set Vim-specific sequences for RGB colors
-" let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-" let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" set t_Co=256
-" set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set t_Co=256
+set termguicolors
 set background=dark
 colorscheme gruvbox
 
@@ -127,14 +127,19 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set synmaxcol=500
-set re=1
-set norelativenumber
+set regexpengine=1
+" set synmaxcol=500
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 
 " Affects lag
 " set cursorline
+" augroup numbertoggle
+"     au!
+"     au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+"     au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+" augroup END
+
 "MISC }}}
 
 "SET {{{
@@ -161,7 +166,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set wrap                                   " wrap too long lines
+set nowrap                                   " wrap too long lines
 
 " Folding
 set foldmethod=manual
@@ -253,27 +258,37 @@ augroup folding
                 \ setl foldexpr=FoldExprCucumber() |
 augroup END
 
+augroup highlights
+    au!
+
+    au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
+
+    au BufEnter * hi! link OverLength MyError
+
+    " Ale highlights
+    au BufEnter * hi! link ALEError MyError
+    au BufEnter * hi! link ALEWarning MyError
+    au BufEnter * hi! link ALEErrorSign MyError
+
+    " Show characters over 120 columns
+    au BufEnter *.js match OverLength /\%122v.*/
+
+    " Show characters over 80 columns
+    au BufEnter *.md match OverLength /\%82v.*/
+augroup END
+
 augroup vimrcEx
     au!
+
+    au BufEnter * set formatoptions=rqj
+
+    au BufRead,BufNewFile *.md setl textwidth=80
 
     au BufEnter *.json setl tabstop=2 | setl shiftwidth=2
     au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
 
-    " Show characters over 120 columns
-    au BufEnter *.js highlight OverLength ctermbg=Red guibg=#592929
-    au BufEnter *.js match OverLength /\%122v.*/
-
-    " Show characters over 80 columns
-    au BufEnter *.md highlight OverLength ctermbg=Red guibg=#592929 |
-    au BufEnter *.md match OverLength /\%82v.*/
-
-    " Set format options
-    au BufEnter * set formatoptions=rqj
-
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
-
-    au BufRead,BufNewFile *.md setl textwidth=80
 augroup END
 " AUGROUP }}}
 
@@ -286,10 +301,10 @@ let s:bracketIndent = -1
 let s:inMarker = 0
 let s:inImportFold = 0
 let s:comment = '\s*\(\/\/\|\/\*\|\*\/\)'
-let s:importString = '^' . s:comment . '*\s*\(import \)'
+let s:importString = '^' . s:comment . '*\s*\(import\)\s*'
 let s:fromString = "\\( from '.*'\\)"
-let s:marker1 = '^' . s:comment . '\s*\(region \)'
-let s:marker2 = '^' . s:comment . '\s*\(endregion \)'
+let s:marker1 = '^' . s:comment . '.*\( region\)\s*'
+let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
@@ -320,13 +335,13 @@ let g:mundo_close_on_revert = 1
 let g:jsx_ext_required = 0
 
 " ALE configurations
+let g:ale_enabled = 1
 let g:ale_linters_explicit = 1
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
-let g:ale_enabled = 1
 let g:ale_lint_on_enter = 1
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 'always'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_set_highlights = 1
 let g:ale_set_signs = 0
@@ -387,6 +402,7 @@ let g:ycm_max_num_identifier_candidates = 10
 let g:ycm_show_diagnostics_ui = 0
 " Start vim faster
 let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
+let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 
 " UltiSnips
 " keys
@@ -428,7 +444,7 @@ let g:fastfold_fold_movement_commands = []
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
-let g:airline_extensions = [ 'ctrlp', 'ale' ]
+let g:airline_extensions = [ 'ctrlp' ]
 let g:airline_section_y = ''
 let g:airline_highlighting_cache = 0
 let g:airline_theme = 'gruvbox'
@@ -610,14 +626,14 @@ function! FoldExprJS()
 
     if !s:inImportFold && l =~ s:importString
         let s:inImportFold = 1
-        return '>3'
+        return '>4'
     endif
 
-    if l =~ s:fromString && nl !~ s:importString
-        return '<3'
+    if l =~ s:fromString && nl !~ s:importString && s:inImportFold
+        return '<4'
     endif
 
-    if pl =~ s:fromString && l =~ '^\s*$'
+    if pl =~ s:fromString && l !~ s:importString
         let s:inImportFold = 0
         return '0'
     endif
@@ -637,13 +653,13 @@ function! FoldExprJS()
         let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / 4 + 1
 
         " Keep the startBracket check last for performance
-        if lind < 3 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
+        if lind < 4 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
             let s:bracketIndent = lind
             return 'a1'
         endif
 
         " Keep the endBracket check last for performance
-        if lind < 3 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+        if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
             let s:bracketIndent = s:bracketIndent - 1
             return 's1'
         endif
@@ -672,9 +688,9 @@ nnoremap zN zR
 " unmap it
 nnoremap Z <ESC>
 " open/close fold recursively
-nnoremap zl zA
+nnoremap z; zA
 " open/close fold
-nnoremap z; za
+nnoremap zl za
 " force fold update folds
 nmap zuz <Plug>(FastFoldUpdate)
 
@@ -799,16 +815,13 @@ noremap <silent> <F7> :call SaveSession()<cr>
 noremap <silent> <F5> :call OpenSession()<cr>
 
 " Copy multiple words to register
-nnoremap <silent> <leader>8 lbve"ay
-nnoremap <silent> <leader>9 :let @a .= ', '<cr>lbve"Ay
-nnoremap <silent> <leader>0 o<Esc>"ap==^ma
+nnoremap <silent> <leader>8 lbve"cy
+nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
+nnoremap <silent> <leader>0 a <ESC>"cp
 
 " Space to new line in vis selection
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
 nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
-
-" Indent correctly to already set mark(\a)
-nnoremap <leader>) V`a=
 
 "ALE
 "jump on next error
@@ -824,6 +837,7 @@ nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
 nnoremap / /\V\c
+nnoremap <leader>l ?\V\c
 "search in visual selection
 vnoremap / <ESC>/\%V\V\c
 "search the copied content
