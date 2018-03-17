@@ -106,11 +106,13 @@ bindkey "${terminfo[kend]}" end-of-line
 alias kT="killall java && killall 2.33-x64-chromedriver && killall Google\ Chrome"
 alias rr="npm run"
 
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_us.UTF-8
+
 # export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"
 export PATH=~/.npm-global/bin:$PATH
-
-export TERM=xterm-256color
 
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"

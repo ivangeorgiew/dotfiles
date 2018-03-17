@@ -1,6 +1,2 @@
 clear lock
-keycode 66 = XF86Paste
-clear Mod4
-clear Control
-add Mod4 = Control_L Control_R
-add Control = Super_L Super_R
+keycode 66 =
