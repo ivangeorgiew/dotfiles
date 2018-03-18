@@ -115,7 +115,7 @@
 execute pathogen#infect()
 execute pathogen#helptags()
 
-" Change between block and I-beam cursor in terminator
+" Change between block and I-beam cursor
 if system("uname -s") =~ "Linux"
     let &t_SI = "\<Esc>[6 q"
     let &t_SR = "\<Esc>[4 q"
@@ -123,10 +123,10 @@ if system("uname -s") =~ "Linux"
 endif
 
 " set Vim-specific sequences for RGB colors
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-set t_Co=256
-set termguicolors
+" let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+" let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" set t_Co=256
+" set termguicolors
 set background=dark
 colorscheme gruvbox
 
@@ -138,14 +138,7 @@ set regexpengine=1
 " set synmaxcol=500
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
-
-" Affects lag
-" set cursorline
-" augroup numbertoggle
-"     au!
-"     au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-"     au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
-" augroup END
+" set cursorline " slows and unnecessary
 
 "MISC }}}
 
@@ -161,7 +154,7 @@ set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
-set clipboard=unnamed                      " Copy/paste to/from clipboard by default
+set clipboard=unnamedplus                      " Copy/paste to/from clipboard by default
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces                           " Only one space when joining lines
 set list listchars=tab:»·,trail:·          " show trailing whitespace
@@ -227,6 +220,18 @@ set statusline+=%{gutentags#statusline()}
 "SET }}}
 
 "AUGROUP {{{
+if system("uname -s") =~ "Linux"
+    augroup linuxAutoCommands
+        au!
+        " Affects lag
+        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+
+        " remain with clipboard after closing
+        au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
+    augroup END
+endif
+
 augroup syntax
     au!
 

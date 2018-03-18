@@ -1,0 +1,5 @@
+"xclip -r -o -sel | xclip -r -sel clipboard"
+  Mod1 + c
+
+"xset r off; xdotool keyup v type --clearmodifiers --delay 0 "$(xclip -o -sel clipboard)"; xset r on"
+  Mod1 + v
