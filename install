@@ -25,11 +25,12 @@ main () {
     elif [[ "$OSTYPE" == linux* ]] && [[ "$line" == y* ]]; then
         echo "Installing dotfiles on Linux"
         rm -fr ~/.vim
-        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.vimrc ~/.zshrc ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc
+        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.vimrc ~/.zshrc ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc ~/.tmux.conf
 
         mkdir ~/dotfiles/.vim/undo
         mkdir ~/dotfiles/.vim/session
 
+        ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
         ln -s ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
         ln -s ~/dotfiles/.xinitrc ~/.xinitrc
         ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap

@@ -166,7 +166,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set nowrap                                   " wrap too long lines
+set wrap                                   " wrap too long lines
 
 " Folding
 set foldmethod=manual
