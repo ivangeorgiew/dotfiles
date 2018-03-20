@@ -296,15 +296,13 @@ label = %date% %time%
 type = internal/volume
 
 format-volume = <label-volume> 
-format-volume-padding = 2
 
 label-volume = %{F#fbf1c7} %{F-}%percentage:3%%
-#label-volume-foreground = ${color.white}
+;label-volume-foreground = ${color.white}
 
 label-muted =%{F#fbf1c7} %{F-}mute
 format-muted = <label-muted>
-format-muted-padding = 2
-#label-muted-foreground = ${colors.gray}
+;label-muted-foreground = ${colors.gray}
 
 format-padding = 2
 
@@ -324,4 +322,4 @@ type = custom/text
 content = |
 content-foreground = ${colors.foreground}
 
-vim:ft=dosini
+; vim:ft=dosini
