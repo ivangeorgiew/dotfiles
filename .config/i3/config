@@ -16,6 +16,7 @@ client.urgent           #fe8019 #fb4834 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 client.background       #ffffff
 
+exec --no-startup-id i3lock-fancy && sleep 1
 exec termite
 exec feh --bg-scale ~/Downloads/wallpaper.jpg
 exec_always --no-startup-id ~/.config/polybar/launch.sh
@@ -60,7 +61,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+Shift+r restart
 
 #system exit/sleep modes, from arch-wiki
-set $Locker i3lock-fancy && sleep 1
+set $Locker i3lock-fancy
 set $mode_system System (l) lock, (e) exit, (s) suspend, (r) reboot, (p) poweroff
 mode "$mode_system" {
     bindsym l exec --no-startup-id $Locker, mode "default"
