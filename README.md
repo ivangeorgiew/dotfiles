@@ -19,6 +19,9 @@ If you use ArchLinux:
 14) Configure lxappearance
 15) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 16) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
+17) Find your active network interface: `ifconfig -a`
+18) Update the wlan/eth modules in ~/.config/polybar/config
+19) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
 
 If you use MacOS:
 1) Install iTerm
