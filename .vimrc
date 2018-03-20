@@ -306,6 +306,8 @@ augroup END
 let loaded_matchparen = 1
 
 " Variables for FoldExprJS
+let s:tabstop = &tabstop
+let s:prevBracketIndent = -1
 let s:bracketIndent = -1
 let s:inMarker = 0
 let s:inImportFold = 0
@@ -659,17 +661,19 @@ function! FoldExprJS()
 
     if !s:inMarker && !s:inImportFold
         " gotta catch comments as well
-        let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / 4 + 1
+        let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
 
         " Keep the startBracket check last for performance
         if lind < 4 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
+            let s:prevBracketIndent = s:bracketIndent
             let s:bracketIndent = lind
             return 'a1'
         endif
 
         " Keep the endBracket check last for performance
         if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
-            let s:bracketIndent = s:bracketIndent - 1
+            let s:bracketIndent = s:prevBracketIndent
+            let s:prevBracketIndent = s:prevBracketIndent - 1
             return 's1'
         endif
     endif
