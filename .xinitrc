@@ -1,10 +1,10 @@
-setxkbmap -layout us,bg -variant ,phonetic -option grp:alt_shift_toggle
+setxkbmap -layout us,bg -variant ,phonetic
 xset r rate 180 18
 udiskie &
 /usr/bin/start-pulseaudio-x11
 
 [[ -f ~/.xbindkeysrc ]] && xbindkeys
 [[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
-[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
 exec i3

@@ -154,7 +154,7 @@ set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
-set clipboard=unnamedplus                      " Copy/paste to/from clipboard by default
+set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces                           " Only one space when joining lines
 set list listchars=tab:»·,trail:·          " show trailing whitespace
@@ -166,7 +166,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set wrap                                   " wrap too long lines
+set nowrap                                   " wrap too long lines
 
 " Folding
 set foldmethod=manual
@@ -224,8 +224,8 @@ if system("uname -s") =~ "Linux"
     augroup linuxAutoCommands
         au!
         " Affects lag
-        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+        " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
         " remain with clipboard after closing
         au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
@@ -284,9 +284,6 @@ augroup highlights
 
     " Show characters over 120 columns
     au BufEnter *.js match OverLength /\%122v.*/
-
-    " Show characters over 80 columns
-    au BufEnter *.md match OverLength /\%82v.*/
 augroup END
 
 augroup vimrcEx

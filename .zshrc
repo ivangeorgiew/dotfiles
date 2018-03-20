@@ -2,7 +2,11 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/usr/share/oh-my-zsh
+if [[ "$OSTYPE" == darwin* ]]; then
+    export ZSH=$HOME/.oh-my-zsh
+elif [[ "$OSTYPE" == linux* ]]; then
+    export ZSH=/usr/share/oh-my-zsh
+fi
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -87,14 +91,6 @@ export ARCHFLAGS="-arch x86_64"
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
-#reverse incremental search in zsh which comes default in bash
-bindkey -v
-bindkey '^R' history-incremental-search-backward
-
-#enable home and end which comes default in bash
-bindkey "${terminfo[khome]}" beginning-of-line 
-bindkey "${terminfo[kend]}" end-of-line
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -118,3 +114,7 @@ export PATH=~/.npm-global/bin:$PATH
 
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
+
+if [ -z "$TMUX" ]; then
+    tmux attach -t TMUX || tmux new -s TMUX
+fi
