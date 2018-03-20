@@ -6,17 +6,16 @@ You have to do these things in order:
 If you use ArchLinux:
 1) Install Antergos base
 2) Identify your video card and install the corresponding drivers: `lspci | grep -e VGA -e 3D`
-3) CHOOSE ONE: pacman -S nvidia OR xf86-video-ati OR xf86-video-intel
+3) CHOOSE ONE: `pacman -S nvidia` OR `pacman -S xf86-video-ati` OR `pacman -S xf86-video-intel`
 4) Change the username in settings/autologin@.service file
 5) `~/dotfiles/archScript`
 6) `~/dotfiles/install`
-7) `sudo reboot`
-8) `cd ~ && git clone https://github.com/powerline/fonts.git --depth=1`
-9) `cd fonts && ./install.sh`
-10) `rm -fr fonts`
+7) `cd ~ && git clone https://github.com/powerline/fonts.git --depth=1`
+8) `cd fonts && ./install.sh`
+9) `rm -fr fonts`
+10) `sudo reboot`
 11) `mkdir ~/.npm-global && npm config set prefix '~/.npm-global'`
 12) `npm i -g import-js`
-13) `ln -s ./import-js ~/.npm-global/lib/node_modules/import-js`
 14) Configure lxappearance
 15) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 16) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
