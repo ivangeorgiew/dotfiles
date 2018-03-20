@@ -35,6 +35,7 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec termite
 bindsym $mod+g exec google-chrome-stable
+bindsym $mod+i exec google-chrome-stable --incognito
 bindsym $mod+space exec --no-startup-id rofi -show run
 
 # Audio shortcuts
