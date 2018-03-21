@@ -24,12 +24,12 @@ sudo systemctl start autologin@tty1.service
 # install packages from pacman
 sudo pacman -S --noconfirm --needed curl vlc git gparted htop screenfetch ranger wget unclutter zip unzip
 sudo pacman -S --noconfirm --needed termite keepassx2 gvim feh dunst xautolock xclip xdotool xbindkeys the_silver_searcher
-sudo pacman -S --noconfirm --needed udiskie transmission-gtk ttf-dejavu rofi nodejs npm ctags tmux lxappearance
+sudo pacman -S --noconfirm --needed udiskie transmission-gtk ttf-dejavu rofi nodejs npm ctags tmux lxappearance chromium
 sudo pacman -S --noconfirm --needed alsa-firmware alsa-utils alsa-plugins pulseaudio-alsa pulseaudio
 
 # install packages from yaourt
 yaourt -S --noconfirm zsh spotify oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git polybar
-yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git google-chrome
+yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git
 
 # set zsh as default shell
 chsh -s /bin/zsh

@@ -102,7 +102,6 @@ export ARCHFLAGS="-arch x86_64"
 alias kT="killall java && killall 2.33-x64-chromedriver && killall Google\ Chrome"
 alias rr="npm run"
 
-unset BROWSER
 export EDITOR='vim'
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
