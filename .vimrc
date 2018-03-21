@@ -367,7 +367,7 @@ if executable('ag')
     " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
     let g:ctrlp_cmd='CtrlP :pwd'
     let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
-    let g:ctrlp_show_hidden = 0
+    let g:ctrlp_show_hidden = 1
 
     " ag is fast enough that CtrlP doesn't need to cache
     let g:ctrlp_use_caching = 1
@@ -723,10 +723,10 @@ nnoremap <Down>     :echoerr "Use j"<CR>
 
 " Cmd navigation
 cnoremap <C-A> <Home>
-cnoremap <C-B> <S-Left>
-cnoremap <C-F> <S-Right>
-cnoremap <C-H> <Left>
-cnoremap <C-L> <Right>
+cnoremap <C-H> <S-Left>
+cnoremap <C-L> <S-Right>
+cnoremap <C-B> <Left>
+cnoremap <C-F> <Right>
 
 "Vimdiff
 "diff 2 buffers in vertical split
