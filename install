@@ -17,7 +17,6 @@ main () {
         ln -s ~/dotfiles/.gitconfig ~/.gitconfig
         ln -s ~/dotfiles/.gitignore ~/.gitignore
         ln -s ~/dotfiles/.importjs.js ~/.importjs.js
-        ln -s ~/dotfiles/.tern-config ~/.tern-config
         ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
         ln -s ~/dotfiles/.vim ~/.vim
         ln -s ~/dotfiles/.vimrc ~/.vimrc
