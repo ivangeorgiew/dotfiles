@@ -19,11 +19,12 @@ If you use ArchLinux:
 12) `mkdir ~/.npm-global` and `npm config set prefix '~/.npm-global'`
 13) `npm i -g import-js`
 15) Configure lxappearance
-16) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
-17) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
-18) Find your active network interface: `ifconfig -a`
-19) Update the wlan/eth modules in ~/.config/polybar/config
-20) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
+16) Find your active network interface: `ifconfig -a`
+17) Update the wlan/eth modules in ~/.config/polybar/config
+18) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
+19) `git config --global credential.helper /usr/lib/git-core/git-credential-libsecret`
+20) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
+21) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
 
 If you use MacOS:
 1) Install iTerm
