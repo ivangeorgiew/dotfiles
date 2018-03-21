@@ -11,11 +11,12 @@ If you use ArchLinux:
 5) `~/dotfiles/archScript`
 6) `~/dotfiles/install`
 7) Change your keyboard layout in .xinitrc
-8) `cd ~ && git clone https://github.com/powerline/fonts.git --depth=1`
-9) `cd fonts && ./install.sh`
+8) `cd ~` and `git clone https://github.com/powerline/fonts.git --depth=1`
+9) `cd fonts ` and `./install.sh`
 10) `rm -fr fonts`
+11) `start`
 11) `sudo reboot`
-12) `mkdir ~/.npm-global && npm config set prefix '~/.npm-global'`
+12) `mkdir ~/.npm-global` and `npm config set prefix '~/.npm-global'`
 13) `npm i -g import-js`
 15) Configure lxappearance
 16) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`

@@ -147,11 +147,13 @@ set regexpengine=1
 set smartcase
 set noignorecase
 set noantialias
+
 set scroll=10                              " Set scroll lines
 set nocompatible                           " Use Vim settings, rather then Vi settings
 set nobackup                               " dont make backups
 set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
+set swapsync=""
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
 set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
