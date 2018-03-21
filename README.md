@@ -10,18 +10,19 @@ If you use ArchLinux:
 4) Change the username in settings/autologin@.service file
 5) `~/dotfiles/archScript`
 6) `~/dotfiles/install`
-7) `cd ~ && git clone https://github.com/powerline/fonts.git --depth=1`
-8) `cd fonts && ./install.sh`
-9) `rm -fr fonts`
-10) `sudo reboot`
-11) `mkdir ~/.npm-global && npm config set prefix '~/.npm-global'`
-12) `npm i -g import-js`
-14) Configure lxappearance
-15) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
-16) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
-17) Find your active network interface: `ifconfig -a`
-18) Update the wlan/eth modules in ~/.config/polybar/config
-19) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
+7) Change your keyboard layout in .xinitrc
+8) `cd ~ && git clone https://github.com/powerline/fonts.git --depth=1`
+9) `cd fonts && ./install.sh`
+10) `rm -fr fonts`
+11) `sudo reboot`
+12) `mkdir ~/.npm-global && npm config set prefix '~/.npm-global'`
+13) `npm i -g import-js`
+15) Configure lxappearance
+16) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
+17) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide
+18) Find your active network interface: `ifconfig -a`
+19) Update the wlan/eth modules in ~/.config/polybar/config
+20) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
 
 If you use MacOS:
 1) Install iTerm
