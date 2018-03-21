@@ -744,6 +744,7 @@ nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gp :Gpush -u<CR>
 "See the diff between the opened file and the one in develop
 nnoremap <leader>gd :Gdiff develop<CR>
 nnoremap <leader>gD :Gdiff<SPACE>
