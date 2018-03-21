@@ -319,7 +319,7 @@ let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\)\s*'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\|try\)\s*'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
@@ -456,7 +456,7 @@ let g:fastfold_fold_movement_commands = []
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
-let g:airline_extensions = [ 'ctrlp' ]
+let g:airline_extensions = [ 'ctrlp', 'ale' ]
 let g:airline_section_y = ''
 let g:airline_highlighting_cache = 0
 let g:airline_theme = 'gruvbox'

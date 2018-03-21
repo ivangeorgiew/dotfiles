@@ -1,4 +1,4 @@
-setxkbmap -layout us,bg -variant ,phonetic
+setxkbmap -layout us,bg -variant mac,phonetic
 xset r rate 180 18
 udiskie &
 /usr/bin/start-pulseaudio-x11

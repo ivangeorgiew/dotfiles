@@ -15,3 +15,4 @@ tags.temp
 .vim/view/*
 .vim/session/*
 .vim/.viminfo
+package-lock.json
