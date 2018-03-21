@@ -29,7 +29,7 @@ sudo pacman -S --noconfirm --needed alsa-firmware alsa-utils alsa-plugins pulsea
 
 # install packages from yaourt
 yaourt -S --noconfirm zsh spotify oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git polybar
-yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git
+yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git google-chrome
 
 # set zsh as default shell
-sudo chsh -s /bin/zsh
+chsh -s /bin/zsh
