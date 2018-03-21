@@ -96,12 +96,12 @@ bindsym Ctrl+equal workspace $ws5
 bindsym Ctrl+7 workspace $ws6
 
 # move focused container to workspace
-bindsym Ctrl+Shift+8 move container to workspace $ws1
-bindsym Ctrl+Shift+9 move container to workspace $ws2
-bindsym Ctrl+Shift+0 move container to workspace $ws3
-bindsym Ctrl+Shift+minus move container to workspace $ws4
-bindsym Ctrl+Shift+equal move container to workspace $ws5
-bindsym Ctrl+Shift+7 move container to workspace $ws6
+bindsym $mod+8 move container to workspace $ws1
+bindsym $mod+9 move container to workspace $ws2
+bindsym $mod+0 move container to workspace $ws3
+bindsym $mod+minus move container to workspace $ws4
+bindsym $mod+equal move container to workspace $ws5
+bindsym $mod+7 move container to workspace $ws6
 
 #assign windows to different workspaces
 assign [class="Termite"] $ws1
