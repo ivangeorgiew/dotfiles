@@ -226,8 +226,8 @@ if system("uname -s") =~ "Linux"
     augroup linuxAutoCommands
         au!
         " Affects lag
-        " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
         " remain with clipboard after closing
         au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
@@ -410,10 +410,14 @@ let g:ycm_use_ultisnips_completer = 1
 let g:ycm_max_num_candidates = 10
 let g:ycm_max_num_identifier_candidates = 10
 " disable console logs
-let g:ycm_show_diagnostics_ui = 0
+let g:ycm_show_diagnostics_ui = 1
 " Start vim faster
-let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
-let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+" let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
+if system("uname -s") =~ "Linux"
+    let g:ycm_server_python_interpreter = '/usr/bin/python'
+else
+    let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+endif
 
 " UltiSnips
 " keys
