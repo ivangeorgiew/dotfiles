@@ -196,7 +196,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " insert completion
-set completeopt=menu,menuone,longest,preview
+set completeopt=menuone,longest,noselect
 set complete=.,t
 
 " Open new split panes to right and bottom, which feels more natural
@@ -398,13 +398,10 @@ let g:ycm_key_list_stop_completion = ['<C-y>']
 " completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
-" remove preview window
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
 " enable ycm only in those filetypes
-" let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
+let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
 " remove semantic competion in javascript
-let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
+" let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
 " etc
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
