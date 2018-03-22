@@ -70,3 +70,5 @@
     smudge = git-lfs smudge %f
     required = true
 [credential]
+[credential]
+	helper = /usr/lib/git-core/git-credential-libsecret
