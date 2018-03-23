@@ -22,7 +22,6 @@ If you use ArchLinux:
 16) Find your active network interface: `ifconfig -a`
 17) Update the wlan/eth modules in ~/.config/polybar/config
 18) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
-19) `git config --global credential.helper /usr/lib/git-core/git-credential-libsecret`
 20) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 21) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
 22) `xdg-settings set default-web-browser chromium.desktop`
