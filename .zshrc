@@ -115,6 +115,9 @@ export PATH=~/.npm-global/bin:$PATH
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 
+# disable C-s freezing
+stty -ixon
+
 if [ -z "$TMUX" ]; then
     tmux attach -t TMUX || tmux new -s TMUX
 fi

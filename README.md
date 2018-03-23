@@ -26,6 +26,7 @@ If you use ArchLinux:
 20) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 21) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
 22) `xdg-settings set default-web-browser chromium.desktop`
+23) `ln -s /run/media/YOUR_NAME ~/media`
 
 If you use MacOS:
 1) Install iTerm
