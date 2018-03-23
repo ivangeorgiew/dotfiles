@@ -24,7 +24,7 @@ If you use ArchLinux:
 18) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
 20) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 21) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
-22) `xdg-settings set default-web-browser chromium.desktop`
+22) `xdg-settings set default-web-browser google-chrome.desktop`
 23) `ln -s /run/media/YOUR_NAME ~/media`
 
 If you use MacOS:

@@ -35,8 +35,8 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec termite
-bindsym $mod+g exec --no-startup-id chromium
-bindsym $mod+i exec --no-startup-id chromium --incognito
+bindsym $mod+g exec --no-startup-id google-chrome-stable
+bindsym $mod+i exec --no-startup-id google-chrome-stable --incognito
 bindsym $mod+space exec --no-startup-id rofi -show run
 
 # Audio shortcuts
@@ -92,7 +92,7 @@ bindsym $mod+7 move container to workspace $ws6
 
 #assign windows to different workspaces
 assign [class="Termite"] $ws1
-assign [class="Chromium"] $ws2
+assign [class="Google-chrome"] $ws2
 for_window [class="Spotify"] move to workspace $ws3
 assign [class="Skype"] $ws3
 assign [class="vlc"] $ws3

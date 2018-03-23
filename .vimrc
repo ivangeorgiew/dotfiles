@@ -369,10 +369,10 @@ if executable('ag')
     " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
     let g:ctrlp_cmd='CtrlP :pwd'
     let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
-    let g:ctrlp_show_hidden = 1
+    let g:ctrlp_show_hidden = 0
 
     " ag is fast enough that CtrlP doesn't need to cache
-    let g:ctrlp_use_caching = 1
+    let g:ctrlp_use_caching = 0
 
     " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
     let g:ag_prg = 'ag --column --nogroup --noheading -s'
@@ -399,9 +399,9 @@ let g:ycm_key_list_stop_completion = ['<C-y>']
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " enable ycm only in those filetypes
-let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
+" let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
 " remove semantic competion in javascript
-" let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
+let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
 " etc
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
