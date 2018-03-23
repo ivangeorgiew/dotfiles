@@ -1,5 +1,5 @@
 setxkbmap -layout us,bg -variant ,phonetic
-xset r rate 180 18
+xset r rate 180 30
 udiskie &
 /usr/bin/start-pulseaudio-x11
 
