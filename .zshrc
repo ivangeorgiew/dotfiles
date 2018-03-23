@@ -99,8 +99,8 @@ export ARCHFLAGS="-arch x86_64"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias kT="killall java && killall 2.33-x64-chromedriver && killall Google\ Chrome"
-alias rr="npm run"
+alias SN="shutdown now"
+alias RT="shutdown now"
 
 unset BROWSER
 export EDITOR='vim'
