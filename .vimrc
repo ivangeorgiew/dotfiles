@@ -135,7 +135,7 @@ set shell=bash
 set lazyredraw
 set nocursorcolumn
 set regexpengine=1
-" set synmaxcol=500
+set synmaxcol=256 "fixes lag from long lines
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
