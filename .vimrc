@@ -459,7 +459,8 @@ let g:fastfold_fold_movement_commands = []
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
-let g:airline_extensions = [ 'ctrlp', 'ale' ]
+let g:airline_extensions = [ 'ctrlp', 'ale', 'branch' ]
+let g:airline#extensions#branch#displayed_head_limit = 45
 let g:airline_section_y = ''
 let g:airline_highlighting_cache = 0
 let g:airline_theme = 'gruvbox'
@@ -835,7 +836,7 @@ noremap <silent> <F5> :call OpenSession()<cr>
 " Copy multiple words to register
 nnoremap <silent> <leader>8 lbve"cy
 nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
-nnoremap <silent> <leader>0 a <ESC>"cp
+nnoremap <silent> <leader>0 "cp
 
 " Space to new line in vis selection
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>

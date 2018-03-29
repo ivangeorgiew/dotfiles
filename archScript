@@ -6,14 +6,14 @@ set -e
 sudo pacman -Syu
 
 # fixing the fastest antergos servers
-sudo rankmirrors -n 0 /etc/pacman.d/antergos-mirrorlist > /tmp/antergos-mirrorlist && sudo cp /tmp/antergos-mirrorlist /etc/pacman.d
+# sudo rankmirrors -n 0 /etc/pacman.d/antergos-mirrorlist > /tmp/antergos-mirrorlist && sudo cp /tmp/antergos-mirrorlist /etc/pacman.d
 
 # installing refector to test wich servers are fastest
-sudo pacman -S --noconfirm --needed reflector
-sudo reflector --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+# sudo pacman -S --noconfirm --needed reflector
+# sudo reflector --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # install xorg and i3-gaps
-sudo pacman -S xorg-server xorg-apps xorg-xinit xorg-twm xterm i3-gaps --noconfirm --needed
+sudo pacman -S xorg xorg-server xorg-apps xorg-xinit xorg-twm xterm i3-gaps --noconfirm --needed
 
 # autologin on start
 sudo cp settings/autologin@.service /etc/systemd/system/
