@@ -96,4 +96,4 @@ assign [class="Google-chrome"] $ws2
 for_window [class="Spotify"] move to workspace $ws3
 assign [class="Skype"] $ws3
 assign [class="vlc"] $ws3
-assign [class="Thunderbird"] $ws4
+assign [class="Wfica"] $ws4

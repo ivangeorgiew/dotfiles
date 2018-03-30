@@ -26,6 +26,7 @@ If you use ArchLinux:
 21) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
 22) `xdg-settings set default-web-browser google-chrome.desktop`
 23) `ln -s /run/media/YOUR_NAME ~/media`
+24) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
 
 If you use MacOS:
 1) Install iTerm
