@@ -69,10 +69,10 @@ bindsym $mod+Shift+e exec --no-startup-id i3lock-fancy && sleep 1
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "term"
 set $ws2 "chrome"
-set $ws3 "mult"
-set $ws4 "email"
-set $ws5 "virtual"
-set $ws6 "etc"
+set $ws3 "multi"
+set $ws4 "virtual"
+set $ws5 "etc"
+# set $ws6 "etc"
 
 # switch to workspace
 bindsym Ctrl+8 workspace $ws1

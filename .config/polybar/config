@@ -156,9 +156,9 @@ fuzzy-match = true
 ws-icon-0 = term;
 ws-icon-1 = chrome;
 ws-icon-2 = mult; 
-ws-icon-3 = email;
-ws-icon-4 = virtual;
-ws-icon-5 = etc;
+ws-icon-3 = virtual;
+ws-icon-4 = etc;
+; ws-icon-5 = etc;
 ;ws-icon-default = 
 
 ; Available tags:
