@@ -18,7 +18,7 @@ client.background       #ffffff
 
 exec --no-startup-id i3lock-fancy && sleep 1
 exec termite
-exec feh --bg-scale ~/wallpaper.jpg
+exec feh --bg-scale ~/dotfiles/wallpaper.jpg
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id dunst
 exec_always --no-startup-id xautolock -time 5 -locker "i3lock-fancy" #requires xautolock and i3lock-fancy
@@ -28,7 +28,7 @@ set $left h
 set $down j
 set $up k
 set $right l
-set $audioId 1
+set $audioId 0
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

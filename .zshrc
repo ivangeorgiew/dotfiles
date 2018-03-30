@@ -99,8 +99,7 @@ export ARCHFLAGS="-arch x86_64"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias SN="shutdown now"
-alias RT="shutdown now"
+alias vi=vim
 
 unset BROWSER
 export EDITOR='vim'
