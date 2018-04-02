@@ -101,6 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias SN='shutdown now'
 alias RT='reboot'
+alias v=vim
 alias vi=vim
 
 unset BROWSER
