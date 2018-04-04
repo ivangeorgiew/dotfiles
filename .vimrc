@@ -245,6 +245,10 @@ augroup syntax
     au BufNewFile,BufRead *.babelrc setl filetype=json
     au BufNewFile,BufRead *.sass setl filetype sass
     au BufNewFile,BufRead *.eslintrc setl filetype=json
+
+    "Fix some keywords in css and scss
+    au FileType css setlocal iskeyword+=-
+    au FileType scss setlocal iskeyword+=-
 augroup END
 
 augroup UltiSnips
@@ -336,7 +340,7 @@ let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-y>' "<C-y>, to activate
+let g:user_emmet_leader_key='<C-z>' "<C-z>, to activate
 
 "Mundo (undo history) settings
 let g:mundo_width = 40
@@ -928,6 +932,9 @@ nnoremap <silent> <leader>ig :ImportJSGoto<CR>
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd
 inoremap <C-c> <Esc>
+
+" Remove suspending
+vnoremap <C-z> <Esc>
 
 " tabular + vim-cucumber mapping
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
