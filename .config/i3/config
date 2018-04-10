@@ -16,7 +16,7 @@ client.urgent           #fe8019 #fb4834 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 client.background       #ffffff
 
-exec --no-startup-id i3lock-fancy && sleep 1
+exec --no-startup-id i3lock-fancy
 exec termite
 exec feh --bg-scale ~/dotfiles/wallpaper.jpg
 exec_always --no-startup-id ~/.config/polybar/launch.sh
@@ -63,7 +63,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+Shift+r restart
 
 #lock
-bindsym $mod+Shift+e exec --no-startup-id i3lock-fancy && sleep 1
+bindsym $mod+Shift+e exec --no-startup-id i3lock-fancy
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.

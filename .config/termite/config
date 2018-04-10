@@ -48,7 +48,7 @@ cursor_foreground = #000000
 highlight = #a89984
 
 # hard contrast: background = #1d2021
-background = rgb(60, 60, 60)
+background = rgb(49, 49, 49)
 # soft contrast: background = #32302f
 foreground = #ebdbb2
 foreground_bold = #ebdbb2
