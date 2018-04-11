@@ -1,9 +1,10 @@
 "COMMENTS {{{
 " Execute this for profiling what slows down vim
-
 " :profile start profile.log | profile func * | profile file *
 " " At this point do slow actions
 " :profile pause | noautocmd qall!
+
+" Move between empty lines - '{', '}'
 
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
