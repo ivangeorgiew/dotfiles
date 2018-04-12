@@ -16,17 +16,22 @@ If you use ArchLinux:
 10) `rm -fr fonts`
 11) `startx`
 11) `sudo reboot`
-12) `mkdir ~/.npm-global` and `npm config set prefix '~/.npm-global'`
-13) `npm i -g import-js`
-15) Configure lxappearance
-16) Find your active network interface: `ifconfig -a`
-17) Update the wlan/eth modules in ~/.config/polybar/config
-18) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
-20) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
-21) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
-22) `xdg-settings set default-web-browser google-chrome.desktop`
-23) `ln -s /run/media/YOUR_NAME ~/media`
-24) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
+12) `mkdir ~/.npm-global`
+13) `npm config set prefix '~/.npm-global'`
+14) `npm i -g import-js`
+15) `rm -fr ~/.npm-global/lib/node_modules/import-js/bin`
+16) `cd ~/ && git clone https://github.com/ivangeorgiew/import-js.git`
+17) `npm i` and `npm run build`
+18) `cp -R bin/ ~/.npm-global/lib/node_modules/import-js/bin`
+19) Configure lxappearance
+20) Find your active network interface: `ifconfig -a`
+21) Update the wlan/eth modules in ~/.config/polybar/config
+22) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
+23) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
+24) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
+25) `xdg-settings set default-web-browser google-chrome.desktop`
+26) `ln -s /run/media/YOUR_NAME ~/media`
+27) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
 
 If you use MacOS:
 1) Install iTerm
