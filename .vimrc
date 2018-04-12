@@ -301,6 +301,8 @@ augroup vimrcEx
     au BufRead,BufNewFile *.md setl textwidth=80
 
     au BufEnter *.json setl tabstop=2 | setl shiftwidth=2
+    au BufEnter *.scss setl tabstop=2 | setl shiftwidth=2
+    au BufEnter *.css setl tabstop=2 | setl shiftwidth=2
     au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
 
     " Ask whether to save the session on exit
@@ -319,7 +321,7 @@ let s:bracketIndent = -1
 let s:inMarker = 0
 let s:inImportFold = 0
 let s:comment = '\s*\(\/\/\|\/\*\|\*\/\)'
-let s:importString = '^' . s:comment . '*\s*\(import\)\s*'
+let s:importString = '^' . s:comment . '*\s*\(import \)'
 let s:fromString = "\\( from '.*'\\)"
 let s:marker1 = '^' . s:comment . '.*\( region\)\s*'
 let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
