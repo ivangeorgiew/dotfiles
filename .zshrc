@@ -120,6 +120,11 @@ alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 # disable C-s freezing
 stty -ixon
 
+if [ ! -d "/home/ivangeorgiev/projects" ]; then
+    mkdir ~/projects
+fi
+cd ~/projects
+
 if [ -z "$TMUX" ]; then
     tmux attach -t TMUX || tmux new -s TMUX
 fi
