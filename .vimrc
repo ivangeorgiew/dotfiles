@@ -6,6 +6,13 @@
 
 " Move between empty lines - '{', '}'
 
+" Go to definitions using the silver searcher (no need when using tags)
+" Search for js variable
+" let g:jsConstRegex = '^(export) (?:var|let|const|function|class)(?:\*| \* | \*| )('
+" nnoremap <silent><expr> gj 'lbve"by:tabe<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>call TabClose()<CR>endif<CR>'
+" nnoremap <silent><expr> gJ 'lbve"by:vnew<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>bd<CR>endif<CR>'
+" nnoremap <silent><expr> go 'lbve"by:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz'
+
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
@@ -118,16 +125,16 @@ execute pathogen#helptags()
 
 " Change between block and I-beam cursor
 if system("uname -s") =~ "Linux"
-    let &t_SI = "\<Esc>[6 q"
-    let &t_SR = "\<Esc>[4 q"
-    let &t_EI = "\<Esc>[2 q"
+  let &t_SI = "\<Esc>[6 q"
+  let &t_SR = "\<Esc>[4 q"
+  let &t_EI = "\<Esc>[2 q"
 endif
 
 " set Vim-specific sequences for RGB colors
 " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" set t_Co=256
 " set termguicolors
+" set t_Co=256
 set background=dark
 colorscheme gruvbox
 
@@ -140,7 +147,6 @@ set synmaxcol=256 "fixes lag from long lines
 " syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
-
 "MISC }}}
 
 "SET {{{
@@ -164,12 +170,13 @@ set list listchars=tab:»·,trail:·          " show trailing whitespace
 set virtualedit=block                      " allow cursor to move where there is no text in v-block
 set breakindent                            " wrapped line continues on the same indent level
 set timeoutlen=500                         " waittime for second mapping
-set viminfo='20,s100,h,f0,n~/.vim/.viminfo " file to store all the registers
 set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
 set nowrap                                   " wrap too long lines
+set notagstack "don't add tags manually
+
 
 " Folding
 set foldmethod=manual
@@ -178,8 +185,8 @@ set foldlevelstart=1
 set foldtext=FoldText()
 
 " Indentations
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 
 " Numbers
@@ -211,102 +218,96 @@ set path+=~/projects/entitlements/entitlements-web/**
 
 "Silver searcher
 if executable('ag')
-    set grepprg=ag
+  set grepprg=ag
 endif
 
 "Vimdiff options
 set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespace
-
-" tags settings
-set tags=./tags;
-set statusline+=%{gutentags#statusline()}
 "SET }}}
 
 "AUGROUP {{{
 if system("uname -s") =~ "Linux"
-    augroup linuxAutoCommands
-        au!
-        " Affects lag
-        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+  augroup linuxAutoCommands
+    au!
+    " Affects lag
+    au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+    au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
-        " remain with clipboard after closing
-        au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
-    augroup END
+    " remain with clipboard after closing
+    au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
+  augroup END
 endif
 
 augroup syntax
-    au!
+  au!
 
-    "Wrap character color
-    au VimEnter,Colorscheme * :hi! NonText ctermfg=Red guifg=#592929
+  "Wrap character color
+  au VimEnter,Colorscheme * :hi! NonText ctermfg=Red guifg=#592929
 
-    " Switch syntax for strange file endings
-    au BufNewFile,BufRead *.ejs setl filetype=html
-    au BufNewFile,BufRead *.babelrc setl filetype=json
-    au BufNewFile,BufRead *.sass setl filetype sass
-    au BufNewFile,BufRead *.eslintrc setl filetype=json
+  " Switch syntax for strange file endings
+  au BufNewFile,BufRead *.ejs setl filetype=html
+  au BufNewFile,BufRead *.babelrc setl filetype=json
+  au BufNewFile,BufRead *.sass setl filetype sass
+  au BufNewFile,BufRead *.eslintrc setl filetype=json
 
-    "Fix some keywords in css and scss
-    au FileType css setlocal iskeyword+=-
-    au FileType scss setlocal iskeyword+=-
+  "Fix some keywords in css and scss
+  au FileType css setlocal iskeyword+=-
+  au FileType scss setlocal iskeyword+=-
 augroup END
 
 augroup UltiSnips
-    au!
+  au!
 
-    au! User UltiSnipsEnterFirstSnippet
-    au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
-    au! User UltiSnipsExitLastSnippet
-    au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
+  au! User UltiSnipsEnterFirstSnippet
+  au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
+  au! User UltiSnipsExitLastSnippet
+  au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
 augroup END
 
 augroup folding
-    au!
+  au!
 
-    au FileType vim setl foldlevel=0 |
-                \ setl foldmarker={{{,}}} |
-                \ setl foldmethod=marker
+  au FileType vim setl foldlevel=0 |
+        \ setl foldmarker={{{,}}} |
+        \ setl foldmethod=marker
 
-    au FileType javascript.jsx setl foldlevel=1 |
-                \ setl foldmethod=expr |
-                \ setl foldexpr=FoldExprJS() |
+  au FileType javascript.jsx setl foldlevel=1 |
+        \ setl foldmethod=expr |
+        \ setl foldexpr=FoldExprJS() |
 
-    au FileType cucumber  setl foldlevel=0 |
-                \ setl foldmethod=expr |
-                \ setl foldexpr=FoldExprCucumber() |
+  au FileType cucumber  setl foldlevel=0 |
+        \ setl foldmethod=expr |
+        \ setl foldexpr=FoldExprCucumber() |
 augroup END
 
 augroup highlights
-    au!
+  au!
 
-    au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
+  au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
 
-    au BufEnter * hi! link OverLength MyError
+  au BufEnter * hi! link OverLength MyError
 
-    " Ale highlights
-    au BufEnter * hi! link ALEError MyError
-    au BufEnter * hi! link ALEWarning MyError
-    au BufEnter * hi! link ALEErrorSign MyError
+  " Ale highlights
+  au BufEnter * hi! link ALEError MyError
+  au BufEnter * hi! link ALEWarning MyError
+  au BufEnter * hi! link ALEErrorSign MyError
 
-    " Show characters over 120 columns
-    au BufEnter *.js match OverLength /\%122v.*/
+  " Show characters over 120 columns
+  au BufEnter *.js match OverLength /\%122v.*/
 augroup END
 
 augroup vimrcEx
-    au!
+  au!
 
-    au BufEnter * set formatoptions=rqj
+  au BufRead,BufNewFile *.md setl textwidth=80
+  au BufRead,BufNewFile * set viminfo='20,s100,h,f0,n~/.vim/.viminfo |
+        \ set formatoptions=rqj |
+        \ setglobal tags=tags
 
-    au BufRead,BufNewFile *.md setl textwidth=80
+  au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
 
-    au BufEnter *.json setl tabstop=2 | setl shiftwidth=2
-    au BufEnter *.scss setl tabstop=2 | setl shiftwidth=2
-    au BufEnter *.css setl tabstop=2 | setl shiftwidth=2
-    au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
-
-    " Ask whether to save the session on exit
-    au VimLeavePre * call SaveSession()
+  " Ask whether to save the session on exit
+  au VimLeavePre * call SaveSession()
 augroup END
 " AUGROUP }}}
 
@@ -328,7 +329,7 @@ let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|if\|switch\|try\)\s*'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\)\s*'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
@@ -368,21 +369,21 @@ let g:ale_set_signs = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-    " Custom ctlp mapping
-    " let g:ctrlp_map = '<C-p>'
-    " Use Ag over Grep
-    let g:grep_cmd_opts = '--line-numbers --noheading'
+  " Custom ctlp mapping
+  " let g:ctrlp_map = '<C-p>'
+  " Use Ag over Grep
+  let g:grep_cmd_opts = '--line-numbers --noheading'
 
-    " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-    let g:ctrlp_cmd='CtrlP :pwd'
-    let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
-    let g:ctrlp_show_hidden = 0
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_cmd='CtrlP :pwd'
+  let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
+  let g:ctrlp_show_hidden = 0
 
-    " ag is fast enough that CtrlP doesn't need to cache
-    let g:ctrlp_use_caching = 0
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
 
-    " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-    let g:ag_prg = 'ag --column --nogroup --noheading -s'
+  " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+  let g:ag_prg = 'ag --column --nogroup --noheading -s'
 endif
 
 " Treat <li> and <p> tags like the block tags they are
@@ -390,7 +391,7 @@ let g:html_indent_tags = 'li\|p'
 
 " Arrow for wrapped text
 if has('linebreak')
-    let &showbreak='⤷ '
+  let &showbreak='⤷ '
 endif
 
 " Gutentags settings
@@ -421,9 +422,9 @@ let g:ycm_show_diagnostics_ui = 1
 " Start vim faster
 " let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 if system("uname -s") =~ "Linux"
-    let g:ycm_server_python_interpreter = '/usr/bin/python'
+  let g:ycm_server_python_interpreter = '/usr/bin/python'
 else
-    let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+  let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 endif
 
 " UltiSnips
@@ -494,203 +495,231 @@ function! TabClose()
 endfunction
 
 function! GitCommit()
-    call inputsave()
-    let message = input('Message: ')
-    call inputrestore()
-    if message == ''
-        let message = 'update'
-    endif
-    exec ':Gcommit -m "' . message . '"'
+  call inputsave()
+  let message = input('Message: ')
+  call inputrestore()
+  if message == ''
+    let message = 'update'
+  endif
+  exec ':Gcommit -m "' . message . '"'
 endfunction
 
 function! MoveCurrentFile()
-    let old_destination = expand('%:p:h')
-    let filename = expand('%:t')
-    call inputsave()
-    let new_destination = input('New destination: ', expand('%:p:h'), 'file')
-    call inputrestore()
-    if new_destination != '' && new_destination != old_destination
-        exec ':saveas ' . new_destination . '/' . filename
-        exec ':silent !rm ' . old_destination . '/' . filename
-        redraw!
-    endif
+  let old_destination = expand('%:p:h')
+  let filename = expand('%:t')
+  call inputsave()
+  let new_destination = input('New destination: ', expand('%:p:h'), 'file')
+  call inputrestore()
+  if new_destination != '' && new_destination != old_destination
+    exec ':saveas ' . new_destination . '/' . filename
+    exec ':silent !rm ' . old_destination . '/' . filename
+    redraw!
+  endif
 endfunction
 
 function! RenameCurrentFile()
-    let old_name = expand('%')
-    call inputsave()
-    let new_name = input('New file name: ')
-    call inputrestore()
-    if new_name != '' && new_name != old_name
-        if expand('%:e') != '' && new_name !~ '\.'
-            exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
-        else
-            exec ':saveas ' . expand('%:h'). '/' . new_name
-        endif
-        call delete(old_name)
-        redraw!
-        exec ':e!'
+  let old_name = expand('%')
+  call inputsave()
+  let new_name = input('New file name: ')
+  call inputrestore()
+  if new_name != '' && new_name != old_name
+    if expand('%:e') != '' && new_name !~ '\.'
+      exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
+    else
+      exec ':saveas ' . expand('%:h'). '/' . new_name
     endif
+    call delete(old_name)
+    redraw!
+    exec ':e!'
+  endif
 endfunction
 
 function! SaveSession()
-    let dirPath = fnamemodify('%', ':~:h:t')
-    if expand('%:p') =~ "projects"
-        let choice = confirm('Save Session ?',"&Yes\n&No", 1)
-        if choice == 1
-            execute 'mksession! ~/.vim/session/'.dirPath
-        endif
+  let dirPath = fnamemodify('%', ':~:h:t')
+  if expand('%:p') =~ "projects"
+    let choice = confirm('Save Session ?',"&Yes\n&No", 1)
+    if choice == 1
+      execute 'mksession! ~/.vim/session/'.dirPath
     endif
+  endif
 endfunction
 
 function! OpenSession()
-    let dirPath = fnamemodify('%', ':~:h:t')
-    let file = '~/.vim/session/'.dirPath
-    if glob(file)!=#""
-        execute 'source '.file
-    endif
+  let dirPath = fnamemodify('%', ':~:h:t')
+  let file = '~/.vim/session/'.dirPath
+  if glob(file)!=#""
+    execute 'source '.file
+  endif
 endfunction
 
 function! FileReplaceIt(visual)
-    let expression = @b
-    if a:visual == 0
-        call inputsave()
-        let expression = input('Enter expression:')
-        call inputrestore()
-    endif
+  let expression = @b
+  if a:visual == 0
     call inputsave()
-    let replacement = input('Enter replacement:')
+    let expression = input('Enter expression:')
     call inputrestore()
-    execute '%sno@'.expression.'@'.replacement.'@gc'
+  endif
+  call inputsave()
+  let replacement = input('Enter replacement:')
+  call inputrestore()
+  execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
 
 function! VisReplaceIt()
-    call inputsave()
-    let expression = input('Enter expression:')
-    call inputrestore()
-    call inputsave()
-    let replacement = input('Enter replacement:')
-    call inputrestore()
-    execute "%sno@\\%V".expression."@".replacement."@gc"
+  call inputsave()
+  let expression = input('Enter expression:')
+  call inputrestore()
+  call inputsave()
+  let replacement = input('Enter replacement:')
+  call inputrestore()
+  execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
-    call inputsave()
-    let expression = input('Enter expression:')
-    call inputrestore()
-    call inputsave()
-    let replacement = input('Enter replacement:')
-    call inputrestore()
-    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
+  call inputsave()
+  let expression = input('Enter expression:')
+  call inputrestore()
+  call inputsave()
+  let replacement = input('Enter replacement:')
+  call inputrestore()
+  execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
 endfunction
 
 function! ToggleDiff()
-    if &diff
-        execute "windo diffoff"
-    else
-        execute "windo diffthis"
-    endif
+  if &diff
+    execute "windo diffoff"
+  else
+    execute "windo diffthis"
+  endif
 endfunction
 
 function! ToggleWrapscan()
-    if s:wrapscanVariable == 0
-        let s:wrapscanVariable = 1
-        execute "set wrapscan"
-        echo 'Wrapscan Enabled'
-    else
-        let s:wrapscanVariable = 0
-        execute "set nowrapscan"
-        echo 'Wrapscan Disabled'
-    endif
+  if s:wrapscanVariable == 0
+    let s:wrapscanVariable = 1
+    execute "set wrapscan"
+    echo 'Wrapscan Enabled'
+  else
+    let s:wrapscanVariable = 0
+    execute "set nowrapscan"
+    echo 'Wrapscan Disabled'
+  endif
 endfunction
 
 function! s:align()
-    let p = '^\s*|\s.*\s|\s*$'
-    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-        Tabularize/|/l1
-        normal! 0
-        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-    endif
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
 endfunction
 
 function! IndentWithI()
-    if len(getline('.')) == 0 && empty(&buftype)
-        return "\"_cc"
-    else
-        return "i"
-    endif
+  if len(getline('.')) == 0 && empty(&buftype)
+    return "\"_cc"
+  else
+    return "i"
+  endif
 endfunction
 
 function! FoldText()
-    return getline(v:foldstart)
+  return getline(v:foldstart)
 endfunction
 
 function! FoldExprCucumber()
-    let l = getline(v:lnum)
-    let nl = getline(v:lnum + 1)
+  let l = getline(v:lnum)
+  let nl = getline(v:lnum + 1)
 
-    if l =~ '^\s*#*\s*\(Scenario\)'
-        return '1>'
-    endif
+  if l =~ '^\s*#*\s*\(Scenario\)'
+    return '1>'
+  endif
 
-    if nl =~ '^\s*$'
-        return '<1'
-    endif
+  if nl =~ '^\s*$'
+    return '<1'
+  endif
 
-    return '='
+  return '='
 endfunction
 
 function! FoldExprJS()
-    let pl = getline(v:lnum - 1)
-    let l = getline(v:lnum)
-    let nl = getline(v:lnum + 1)
+  let pl = getline(v:lnum - 1)
+  let l = getline(v:lnum)
+  let nl = getline(v:lnum + 1)
 
-    if !s:inImportFold && l =~ s:importString
-        let s:inImportFold = 1
-        return '>4'
+  if !s:inImportFold && l =~ s:importString
+    let s:inImportFold = 1
+    return '>4'
+  endif
+
+  if l =~ s:fromString && nl !~ s:importString && s:inImportFold
+    return '<4'
+  endif
+
+  if pl =~ s:fromString && l !~ s:importString
+    let s:inImportFold = 0
+    return '0'
+  endif
+
+  if l =~ s:marker1
+    let s:inMarker = 1
+    return 'a1'
+  endif
+
+  if l =~ s:marker2
+    let s:inMarker = 0
+    return 's1'
+  endif
+
+  if !s:inMarker && !s:inImportFold
+    " gotta catch comments as well
+    let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
+
+    " Keep the startBracket check last for performance
+    if lind < 4 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
+      let s:prevBracketIndent = s:bracketIndent
+      let s:bracketIndent = lind
+      return 'a1'
     endif
 
-    if l =~ s:fromString && nl !~ s:importString && s:inImportFold
-        return '<4'
+    " Keep the endBracket check last for performance
+    if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+      let s:bracketIndent = s:prevBracketIndent
+      let s:prevBracketIndent = s:prevBracketIndent - 1
+      return 's1'
     endif
+  endif
 
-    if pl =~ s:fromString && l !~ s:importString
-        let s:inImportFold = 0
-        return '0'
+  return '='
+endfunction
+
+function! GoToTag(type)
+  if a:type == 'tab'
+    :tabe
+    execute ':tjump ' . @b
+    :normal zz
+    let l:tagFilename = expand('%:t')
+    if l:tagFilename == ''
+      :tabclose
+      :tabprevious
     endif
+  endif
 
-    if l =~ s:marker1
-        let s:inMarker = 1
-        return 'a1'
+  if a:type == 'vsplit'
+    :vnew
+    execute ':tjump ' . @b
+    :normal zz
+    let l:tagFilename = expand('%:t')
+    if l:tagFilename == ''
+      :bd
     endif
+  endif
 
-    if l =~ s:marker2
-        let s:inMarker = 0
-        return 's1'
-    endif
-
-    if !s:inMarker && !s:inImportFold
-        " gotta catch comments as well
-        let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
-
-        " Keep the startBracket check last for performance
-        if lind < 4 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
-            let s:prevBracketIndent = s:bracketIndent
-            let s:bracketIndent = lind
-            return 'a1'
-        endif
-
-        " Keep the endBracket check last for performance
-        if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
-            let s:bracketIndent = s:prevBracketIndent
-            let s:prevBracketIndent = s:prevBracketIndent - 1
-            return 's1'
-        endif
-    endif
-
-    return '='
+  if a:type == 'current'
+    execute ':tjump ' . @b
+    :normal zz
+  endif
 endfunction
 "FUNCTIONS }}}
 
@@ -774,14 +803,9 @@ nnoremap gF :vertical wincmd f<CR>
 "current window
 nnoremap gO gf
 
-" Go to definition made easier for JS files using Ag
-"current new tab
-" (?!(?:badword|second|\*)) search for not one of these words/characters
-nnoremap <silent> gj lbve"by:tabe<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz:if (line('$') == 1)<CR>call TabClose()<CR>endif<CR>
-"vertical split
-nnoremap <silent> gJ lbve"by:vnew<CR>:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz:if (line('$') == 1)<CR>bd<CR>endif<CR>
-"current window
-nnoremap go lbve"by:AgNoLoc '^(export) (?:var\|let\|const\|function\|class)(?:\*\| \* \| \*\| )(<C-r>b[ (])'<CR>zz
+nnoremap <silent> gj lbve"by:call GoToTag('tab')<CR>
+nnoremap <silent> gJ lbve"by:call GoToTag('vsplit')<CR>
+nnoremap <silent> go lbve"by:call GoToTag('current')<CR>
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
@@ -947,4 +971,8 @@ vnoremap $ g_
 
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
+
+inoremap <C-U> <C-G>u<C-U>
+nnoremap { }
+nnoremap } {
 "MAPPINGS }}}
