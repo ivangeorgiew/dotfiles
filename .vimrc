@@ -174,8 +174,8 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set nowrap                                   " wrap too long lines
-set notagstack "don't add tags manually
+set wrap                                   " wrap too long lines
+set notagstack                             " don't add tags manually
 
 
 " Folding
@@ -230,8 +230,8 @@ if system("uname -s") =~ "Linux"
   augroup linuxAutoCommands
     au!
     " Affects lag
-    au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-    au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+    " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+    " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
     " remain with clipboard after closing
     au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
@@ -371,7 +371,6 @@ let g:ale_set_signs = 0
 if executable('ag')
   " Custom ctlp mapping
   " let g:ctrlp_map = '<C-p>'
-  " Use Ag over Grep
   let g:grep_cmd_opts = '--line-numbers --noheading'
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
@@ -383,7 +382,7 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 
   " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-  let g:ag_prg = 'ag --column --nogroup --noheading -s'
+  let g:ag_prg = 'ag --hidden --column --nogroup --noheading -s'
 endif
 
 " Treat <li> and <p> tags like the block tags they are
@@ -733,6 +732,10 @@ noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I ggVG=
+" copy everything
+nnoremap <leader>Y ggVGy
+" replace everything
+nmap <leader>R ggVGr
 
 " Folding mappings
 " fold less
@@ -972,7 +975,7 @@ vnoremap $ g_
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
 
-inoremap <C-U> <C-G>u<C-U>
+"more sensible movement (similar to j/k)
 nnoremap { }
 nnoremap } {
 "MAPPINGS }}}

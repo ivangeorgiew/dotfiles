@@ -103,6 +103,7 @@ alias SN='shutdown now'
 alias RT='reboot'
 alias v=vim
 alias vi=vim
+alias ns='npm run start'
 
 unset BROWSER
 export EDITOR='vim'

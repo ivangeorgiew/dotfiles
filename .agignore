@@ -6,5 +6,6 @@ bower_components
 git
 DS_Store
 .tern-project
+.git
 dist
 build

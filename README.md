@@ -19,10 +19,10 @@ If you use ArchLinux:
 12) `mkdir ~/.npm-global`
 13) `npm config set prefix '~/.npm-global'`
 14) `npm i -g import-js`
-15) `rm -fr ~/.npm-global/lib/node_modules/import-js/bin`
+15) `rm -fr ~/.npm-global/lib/node_modules/import-js/build`
 16) `cd ~/ && git clone https://github.com/ivangeorgiew/import-js.git`
 17) `npm i` and `npm run build`
-18) `cp -R bin/ ~/.npm-global/lib/node_modules/import-js/bin`
+18) `cp -R build/ ~/.npm-global/lib/node_modules/import-js/build`
 19) Configure lxappearance
 20) Find your active network interface: `ifconfig -a`
 21) Update the wlan/eth modules in ~/.config/polybar/config
@@ -32,6 +32,7 @@ If you use ArchLinux:
 25) `xdg-settings set default-web-browser google-chrome.desktop`
 26) `ln -s /run/media/YOUR_NAME ~/media`
 27) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
+28) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
 
 If you use MacOS:
 1) Install iTerm
