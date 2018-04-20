@@ -924,11 +924,10 @@ noremap <silent><expr> \ empty(&buftype) ? ':normal @w<CR>' : '\'
 nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
-nnoremap ) :Ag! -F<SPACE>
+" -F for no regex, -w for word search
+nnoremap ) :Ag! -F -w<SPACE>
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
 vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
-noremap Q q
-
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -981,6 +980,9 @@ nnoremap <expr> i IndentWithI()
 "more sensible mappings
 nnoremap { }
 nnoremap } {
-noremap a' 2i'
-noremap a" 2i"
+vnoremap a' 2i'
+vnoremap a" 2i"
+
+" able to end macro inside quicklist
+noremap Q q
 "MAPPINGS }}}
