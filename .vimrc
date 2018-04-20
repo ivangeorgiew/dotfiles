@@ -6,13 +6,6 @@
 
 " Move between empty lines - '{', '}'
 
-" Go to definitions using the silver searcher (no need when using tags)
-" Search for js variable
-" let g:jsConstRegex = '^(export) (?:var|let|const|function|class)(?:\*| \* | \*| )('
-" nnoremap <silent><expr> gj 'lbve"by:tabe<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>call TabClose()<CR>endif<CR>'
-" nnoremap <silent><expr> gJ 'lbve"by:vnew<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>bd<CR>endif<CR>'
-" nnoremap <silent><expr> go 'lbve"by:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz'
-
 " (?!(?:badword|second|\*)) search for not one of these words/characters
 " ; to repeat f/t (, to reverse it)
 " C-g/C-t to go to next match while / searching
@@ -118,6 +111,30 @@
 " zj/zk - move between folds
 "COMMENTS }}}
 
+"OLDCODE {{{
+" Go to definitions using the silver searcher (no need when using tags)
+" Search for js variable
+" let g:jsConstRegex = '^(export) (?:var|let|const|function|class)(?:\*| \* | \*| )('
+" nnoremap <silent><expr> gj 'lbve"by:tabe<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>call TabClose()<CR>endif<CR>'
+" nnoremap <silent><expr> gJ 'lbve"by:vnew<CR>:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz:if (line("$") == 1)<CR>bd<CR>endif<CR>'
+" nnoremap <silent><expr> go 'lbve"by:AgNoLoc "' . g:jsConstRegex . '<C-r>b[ (])"<CR>zz'
+"
+" Fix register copy/pasting
+" nnoremap DD "*dd
+" nnoremap D "*d
+" vnoremap D "*d
+" nnoremap d "_d
+" nnoremap dd "_dd
+" vnoremap d "_d
+" nnoremap s "_s
+" vnoremap s "_s
+" nnoremap c "_c
+" vnoremap c "_c
+" nnoremap x "_x
+" vnoremap x "_x
+" vnoremap p "_c<Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>
+"OLDCODE }}}
+
 "MISC {{{
 " Add pathogen execution on startup
 execute pathogen#infect()
@@ -176,7 +193,8 @@ set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
 set wrap                                   " wrap too long lines
 set notagstack                             " don't add tags manually
-
+set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
+set scrolloff=10                           " min lines below and above
 
 " Folding
 set foldmethod=manual
@@ -300,8 +318,7 @@ augroup vimrcEx
   au!
 
   au BufRead,BufNewFile *.md setl textwidth=80
-  au BufRead,BufNewFile * set viminfo='20,s100,h,f0,n~/.vim/.viminfo |
-        \ set formatoptions=rqj |
+  au BufRead,BufNewFile * set formatoptions=rqj |
         \ setglobal tags=tags
 
   au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
@@ -338,7 +355,7 @@ let s:wrapscanVariable = 1
 let g:NERDTreeMapOpenInTab='<C-t>'
 let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
-let g:NERDTreeWinSize=40
+let g:NERDTreeWinSize=30
 let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
@@ -652,11 +669,11 @@ function! FoldExprJS()
     return '>4'
   endif
 
-  if l =~ s:fromString && nl !~ s:importString && s:inImportFold
+  if s:inImportFold && l =~ s:fromString && nl !~ s:importString
     return '<4'
   endif
 
-  if pl =~ s:fromString && l !~ s:importString
+  if s:inImportFold && pl =~ s:fromString && l !~ s:importString
     let s:inImportFold = 0
     return '0'
   endif
@@ -790,7 +807,6 @@ nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gp :Gpush -u<CR>
 "See the diff between the opened file and the one in develop
 nnoremap <leader>gd :Gdiff develop<CR>
-nnoremap <leader>gD :Gdiff<SPACE>
 " show merge conflicts
 nnoremap <leader>gm :Gmerge<CR>
 
@@ -815,21 +831,6 @@ nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
 nnoremap <F12> :call MassReplaceIt()<cr>
-
-" Fix register copy/pasting
-" nnoremap DD "*dd
-" nnoremap D "*d
-" vnoremap D "*d
-" nnoremap d "_d
-" nnoremap dd "_dd
-" vnoremap d "_d
-" nnoremap s "_s
-" vnoremap s "_s
-" nnoremap c "_c
-" vnoremap c "_c
-" nnoremap x "_x
-" vnoremap x "_x
-" vnoremap p "_c<Esc>:set paste<cr>a<C-r>*<Esc>:set nopaste<cr>
 
 " EasyClip
 " cut
@@ -904,7 +905,7 @@ vnoremap ? <C-C>
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 
 " Set marker
-nnoremap \ m
+nnoremap * m
 
 " Move to the next word such word
 nnoremap m *
@@ -917,6 +918,7 @@ vnoremap <silent> M "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 vnoremap @ :normal @
 " Repeat 'e' macro if in a normal buffer
 noremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
+noremap <silent><expr> \ empty(&buftype) ? ':normal @w<CR>' : '\'
 
 " Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
@@ -924,7 +926,8 @@ nnoremap <F1> :MundoToggle<CR>
 " Silver searcher
 nnoremap ) :Ag! -F<SPACE>
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
-vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<cr>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
+noremap Q q
 
 
 " Quicker window movement
@@ -975,7 +978,9 @@ vnoremap $ g_
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
 
-"more sensible movement (similar to j/k)
+"more sensible mappings
 nnoremap { }
 nnoremap } {
+noremap a' 2i'
+noremap a" 2i"
 "MAPPINGS }}}

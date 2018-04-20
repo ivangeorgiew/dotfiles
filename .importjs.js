@@ -13,8 +13,7 @@ module.exports = {
     // importFunction: 'require',
     // environments: ['browser', 'node'],
     logLevel: 'error',
-    // excludes: [ './tests/**', './build-assets/**', './e2e/**', './mockData/**', '../mockData/**' ],
-    excludes: [ '**/![app]/**' ],
+    excludes: [ './tests/**', './build-assets/**', './e2e/**', './mockData/**', '../mockData/**' ],
     emptyLineBetweenGroups: false,
     sortImports: true,
     groupImports: true,
@@ -27,7 +26,9 @@ module.exports = {
     globals: [],
     namedExports: {
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
-        'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ]
+        'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
+        'reselect': [ 'createSelector' ],
+        'redux-saga/effects': [ 'all', 'put', 'call', 'select' ]
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
         if (pathToCurrentFile.includes('app')) {
