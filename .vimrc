@@ -1,4 +1,8 @@
 "COMMENTS {{{
+" AG rare options:
+" -v something(inverse searching)
+" -ignore file/dir(ignore those files/dirs)
+"
 " Execute this for profiling what slows down vim
 " :profile start profile.log | profile func * | profile file *
 " " At this point do slow actions
@@ -317,11 +321,14 @@ augroup END
 augroup vimrcEx
   au!
 
-  au BufRead,BufNewFile *.md setl textwidth=80
+  "overwrite some vim-sensible options
   au BufRead,BufNewFile * set formatoptions=rqj |
         \ setglobal tags=tags
 
+  au BufRead,BufNewFile *.md setl textwidth=80
+
   au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
+  au BufEnter *.scss setl tabstop=4 | setl shiftwidth=4
 
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
@@ -346,7 +353,7 @@ let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\)\s*'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|case\)\s*'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
@@ -410,9 +417,17 @@ if has('linebreak')
   let &showbreak='⤷ '
 endif
 
+" Rooter
+let g:rooter_patterns = ['pom.xml']
+let g:rooter_silent_chdir = 1
+
 " Gutentags settings
 let g:gutentags_project_root = ['package.json']
+let g:gutentags_exclude_project_root = ['/usr/local']
 let g:gutentags_generate_on_empty_buffer = 1
+let g:gutentags_ctags_auto_set_tags = 0
+let g:gutentags_add_default_project_roots = 0
+" let g:gutentags_file_list_command = 'find . -name "**.js*"'
 
 " YouCompleteMe settings
 " keys
@@ -461,10 +476,6 @@ let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
-
-" Rooter
-let g:rooter_patterns = ['pom.xml']
-let g:rooter_silent_chdir = 1
 
 " auto-pairs settings
 let g:AutoPairsShortcutToggle = '<C-7>'
@@ -536,7 +547,7 @@ endfunction
 function! RenameCurrentFile()
   let old_name = expand('%')
   call inputsave()
-  let new_name = input('New file name: ')
+  let new_name = input('New file name: ', expand('%:t:r'))
   call inputrestore()
   if new_name != '' && new_name != old_name
     if expand('%:e') != '' && new_name !~ '\.'
@@ -598,7 +609,7 @@ function! MassReplaceIt()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
+  execute 'cdo sno@\<'.expression.'\>@'.replacement.'@g | update'
 endfunction
 
 function! ToggleDiff()
@@ -811,8 +822,8 @@ nnoremap <leader>gd :Gdiff develop<CR>
 nnoremap <leader>gm :Gmerge<CR>
 
 " Navigations between tabs
-nnoremap H gT
-nnoremap L gt
+nnoremap <silent> H gT
+nnoremap <silent> L gt
 
 " Go to file under cursor
 "current new tab
@@ -925,9 +936,9 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 " -F for no regex, -w for word search
-nnoremap ) :Ag! -F -w<SPACE>
-vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
-vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
+nnoremap ) :Ag! -F<SPACE>
+vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -955,7 +966,7 @@ nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
 nnoremap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file "
-nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
+nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
 nnoremap <silent> <leader>ia :ImportJSWord<CR><Plug>(FastFoldUpdate)
@@ -980,9 +991,14 @@ nnoremap <expr> i IndentWithI()
 "more sensible mappings
 nnoremap { }
 nnoremap } {
+vnoremap { }
+vnoremap } {
 vnoremap a' 2i'
 vnoremap a" 2i"
 
 " able to end macro inside quicklist
 noremap Q q
+
+" Gutentags update
+nnoremap <silent> gr :GutentagsUpdate!<CR>:redraw!<CR>
 "MAPPINGS }}}

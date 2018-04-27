@@ -18,6 +18,7 @@
 --exclude=\*.bak
 --exclude=\*.css
 --exclude=\*.json
+--exclude=\*.bundle.\*
 
 --langdef=javascript
 --langmap=javascript:.js.jsx
