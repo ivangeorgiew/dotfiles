@@ -104,6 +104,7 @@ alias RT='reboot'
 alias v=vim
 alias vi=vim
 alias ns='npm run start'
+alias nr='npm run'
 
 unset BROWSER
 export EDITOR='vim'

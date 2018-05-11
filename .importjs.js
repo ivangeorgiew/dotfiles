@@ -38,11 +38,11 @@ module.exports = {
         return true
     },
     declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
-        if (pathToCurrentFile.includes('app')) {
+        // if (pathToCurrentFile.includes('app')) {
             return 'import'
-        }
+        // }
 
-        return 'const'
+        // return 'const'
     },
     moduleNameFormatter({ moduleName, pathToCurrentFile, pathToImportedModule }) {
         if (moduleName.startsWith('app/js/')) {

@@ -173,7 +173,7 @@ set synmaxcol=256 "fixes lag from long lines
 "SET {{{
 " Common
 set smartcase
-set noignorecase
+set ignorecase
 set noantialias
 
 set scroll=10                              " Set scroll lines
@@ -195,7 +195,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set wrap                                   " wrap too long lines
+set nowrap                                   " wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
@@ -307,7 +307,7 @@ augroup highlights
 
   au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
 
-  au BufEnter * hi! link OverLength MyError
+  " au BufEnter * hi! link OverLength MyError
 
   " Ale highlights
   au BufEnter * hi! link ALEError MyError
@@ -315,7 +315,7 @@ augroup highlights
   au BufEnter * hi! link ALEErrorSign MyError
 
   " Show characters over 120 columns
-  au BufEnter *.js match OverLength /\%122v.*/
+  " au BufEnter *.js match OverLength /\%122v.*/
 augroup END
 
 augroup vimrcEx
@@ -328,6 +328,7 @@ augroup vimrcEx
   au BufRead,BufNewFile *.md setl textwidth=80
 
   au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
+  au BufEnter *.feature setl tabstop=4 | setl shiftwidth=4
   au BufEnter *.scss setl tabstop=4 | setl shiftwidth=4
 
   " Ask whether to save the session on exit
@@ -400,7 +401,7 @@ if executable('ag')
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_cmd='CtrlP :pwd'
   let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
-  let g:ctrlp_show_hidden = 0
+  let g:ctrlp_show_hidden = 1
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
@@ -471,7 +472,7 @@ let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
 let g:EasyClipAutoFormat = 0
-let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
+let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
@@ -901,13 +902,13 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V\c
-nnoremap <leader>l ?\V\c
+nnoremap / /\V
+nnoremap <leader>l ?\V
 "search in visual selection
-vnoremap / <ESC>/\%V\V\c
+vnoremap / <ESC>/\%V\V
 "search the copied content
-nnoremap <silent> // :let @/ = '\V\c' . escape(@*, '\\/.*$^~[]')<CR>n
-vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 vnoremap ? <C-C>
@@ -936,7 +937,7 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 " -F for no regex, -w for word search
-nnoremap ) :Ag! -F<SPACE>
+nnoremap ) :Ag! -F -w<SPACE>
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
 vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
 
