@@ -16,10 +16,10 @@ sudo pacman -Syu
 sudo pacman -S xorg xorg-server xorg-apps xorg-xinit xorg-twm xterm i3-gaps --noconfirm --needed
 
 # autologin on start
-sudo cp settings/autologin@.service /etc/systemd/system/
-sudo ln -sf /etc/systemd/system/autologin@.service /etc/systemd/system/getty.target.wants/getty@tty1.service
-sudo systemctl enable autologin@tty1.service
-sudo systemctl start autologin@tty1.service
+# sudo cp settings/autologin@.service /etc/systemd/system/
+# sudo ln -sf /etc/systemd/system/autologin@.service /etc/systemd/system/getty.target.wants/getty@tty1.service
+# sudo systemctl enable autologin@tty1.service
+# sudo systemctl start autologin@tty1.service
 
 # install packages from pacman
 sudo pacman -S --noconfirm --needed curl vlc git gparted htop screenfetch ranger wget unclutter zip unzip gnome-keyring libsecret
@@ -28,11 +28,8 @@ sudo pacman -S --noconfirm --needed udiskie transmission-gtk ttf-dejavu rofi nod
 sudo pacman -S --noconfirm --needed alsa-firmware alsa-utils alsa-plugins pulseaudio-alsa pulseaudio
 
 # install packages from yaourt
-yaourt -S --noconfirm zsh oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git polybar
-yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git skype google-chrome watchman
+yaourt -S --noconfirm zsh oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git polybar spotify
+yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git skypeforlinux-stable-bin google-chrome watchman
 
 # set zsh as default shell
 chsh -s /bin/zsh
-
-#spotify is broken currently
-#yaourt -S spotify
