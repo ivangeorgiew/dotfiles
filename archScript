@@ -16,10 +16,10 @@ sudo pacman -Syu
 sudo pacman -S xorg xorg-server xorg-apps xorg-xinit xorg-twm xterm i3-gaps --noconfirm --needed
 
 # autologin on start
-# sudo cp settings/autologin@.service /etc/systemd/system/
-# sudo ln -sf /etc/systemd/system/autologin@.service /etc/systemd/system/getty.target.wants/getty@tty1.service
-# sudo systemctl enable autologin@tty1.service
-# sudo systemctl start autologin@tty1.service
+sudo cp settings/autologin@.service /etc/systemd/system/
+sudo ln -sf /etc/systemd/system/autologin@.service /etc/systemd/system/getty.target.wants/getty@tty1.service
+sudo systemctl enable autologin@tty1.service
+sudo systemctl start autologin@tty1.service
 
 # install packages from pacman
 sudo pacman -S --noconfirm --needed curl vlc git gparted htop screenfetch ranger wget unclutter zip unzip gnome-keyring libsecret
