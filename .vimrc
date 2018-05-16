@@ -297,7 +297,7 @@ augroup folding
         \ setl foldmethod=expr |
         \ setl foldexpr=FoldExprJS() |
 
-  au FileType cucumber  setl foldlevel=0 |
+  au FileType cucumber  setl foldlevel=1 |
         \ setl foldmethod=expr |
         \ setl foldexpr=FoldExprCucumber() |
 augroup END
@@ -903,11 +903,13 @@ nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
 nnoremap / /\V
+"search backwards
 nnoremap <leader>l ?\V
 "search in visual selection
 vnoremap / <ESC>/\%V\V
 "search the copied content
-nnoremap <silent> // :let @/ = '\V' . escape(@*, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
+"search the selected
 vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
@@ -937,7 +939,7 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 " -F for no regex, -w for word search
-nnoremap ) :Ag! -F -w<SPACE>
+nnoremap ) :Ag! -F <SPACE>
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
 vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
 
