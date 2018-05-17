@@ -426,7 +426,6 @@ let g:rooter_silent_chdir = 1
 let g:gutentags_project_root = ['package.json']
 let g:gutentags_exclude_project_root = ['/usr/local']
 let g:gutentags_generate_on_empty_buffer = 1
-let g:gutentags_ctags_auto_set_tags = 0
 let g:gutentags_add_default_project_roots = 0
 " let g:gutentags_file_list_command = 'find . -name "**.js*"'
 
@@ -939,9 +938,9 @@ nnoremap <F1> :MundoToggle<CR>
 
 " Silver searcher
 " -F for no regex, -w for word search
-nnoremap ) :Ag! -F <SPACE>
+nnoremap ) :Ag! -F<SPACE>
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
-vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! -F "<C-r>b"<CR>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
