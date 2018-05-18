@@ -905,7 +905,7 @@ nnoremap / /\V
 "search backwards
 nnoremap <leader>l ?\V
 "search in visual selection
-vnoremap / <ESC>/\%V\V
+vnoremap <leader>/ <ESC>/\%V\V
 "search the copied content
 nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
 "search the selected
