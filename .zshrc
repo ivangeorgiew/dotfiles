@@ -107,6 +107,7 @@ alias ns='npm run start'
 alias nr='npm run'
 
 unset BROWSER
+export BROWSER='google-chrome-stable'
 export EDITOR='vim'
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8

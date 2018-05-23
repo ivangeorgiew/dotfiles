@@ -6,7 +6,7 @@ gaps inner 5
 gaps outer 5
 workspace_layout default #default|stacking|tabbed
 popup_during_fullscreen smart #smart|ignore|leave_fullscreen
-focus_follows_mouse no
+focus_follows_mouse yes
 
 #window title and edge bar
 #class                  border  backgr  text    indicator child_border

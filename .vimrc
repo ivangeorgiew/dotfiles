@@ -322,10 +322,10 @@ augroup vimrcEx
   au!
 
   "overwrite some vim-sensible options
-  au BufRead,BufNewFile * set formatoptions=rqj |
-        \ setglobal tags=tags
-
+  au BufRead,BufNewFile * setglobal tags=tags
+  au BufRead,BufNewFile *.js setl textwidth=120
   au BufRead,BufNewFile *.md setl textwidth=80
+  au BufEnter * set formatoptions=rjcl
 
   au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
   au BufEnter *.feature setl tabstop=4 | setl shiftwidth=4
@@ -856,8 +856,6 @@ nmap rr <plug>SubstituteLine
 " change yank buffer
 nmap <C-F> <plug>EasyClipSwapPasteForward
 nmap <C-B> <plug>EasyClipSwapPasteBackwards
-" EasyClip autoformats on paste, turn it off after paste if incorrect
-nmap <leader>ff <plug>EasyClipToggleFormattedPaste
 " Copy from *
 imap <C-e> <plug>EasyClipInsertModePaste
 cmap <C-e> <plug>EasyClipCommandModePaste
@@ -865,6 +863,8 @@ cmap <C-e> <plug>EasyClipCommandModePaste
 " use EasyClip's p command (that is why its nmap and not nnoremap)
 nmap <leader>p o<Esc>p
 nmap <leader>P O<Esc>p
+" format last pasted text
+nnoremap <leader>ff `[v`]=
 
 " jk to exit insertmode (delete characters to beginning of line if only whitespace)
 inoremap <silent><expr> jk getline('.') =~ '^\s\+$' && empty(&buftype) ? '<ESC>:call setline(line("."), "")<CR>' : '<ESC>'
@@ -931,7 +931,6 @@ vnoremap <silent> M "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 vnoremap @ :normal @
 " Repeat 'e' macro if in a normal buffer
 noremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
-noremap <silent><expr> \ empty(&buftype) ? ':normal @w<CR>' : '\'
 
 " Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
@@ -997,10 +996,14 @@ vnoremap { }
 vnoremap } {
 vnoremap a' 2i'
 vnoremap a" 2i"
+map <leader><leader> <Esc>
 
 " able to end macro inside quicklist
 noremap Q q
 
 " Gutentags update
-nnoremap <silent> gr :GutentagsUpdate!<CR>:redraw!<CR>
+nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
+
+" Abbreviations
+ab teh the
 "MAPPINGS }}}

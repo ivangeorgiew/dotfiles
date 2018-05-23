@@ -2,6 +2,7 @@
 --fields=+l
 
 --exclude=min
+--exclude=coverage
 --exclude=build
 --exclude=dist
 --exclude=lib
