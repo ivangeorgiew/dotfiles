@@ -31,7 +31,7 @@ module.exports = {
         'redux-saga/effects': [ 'all', 'put', 'call', 'select' ]
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
-        if (pathToCurrentFile.includes('app')) {
+        if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
             return false
         }
 
@@ -47,6 +47,10 @@ module.exports = {
     moduleNameFormatter({ moduleName, pathToCurrentFile, pathToImportedModule }) {
         if (moduleName.startsWith('app/js/')) {
             return moduleName.replace('app/js/', '')
+        }
+
+        if (moduleName.startsWith('e2e/')) {
+            return moduleName.replace('e2e/', '')
         }
 
         return moduleName

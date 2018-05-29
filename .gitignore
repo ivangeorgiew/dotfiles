@@ -14,5 +14,4 @@ tags.temp
 .vim/undo/*
 .vim/view/*
 .vim/session/*
-.vim/.viminfo
-package-lock.json
+.vim/.viminf*
