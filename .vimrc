@@ -794,10 +794,10 @@ nnoremap <Down>     :echoerr "Use j"<CR>
 
 " Cmd navigation
 cnoremap <C-A> <Home>
-cnoremap <C-H> <S-Left>
-cnoremap <C-L> <S-Right>
-cnoremap <C-B> <Left>
-cnoremap <C-F> <Right>
+cnoremap <C-J> <S-Left>
+cnoremap <C-K> <S-Right>
+cnoremap <C-H> <Left>
+cnoremap <C-L> <Right>
 
 "Vimdiff
 "diff 2 buffers in vertical split
@@ -854,11 +854,11 @@ xmap r <plug>XEasyClipPaste
 nmap <silent> R <plug>SubstituteToEndOfLine
 nmap rr <plug>SubstituteLine
 " change yank buffer
-nmap <C-F> <plug>EasyClipSwapPasteForward
-nmap <C-B> <plug>EasyClipSwapPasteBackwards
+nmap <C-B> <plug>EasyClipSwapPasteForward
+nmap <C-A> <plug>EasyClipSwapPasteBackwards
 " Copy from *
-imap <C-e> <plug>EasyClipInsertModePaste
-cmap <C-e> <plug>EasyClipCommandModePaste
+imap <C-E> <plug>EasyClipInsertModePaste
+cmap <C-E> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
 nmap <leader>p o<Esc>p

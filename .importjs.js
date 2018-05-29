@@ -31,11 +31,11 @@ module.exports = {
         'redux-saga/effects': [ 'all', 'put', 'call', 'select' ]
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
-        if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
+        // if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
             return false
-        }
+        // }
 
-        return true
+        // return true
     },
     declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
         // if (pathToCurrentFile.includes('app')) {
