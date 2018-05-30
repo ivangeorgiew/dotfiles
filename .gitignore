@@ -11,6 +11,7 @@ zeus.json
 tags
 tags.lock
 tags.temp
+package-log.json
 .vim/undo/*
 .vim/view/*
 .vim/session/*

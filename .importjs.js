@@ -28,7 +28,7 @@ module.exports = {
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
         'reselect': [ 'createSelector' ],
-        'redux-saga/effects': [ 'all', 'put', 'call', 'select' ]
+        'redux-saga/effects': [ 'all', 'put', 'call', 'select', 'takeLatest', 'takeEvery', 'fork' ]
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
         // if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {

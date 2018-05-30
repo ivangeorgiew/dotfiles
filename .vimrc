@@ -815,27 +815,24 @@ nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>gp :Gpush -u<CR>
-"See the diff between the opened file and the one in develop
+nnoremap <leader>go :Git checkout<Space>
+nnoremap <leader>gl :Git lg<CR>
 nnoremap <leader>gd :Gdiff develop<CR>
-" show merge conflicts
 nnoremap <leader>gm :Gmerge<CR>
+nnoremap <leader>gph :Dispatch! git push -u<CR>
+nnoremap <leader>gpl :Dispatch! git pull<CR>
 
 " Navigations between tabs
 nnoremap <silent> H gT
 nnoremap <silent> L gt
 
 " Go to file under cursor
-"current new tab
-nnoremap gf <c-w>gf
-"vertical split
-nnoremap gF :vertical wincmd f<CR>
-"current window
-nnoremap gO gf
-
-nnoremap <silent> gj lbve"by:call GoToTag('tab')<CR>
-nnoremap <silent> gJ lbve"by:call GoToTag('vsplit')<CR>
+nnoremap <silent> gt lbve"by:call GoToTag('tab')<CR>
+nnoremap <silent> gs lbve"by:call GoToTag('vsplit')<CR>
 nnoremap <silent> go lbve"by:call GoToTag('current')<CR>
+nnoremap <silent> gT <c-w>gf
+nnoremap <silent> gS :vertical wincmd f<CR>
+nnoremap <silent> gO gf
 
 " Search and replace
 nnoremap <F2> :call FileReplaceIt(0)<cr>
@@ -921,10 +918,10 @@ nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 nnoremap * m
 
 " Move to the next word such word
-nnoremap m *
-vnoremap <silent> m "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
-nnoremap M #
-vnoremap <silent> M "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
+nnoremap m viw"by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
+vnoremap <silent> m "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
+nnoremap M :let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
+vnoremap <silent> M "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
@@ -990,12 +987,13 @@ vnoremap $ g_
 nnoremap <expr> i IndentWithI()
 
 "more sensible mappings
-nnoremap { }
-nnoremap } {
-vnoremap { }
-vnoremap } {
+nnoremap { }k
+nnoremap } {j
+vnoremap { }k
+vnoremap } {j
 vnoremap a' 2i'
 vnoremap a" 2i"
+vnoremap a` 2i`
 map <leader><leader> <Esc>
 
 " able to end macro inside quicklist
