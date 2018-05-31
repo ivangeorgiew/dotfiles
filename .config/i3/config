@@ -96,7 +96,6 @@ assign [class="Termite"] $ws1
 assign [class="Google-chrome"] $ws2
 for_window [class="Spotify"] move to workspace $ws3
 assign [class="Skype"] $ws3
-assign [class="vlc"] $ws3
 assign [class="Wfica"] $ws4
 
 #Multiple monitors settings
