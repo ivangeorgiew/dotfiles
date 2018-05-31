@@ -471,7 +471,7 @@ let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
 let g:EasyClipAutoFormat = 0
-let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
+let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
@@ -602,14 +602,18 @@ function! VisReplaceIt()
   execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
-function! MassReplaceIt()
+function! MassReplaceIt(isWord)
   call inputsave()
   let expression = input('Enter expression:')
   call inputrestore()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute 'cdo sno@\<'.expression.'\>@'.replacement.'@g | update'
+  if a:isWord == 0
+    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
+  else
+    execute 'cdo sno@\<'.expression.'\>@'.replacement.'@g | update'
+  endif
 endfunction
 
 function! ToggleDiff()
@@ -838,7 +842,8 @@ nnoremap <silent> gO gf
 nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
-nnoremap <F12> :call MassReplaceIt()<cr>
+nnoremap <F11> :call MassReplaceIt(0)<cr>
+nnoremap <F12> :call MassReplaceIt(1)<cr>
 
 " EasyClip
 " cut
