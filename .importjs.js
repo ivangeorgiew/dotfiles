@@ -12,8 +12,8 @@ module.exports = {
     // }
     // importFunction: 'require',
     // environments: ['browser', 'node'],
-    logLevel: 'error',
-    excludes: [ './tests/**', './build-assets/**', './e2e/**', './mockData/**', '../mockData/**' ],
+    logLevel: 'debug',
+    excludes: [ './coverage/**', './tests/**', './build-assets/**', './e2e/**', './mockData/**', '../mockData/**' ],
     emptyLineBetweenGroups: false,
     sortImports: true,
     groupImports: true,

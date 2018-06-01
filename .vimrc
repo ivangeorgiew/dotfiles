@@ -863,6 +863,8 @@ imap <C-E> <plug>EasyClipInsertModePaste
 cmap <C-E> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
+nnoremap p :Paste 0<CR>`[v`]=
+nnoremap P :PasteBefore 0<CR>`[v`]=
 nmap <leader>p o<Esc>p
 nmap <leader>P O<Esc>p
 " format last pasted text
@@ -925,7 +927,7 @@ nnoremap * m
 " Move to the next word such word
 nnoremap m viw"by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
 vnoremap <silent> m "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
-nnoremap M :let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
+nnoremap M viw"by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 vnoremap <silent> M "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
 
 " Macro mappings
