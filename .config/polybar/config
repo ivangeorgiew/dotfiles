@@ -45,10 +45,10 @@ font-1 = FontAwesome:pixelsize=10;1
 
 modules-left = i3
 modules-center = xwindow
-modules-right = volume separator keyboard separator wlan eth separator date separator
+modules-right = volume separator keyboard separator wlan eth separator date
 
-tray-position = right
-tray-padding = 2
+; tray-position = right
+; tray-padding = 2
 ;tray-transparent = true
 ;tray-background = #0063ff
 ; Position of the system tray window
@@ -262,7 +262,7 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
 type = internal/network
-interface = enp0s31f6
+interface = enp37s0
 interval = 3.0
 
 format-connected-prefix = " "
