@@ -857,7 +857,7 @@ nmap <silent> R <plug>SubstituteToEndOfLine
 nmap rr <plug>SubstituteLine
 " change yank buffer
 nmap <C-B> <plug>EasyClipSwapPasteForward
-nmap <C-A> <plug>EasyClipSwapPasteBackwards
+nmap <C-F> <plug>EasyClipSwapPasteBackwards
 " Copy from *
 imap <C-E> <plug>EasyClipInsertModePaste
 cmap <C-E> <plug>EasyClipCommandModePaste
