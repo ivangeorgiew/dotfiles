@@ -863,8 +863,8 @@ imap <C-E> <plug>EasyClipInsertModePaste
 cmap <C-E> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
-nnoremap p :Paste 0<CR>`[v`]=
-nnoremap P :PasteBefore 0<CR>`[v`]=
+nnoremap <silent> p :Paste 0<CR>`[v`]=
+nnoremap <silent> P :PasteBefore 0<CR>`[v`]=
 nmap <leader>p o<Esc>p
 nmap <leader>P O<Esc>p
 " format last pasted text

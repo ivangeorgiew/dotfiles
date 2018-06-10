@@ -101,8 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias SN='shutdown now'
 alias RT='reboot'
-alias v=vim
-alias vi=vim
+alias suvim='sudo -E vim'
 alias ns='npm run start'
 alias nr='npm run'
 
