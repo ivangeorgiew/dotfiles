@@ -369,7 +369,7 @@ let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
 "Emmet settings
 let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-z>' "<C-z>, to activate
+let g:user_emmet_leader_key='<C-q>'
 
 "Mundo (undo history) settings
 let g:mundo_width = 40
@@ -989,6 +989,9 @@ inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
 " don't go to the end of line char
 vnoremap $ g_
+
+"Emmet
+nmap <C-y> <C-q>,
 
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
