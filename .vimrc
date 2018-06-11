@@ -823,8 +823,8 @@ nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gl :Git lg<CR>
 nnoremap <leader>gd :Gdiff develop<CR>
 nnoremap <leader>gm :Gmerge<CR>
-nnoremap <leader>gph :Dispatch! git push -u<CR>
-nnoremap <leader>gpl :Dispatch! git pull<CR>
+nnoremap <silent> <leader>gph :Dispatch! git push -u<CR>
+nnoremap <silent> <leader>gpl :Dispatch! git pull<CR>
 
 " Navigations between tabs
 nnoremap <silent> H gT

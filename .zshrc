@@ -17,9 +17,9 @@ BULLETTRAIN_PROMPT_ORDER=(
     custom
     dir
     perl
-    ruby
+    # ruby
     virtualenv
-    #nvm
+    # nvm
     go
     git
     hg
@@ -114,12 +114,16 @@ export LANG=en_us.UTF-8
 # export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"
 export PATH=~/.npm-global/bin:$PATH
+export PATH="$PATH:$HOME/.rvm/bin"
 
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 
 # disable C-s freezing
 stty -ixon
+
+# Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 if [ ! -d "/home/ivangeorgiev/projects" ]; then
     mkdir ~/projects
