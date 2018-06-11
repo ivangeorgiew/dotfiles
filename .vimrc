@@ -602,17 +602,20 @@ function! VisReplaceIt()
   execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
-function! MassReplaceIt(isWord)
+function! MassReplaceIt()
+  call inputsave()
+  let fullWord = confirm('Only full words ?',"&Yes\n&No", 1)
+  call inputrestore()
   call inputsave()
   let expression = input('Enter expression:')
   call inputrestore()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  if a:isWord == 0
-    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
-  else
+  if fullWord == 1
     execute 'cdo sno@\<'.expression.'\>@'.replacement.'@g | update'
+  else
+    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
   endif
 endfunction
 
@@ -842,8 +845,7 @@ nnoremap <silent> gO gf
 nnoremap <F2> :call FileReplaceIt(0)<cr>
 vnoremap <F2> "by:call FileReplaceIt(1)<cr>
 vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
-nnoremap <F11> :call MassReplaceIt(0)<cr>
-nnoremap <F12> :call MassReplaceIt(1)<cr>
+nnoremap <F12> :call MassReplaceIt()<cr>
 
 " EasyClip
 " cut
@@ -863,8 +865,6 @@ imap <C-E> <plug>EasyClipInsertModePaste
 cmap <C-E> <plug>EasyClipCommandModePaste
 " Paste content before or after line
 " use EasyClip's p command (that is why its nmap and not nnoremap)
-nnoremap <silent> p :Paste 0<CR>`[v`]=
-nnoremap <silent> P :PasteBefore 0<CR>`[v`]=
 nmap <leader>p o<Esc>p
 nmap <leader>P O<Esc>p
 " format last pasted text
@@ -885,7 +885,7 @@ noremap <silent> <F5> :call OpenSession()<cr>
 
 " Copy multiple words to register
 nnoremap <silent> <leader>8 lbve"cy
-nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
+nnoremap <silent> <leader>9 :let @c .= ' '<cr>lbve"Cy
 nnoremap <silent> <leader>0 "cp
 
 " Space to new line in vis selection
@@ -997,10 +997,10 @@ nmap <C-y> <C-q>,
 nnoremap <expr> i IndentWithI()
 
 "more sensible mappings
-nnoremap { }k
-nnoremap } {j
-vnoremap { }k
-vnoremap } {j
+nnoremap { }
+nnoremap } {
+vnoremap { }
+vnoremap } {
 vnoremap a' 2i'
 vnoremap a" 2i"
 vnoremap a` 2i`
