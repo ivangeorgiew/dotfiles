@@ -613,9 +613,9 @@ function! MassReplaceIt()
   let replacement = input('Enter replacement:')
   call inputrestore()
   if fullWord == 1
-    execute 'cdo sno@\<'.expression.'\>@'.replacement.'@g | update'
+    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@g | update'
   else
-    execute 'cdo sno@'.expression.'@'.replacement.'@g | update'
+    execute 'cfdo %sno@'.expression.'@'.replacement.'@g | update'
   endif
 endfunction
 
@@ -971,7 +971,7 @@ nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
 nnoremap <leader>fm :call MoveCurrentFile()<cr>
 " Delete current file "
-nnoremap <silent> <leader>fd :call delete(expand('%')) \| bdelete!<CR>
+nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
 nnoremap <silent> <leader>ia :ImportJSWord<CR><Plug>(FastFoldUpdate)
@@ -997,10 +997,10 @@ nmap <C-y> <C-q>,
 nnoremap <expr> i IndentWithI()
 
 "more sensible mappings
-nnoremap { }
-nnoremap } {
-vnoremap { }
-vnoremap } {
+nnoremap { }k
+vnoremap { }k
+nnoremap } {j
+vnoremap } {j
 vnoremap a' 2i'
 vnoremap a" 2i"
 vnoremap a` 2i`

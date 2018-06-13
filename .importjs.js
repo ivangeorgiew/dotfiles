@@ -13,7 +13,7 @@ module.exports = {
     // importFunction: 'require',
     // environments: ['browser', 'node'],
     logLevel: 'debug',
-    excludes: ['coverage/**', 'tests/**', 'build-assets/**', 'mockData/**'],
+    excludes: ['./mockData/**', './coverage/**', './tests/**', './build-assets/**'],
     emptyLineBetweenGroups: false,
     sortImports: true,
     groupImports: true,
@@ -23,12 +23,15 @@ module.exports = {
     maxLineLength: 120,
     tab: '    ',
     mergableOptions: { globals: false },
-    globals: [],
+    globals: [ 'module' ],
     namedExports: {
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
         'reselect': [ 'createSelector' ],
-        'redux-saga/effects': [ 'all', 'put', 'call', 'select', 'takeLatest', 'takeEvery', 'fork' ]
+        'redux-saga/effects': [ 'all', 'put', 'call', 'select', 'take', 'race', 'takeLatest', 'takeEvery', 'fork', 'cancel', 'spawn' ],
+        'redux-saga': [ 'delay' ],
+        'react-redux': [ 'connect' ],
+        'redux': [ 'bindActionCreators' ]
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
         // if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
