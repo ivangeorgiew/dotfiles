@@ -22,10 +22,10 @@ If you use ArchLinux:
 15) `npm i -g node@8.11.2`
 16) `source ~/.zshrc`
 17) `npm i -g import-js`
-18) `rm -fr ~/.npm-global/lib/node_modules/import-js/build`
+18) `rm -fr ~/.npm-global/lib/node_modules/import-js/lib`
 19) `cd ~/` and `git clone https://github.com/ivangeorgiew/import-js.git`
-20) `cd ~/.npm-global/lib/node_modules/import-js` and `npm i` and `npm run build`
-21) `cp -R build ~/.npm-global/lib/node_modules/import-js/build`
+20) `cp -R lib ~/.npm-global/lib/node_modules/import-js/lib`
+21) `cd ~/.npm-global/lib/node_modules/import-js` and `npm i` and `npm run build`
 22) Configure lxappearance
 23) Find your active network interface: `ifconfig -a`
 24) Update the wlan/eth modules in ~/.config/polybar/config
