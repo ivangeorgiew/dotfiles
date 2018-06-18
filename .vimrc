@@ -233,11 +233,6 @@ set complete=.,t
 set splitbelow
 set splitright
 
-" In order for gf to work with import aliases ( ../../../components => components)
-set path=~/projects/entitlements/entitlements-web/app/js
-set path+=~/projects/entitlements/entitlements-web/app/js/**
-set path+=~/projects/entitlements/entitlements-web/**
-
 "Silver searcher
 if executable('ag')
   set grepprg=ag
@@ -434,6 +429,7 @@ let g:gutentags_add_default_project_roots = 0
 let g:ycm_key_list_select_completion = ['<C-n>']
 let g:ycm_key_list_previous_completion = ['<C-p>']
 let g:ycm_key_list_stop_completion = ['<C-y>']
+let g:ycm_key_invoke_completion = '<C-Space>'
 " completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -442,6 +438,12 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " remove semantic competion in javascript
 let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
 " etc
+let g:ycm_filepath_completion_use_working_dir = 0
+" let g:ycm_semantic_triggers =  {
+"   \   'c' : ['->', '.'],
+"   \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+"   \             're!\[.*\]\s'],
+"   \ }
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
