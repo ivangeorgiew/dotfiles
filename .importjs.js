@@ -13,7 +13,7 @@ module.exports = {
     // importFunction: 'require',
     // environments: ['browser', 'node'],
     logLevel: 'debug',
-    excludes: ['./mockData/**', './coverage/**', './tests/**', './build-assets/**'],
+    excludes: ['./e2e/node_modules/**', './*.js', './mockData/**', './routes/**', './coverage/**', './tests/**', './build-assets/**'],
     emptyLineBetweenGroups: false,
     sortImports: true,
     groupImports: true,
