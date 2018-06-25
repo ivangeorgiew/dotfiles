@@ -84,7 +84,7 @@
 " Automatically indents - if not correct use <leader>ff
 " r(motion) - replace with * buffer
 " "ar(motion) - replace with 'a' buffer
-" C-f/C-n - after paste choose previous or next yank
+" C-b/C-f - after paste choose previous or next yank
 
 " Convert words
 " snake_case (crs),
@@ -116,6 +116,14 @@
 "COMMENTS }}}
 
 "OLDCODE {{{
+" function! TabClose()
+"   if winnr("$") == 1 && tabpagenr("$") > 1 && tabpagenr() > 1 && tabpagenr() < tabpagenr("$")
+"     tabclose | tabprev
+"   else
+"     q
+"   endif
+" endfunction
+"
 " Go to definitions using the silver searcher (no need when using tags)
 " Search for js variable
 " let g:jsConstRegex = '^(export) (?:var|let|const|function|class)(?:\*| \* | \*| )('
@@ -515,14 +523,6 @@ let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
-function! TabClose()
-  if winnr("$") == 1 && tabpagenr("$") > 1 && tabpagenr() > 1 && tabpagenr() < tabpagenr("$")
-    tabclose | tabprev
-  else
-    q
-  endif
-endfunction
-
 function! GitCommit()
   call inputsave()
   let message = input('Message: ')
@@ -1008,7 +1008,7 @@ vnoremap a" 2i"
 vnoremap a` 2i`
 map <leader><leader> <Esc>
 
-" able to end macro inside quicklist
+" ability to end macro inside quicklist
 noremap Q q
 
 " Gutentags update
