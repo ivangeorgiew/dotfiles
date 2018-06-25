@@ -472,7 +472,7 @@ let g:UltiSnipsSnippetDirectories = ['ultisnips']
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
-let g:EasyClipAutoFormat = 0
+let g:EasyClipAutoFormat = 1
 let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
