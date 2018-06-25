@@ -72,7 +72,7 @@
 	url = https://github.com/ludovicchabant/vim-gutentags.git
 [submodule ".vim/bundle/vim-import-js"]
 	path = .vim/bundle/vim-import-js
-	url = https://github.com/ivangeorgiew/vim-import-js.git
+	url = https://github.com/Galooshi/vim-import-js.git
 [submodule ".vim/bundle/vim-repeat"]
 	path = .vim/bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
