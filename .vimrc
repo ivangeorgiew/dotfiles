@@ -180,16 +180,13 @@ set synmaxcol=256 "fixes lag from long lines
 
 "SET {{{
 " Common
-set smartcase
-set ignorecase
-set noantialias
-
 set scroll=10                              " Set scroll lines
 set nocompatible                           " Use Vim settings, rather then Vi settings
 set nobackup                               " dont make backups
 set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
 set swapsync=""
+set noantialias
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
 set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
@@ -907,15 +904,15 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V
+nnoremap / /\V\c
 "search backwards
-nnoremap <leader>l ?\V
+nnoremap <leader>l ?\V\c
 "search in visual selection
-vnoremap <leader>/ <ESC>/\%V\V
+vnoremap <leader>/ <ESC>/\%V\V\c
 "search the copied content
-nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
 "search the selected
-vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 vnoremap ? <C-C>
