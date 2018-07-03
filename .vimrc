@@ -342,7 +342,7 @@ augroup END
 let loaded_matchparen = 1
 
 " Variables for FoldExprJS
-let s:tabstop = &tabstop
+let s:tabstop = 4
 let s:prevBracketIndent = -1
 let s:bracketIndent = -1
 let s:inMarker = 0
@@ -486,7 +486,7 @@ let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
 
 " auto-pairs settings
-let g:AutoPairsShortcutToggle = '<C-7>'
+let g:AutoPairsShortcutToggle = 'F8'
 let g:AutoPairsMapCh = 0
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutJump = ''
