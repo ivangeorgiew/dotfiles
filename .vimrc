@@ -209,7 +209,8 @@ set scrolloff=10                           " min lines below and above
 " Folding
 set foldmethod=manual
 set foldmarker=region,endregion            " markers for folding
-set foldlevelstart=1
+" set foldlevelstart=0
+set foldlevel=0
 set foldtext=FoldText()
 
 " Indentations
@@ -290,16 +291,13 @@ augroup END
 augroup folding
   au!
 
-  au FileType vim setl foldlevel=0 |
-        \ setl foldmarker={{{,}}} |
+  au FileType vim setl foldmarker={{{,}}} |
         \ setl foldmethod=marker
 
-  au FileType javascript.jsx setl foldlevel=1 |
-        \ setl foldmethod=expr |
+  au FileType javascript.jsx setl foldmethod=expr |
         \ setl foldexpr=FoldExprJS() |
 
-  au FileType cucumber  setl foldlevel=1 |
-        \ setl foldmethod=expr |
+  au FileType cucumber setl foldmethod=expr |
         \ setl foldexpr=FoldExprCucumber() |
 augroup END
 
@@ -842,10 +840,10 @@ nnoremap <silent> gS :vertical wincmd f<CR>
 nnoremap <silent> gO gf
 
 " Search and replace
-nnoremap <F2> :call FileReplaceIt(0)<cr>
-vnoremap <F2> "by:call FileReplaceIt(1)<cr>
-vnoremap <F3> :<C-u>call VisReplaceIt()<cr>
-nnoremap <F12> :call MassReplaceIt()<cr>
+nnoremap <silent> <F2> :call FileReplaceIt(0)<cr>
+vnoremap <silent> <F2> "by:call FileReplaceIt(1)<cr>
+vnoremap <silent> <F3> :<C-u>call VisReplaceIt()<cr>
+nnoremap <silent> <F12> :call MassReplaceIt()<cr>
 
 " EasyClip
 " cut
@@ -925,10 +923,13 @@ nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 nnoremap * m
 
 " Move to the next word such word
-nnoremap m viw"by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
-vnoremap <silent> m "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>n
-nnoremap M viw"by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
-vnoremap <silent> M "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>N
+nnoremap <silent> n n:silent! norm! zO<CR>zz
+nnoremap <silent> N N:silent! norm! zO<CR>zz
+map _ "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>
+nmap <silent> m viw_n
+vmap <silent> m _n
+nmap <silent> M viw_NN
+vmap <silent> M _NN
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
@@ -954,10 +955,6 @@ nnoremap <C-l> <C-w>l
 " Center page when moving up or down
 nnoremap <C-d> 25jzz
 nnoremap <C-u> 25kzz
-
-" Center page when moving to next search
-nnoremap n nzz
-nnoremap N Nzz
 
 " File manipulation "
 cnoremap <expr> %% expand('%:h').'/'
