@@ -353,7 +353,7 @@ let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
 let s:startBracket = '\w.*\({\|(\|[\)\s*\(\/\/.*\)*$'
 let s:endBracket = '^' . s:comment . '*\s*\(}\|)\|]\)'
-let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|case\)\s*'
+let s:nonStarterFolds = '^' . s:comment . '*\s*\(||\|&&\|else\|case\|.*\s*class\s.*\)\s*'
 
 " variable for ToggleWrapscan function
 let s:wrapscanVariable = 1
