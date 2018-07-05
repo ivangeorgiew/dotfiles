@@ -279,7 +279,7 @@ format-disconnected =
 type = internal/date
 interval = 5
 
-date = "%d/%m/%Y "
+date = "%A, %d %B %Y "
 ;uncomment below to show date on click
 ; date-alt = " %Y/%m/%d"
 
