@@ -1011,4 +1011,5 @@ nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Abbreviations
 ab teh the
+ab cosnt const
 "MAPPINGS }}}

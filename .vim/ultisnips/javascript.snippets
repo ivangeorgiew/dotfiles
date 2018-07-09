@@ -53,15 +53,13 @@ import { ${1} } from '${2}/$1'
 endsnippet
 
 snippet cwrp "componentWillReceiveProps" b
-componentWillReceiveProps({ ${1} }) {
-	const { ${2:$1} } = this.props
+componentWillReceiveProps(nextProps) {
 	$0
 }
 endsnippet
 
 snippet cdm "componentDidMount" b
 componentDidMount() {
-	const { ${1} } = this.props
 	$0
 }
 endsnippet
