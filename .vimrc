@@ -994,13 +994,6 @@ nmap <C-y> <C-q>,
 nnoremap <expr> i IndentWithI()
 
 "more sensible mappings
-nnoremap { }k
-vnoremap { }k
-nnoremap } {j
-vnoremap } {j
-vnoremap a' 2i'
-vnoremap a" 2i"
-vnoremap a` 2i`
 map <leader><leader> <Esc>
 
 " ability to end macro inside quicklist
