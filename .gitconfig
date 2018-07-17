@@ -24,6 +24,7 @@
     rs = rm --cached
     ss = status
     sch = !git branch --all | grep
+    lst = !git branch --sort=committerdate
     sh = stash
     sha = stash apply
     fa = fetch --all
