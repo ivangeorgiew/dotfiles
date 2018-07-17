@@ -8,7 +8,7 @@
 #  Mod1 + v
 
 # copy text
-"xset r off; xdotool keyup Alt keyup c; xclip -o -sel primary | xclip -sel clipboard; xdotool key Right; xset r on"
+"xset r off; xdotool keyup Alt keyup c; xclip -o -sel primary | xclip -sel clipboard; xset r on"
   Alt + c
 
 # paste text
