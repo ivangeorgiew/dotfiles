@@ -476,7 +476,7 @@ let g:UltiSnipsSnippetDirectories = ['ultisnips']
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
-let g:EasyClipAutoFormat = 1
+let g:EasyClipAutoFormat = 0
 let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
@@ -883,7 +883,7 @@ noremap <silent> <F5> :call OpenSession()<cr>
 
 " Copy multiple words to register
 nnoremap <silent> <leader>8 lbve"cy
-nnoremap <silent> <leader>9 :let @c .= ' '<cr>lbve"Cy
+nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
 nnoremap <silent> <leader>0 "cp
 
 " Space to new line in vis selection
