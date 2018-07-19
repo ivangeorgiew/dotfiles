@@ -324,11 +324,12 @@ augroup vimrcEx
   au BufRead,BufNewFile * setglobal tags=tags
   au BufRead,BufNewFile *.js setl textwidth=120
   au BufRead,BufNewFile *.md setl textwidth=80
+
   au BufEnter * set formatoptions=rjcl
 
-  au BufEnter *.js setl tabstop=4 | setl shiftwidth=4
-  au BufEnter *.feature setl tabstop=4 | setl shiftwidth=4
-  au BufEnter *.scss setl tabstop=4 | setl shiftwidth=4
+  au BufEnter *.js setl tabstop=4 shiftwidth=4 synmaxcol=3000
+  au BufEnter *.feature setl tabstop=4 shiftwidth=4
+  au BufEnter *.scss setl tabstop=4 shiftwidth=4
 
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
