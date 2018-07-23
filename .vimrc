@@ -1,7 +1,7 @@
 "COMMENTS {{{
 " AG rare options:
 " -v something(inverse searching)
-" -ignore file/dir(ignore those files/dirs)
+" --ignore file/dir(ignore those files/dirs)
 "
 " Execute this for profiling what slows down vim
 " :profile start profile.log | profile func * | profile file *
@@ -315,6 +315,11 @@ augroup highlights
 
   " Show characters over 120 columns
   " au BufEnter *.js match OverLength /\%122v.*/
+
+  au BufEnter * hi! DiffAdd    term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
+  au BufEnter * hi! DiffChange term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
+  au BufEnter * hi! DiffDelete term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=167 guifg=#fb4934
+  au BufEnter * hi! DiffText   term=reverse cterm=reverse  ctermbg=236 gui=reverse  guibg=#32302f ctermfg=208 guifg=#fe8019
 augroup END
 
 augroup vimrcEx
