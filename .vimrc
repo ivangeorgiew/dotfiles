@@ -201,7 +201,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set nowrap                                   " wrap too long lines
+set wrap                                   " wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
@@ -266,7 +266,7 @@ augroup syntax
   au!
 
   "Wrap character color
-  au VimEnter,Colorscheme * :hi! NonText ctermfg=Red guifg=#592929
+  au VimEnter,Colorscheme * hi! NonText term=bold ctermbg=236 guibg=#32302f ctermfg=245 guifg=#928374
 
   " Switch syntax for strange file endings
   au BufNewFile,BufRead *.ejs setl filetype=html
