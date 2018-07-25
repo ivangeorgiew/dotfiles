@@ -201,7 +201,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set wrap                                   " wrap too long lines
+set nowrap                                   " wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
@@ -525,6 +525,16 @@ let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
+function! CloseBuffer()
+    " Is there more than one buffer opened ?
+    if winnr('$') > 1 || tabpagenr('$') > 1
+      execute ':q'
+    else
+      echo 'sup'
+      execute ':bd'
+    endif
+endfunction
+
 function! GitCommit()
   call inputsave()
   let message = input('Message: ')
@@ -766,7 +776,7 @@ map <Space> <leader>
 " Main leader Mappings
 noremap <silent> <leader>q :qall<CR>
 noremap <silent> <leader>w :update<CR>
-noremap <silent> <leader>d :bd<CR>
+noremap <silent> <leader>d :call CloseBuffer()<CR>
 noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
