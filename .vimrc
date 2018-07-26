@@ -180,6 +180,7 @@ set synmaxcol=256 "fixes lag from long lines
 
 "SET {{{
 " Common
+set ignorecase
 set smartcase
 set noantialias
 set scroll=10                              " Set scroll lines
@@ -919,15 +920,15 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V\c
+nnoremap / /\V
 "search backwards
-nnoremap <leader>l ?\V\c
+nnoremap <leader>l ?\V
 "search in visual selection
-vnoremap <leader>/ <ESC>/\%V\V\c
+vnoremap <leader>/ <ESC>/\%V\V
 "search the copied content
-nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
 "search the selected
-vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 vnoremap ? <C-C>
