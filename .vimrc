@@ -202,7 +202,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=1000                        " time after with the CursorHold events will fire
-set nowrap                                   " wrap too long lines
+set nowrap                                 " dont wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
@@ -519,10 +519,8 @@ let g:gruvbox_italic = 0
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
-" vim-lastplace
+"vim-lastplace
 let g:lastplace_open_folds = 0
-let g:lastplace_ignore = "gitcommit,gitrebase,svn,hgcommit"
-let g:lastplace_ignore_buftype = "quickfix,nofile,help"
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -988,8 +986,8 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
-nnoremap <silent> <leader>ia :ImportJSWord<CR><Plug>(FastFoldUpdate)
-nnoremap <silent> <leader>if :ImportJSFix<CR><Plug>(FastFoldUpdate)
+nnoremap <silent> <leader>ia :ImportJSWord<CR>:FastFoldUpdate<CR>:normal! zv<CR>
+nnoremap <silent> <leader>if :ImportJSFix<CR>:FastFoldUpdate<CR>:normal! zv<CR>
 nnoremap <silent> <leader>ig :ImportJSGoto<CR>
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd
