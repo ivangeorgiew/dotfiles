@@ -104,7 +104,9 @@ alias RT='reboot'
 alias suvim='sudo -E vim'
 alias ns='npm run start'
 alias nr='npm run'
+alias dot='cd ~/dotfiles'
 alias ent='cd ~/projects/entitlements/entitlements-web'
+alias ente='cd ~/projects/entitlements/entitlements-web/e2e'
 
 unset BROWSER
 export EDITOR='vim'

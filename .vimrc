@@ -741,10 +741,10 @@ function! FoldExprJS()
   return '='
 endfunction
 
-function! GoToTag(type)
+function! GoToTag(type, word)
   if a:type == 'tab'
     :tabe
-    execute ':tjump ' . @b
+    execute ':tjump ' . a:word
     :normal zz
     let l:tagFilename = expand('%:t')
     if l:tagFilename == ''
@@ -755,7 +755,7 @@ function! GoToTag(type)
 
   if a:type == 'vsplit'
     :vnew
-    execute ':tjump ' . @b
+    execute ':tjump ' . a:word
     :normal zz
     let l:tagFilename = expand('%:t')
     if l:tagFilename == ''
@@ -764,7 +764,7 @@ function! GoToTag(type)
   endif
 
   if a:type == 'current'
-    execute ':tjump ' . @b
+    execute ':tjump ' . a:word
     :normal zz
   endif
 endfunction
@@ -847,12 +847,15 @@ nnoremap <silent> H gT
 nnoremap <silent> L gt
 
 " Go to file under cursor
-nnoremap <silent> gt lbve"by:call GoToTag('tab')<CR>
-nnoremap <silent> gs lbve"by:call GoToTag('vsplit')<CR>
-nnoremap <silent> go lbve"by:call GoToTag('current')<CR>
+nnoremap <silent> gt lbve"by:call GoToTag('tab', @b)<CR>
+nnoremap <silent> gs lbve"by:call GoToTag('vsplit', @b)<CR>
+nnoremap <silent> go lbve"by:call GoToTag('current', @b)<CR>
 nnoremap <silent> gT <c-w>gf
 nnoremap <silent> gS :vertical wincmd f<CR>
 nnoremap <silent> gO gf
+command! -nargs=1 GT call GoToTag('tab', <f-args>)
+command! -nargs=1 GS call GoToTag('vsplit', <f-args>)
+command! -nargs=1 GO call GoToTag('current', <f-args>)
 
 " Search and replace
 nnoremap <silent> <F2> :call FileReplaceIt(0)<cr>
