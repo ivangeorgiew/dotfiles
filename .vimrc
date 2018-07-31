@@ -296,10 +296,10 @@ augroup folding
         \ setl foldmethod=marker
 
   au FileType javascript.jsx setl foldmethod=expr |
-        \ setl foldexpr=FoldExprJS() |
+        \ setl foldexpr=FoldExprJS()
 
   au FileType cucumber setl foldmethod=expr |
-        \ setl foldexpr=FoldExprCucumber() |
+        \ setl foldexpr=FoldExprCucumber()
 augroup END
 
 augroup highlights
@@ -321,6 +321,15 @@ augroup highlights
   au BufEnter * hi! DiffChange term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
   au BufEnter * hi! DiffDelete term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=167 guifg=#fb4934
   au BufEnter * hi! DiffText   term=reverse cterm=reverse  ctermbg=236 gui=reverse  guibg=#32302f ctermfg=208 guifg=#fe8019
+augroup END
+
+augroup fugitiveMappings
+  au!
+
+  au FileType gitcommit |
+        \ nmap <buffer> <C-e> <CR><C-W>K |
+        \ nmap <buffer> <C-t> <CR><C-W>T |
+        \ nmap <buffer> <C-r> <CR><C-W>T:Gdiff<CR>
 augroup END
 
 augroup vimrcEx
@@ -525,11 +534,9 @@ let g:lastplace_open_folds = 0
 
 "FUNCTIONS {{{
 function! CloseBuffer()
-    " Is there more than one buffer opened ?
-    if winnr('$') > 1 || tabpagenr('$') > 1
+    if tabpagenr('$') > 1
       execute ':q'
     else
-      echo 'sup'
       execute ':bd'
     endif
 endfunction
@@ -542,6 +549,17 @@ function! GitCommit()
     let message = 'update'
   endif
   exec ':Gcommit -m "' . message . '"'
+endfunction
+
+function GitStatus()
+  exec "Gstatus"
+  exec "normal \<C-W>k"
+
+  if line('$') == 1 && getline(1) == ''
+    exec 'bd'
+  else
+    exec "normal! \<C-W>j"
+  endif
 endfunction
 
 function! MoveCurrentFile()
@@ -831,13 +849,13 @@ nnoremap dh :diffget //2<CR>\|:diffupdate<CR>
 nnoremap dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
-nnoremap <leader>gs :Gstatus<CR>
+nnoremap <silent> <leader>gs :call GitStatus()<CR>
+nnoremap <silent> <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>gc :call GitCommit()<CR>
 nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gl :Git lg<CR>
-nnoremap <leader>gd :Gdiff develop<CR>
+nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gm :Gmerge<CR>
 nnoremap <silent> <leader>gph :Dispatch! git push -u<CR>
 nnoremap <silent> <leader>gpl :Dispatch! git pull<CR>
@@ -998,6 +1016,9 @@ inoremap <C-c> <Esc>
 
 " Remove suspending
 vnoremap <C-z> <Esc>
+
+" Tmux mapping
+map <C-g> <Esc>
 
 " tabular + vim-cucumber mapping
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a

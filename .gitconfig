@@ -26,7 +26,8 @@
     sch = !git branch --all | grep
     lst = !git branch --sort=committerdate
     sh = stash
-    sha = stash apply
+    sha = "!git stash apply stash@{\"$1\"} #"
+    shs = "!git stash show stash@{\"$1\"} #"
     fa = fetch --all
     cp = cherry-pick
 [core]
