@@ -525,11 +525,16 @@ let g:lastplace_open_folds = 0
 
 "FUNCTIONS {{{
 function! CloseBuffer()
-    if tabpagenr('$') > 1
-      execute ':q'
-    else
-      execute ':bd'
-    endif
+  " when exiting the Git Status window
+  if &ft == 'gitcommit'
+    setlocal nopreviewwindow
+  endif
+
+  if tabpagenr('$') > 1
+    execute ':q'
+  else
+    execute ':bd'
+  endif
 endfunction
 
 function! GitCommit()
