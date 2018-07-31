@@ -527,13 +527,14 @@ let g:lastplace_open_folds = 0
 function! CloseBuffer()
   " when exiting the Git Status window
   if &ft == 'gitcommit'
-    setlocal nopreviewwindow
+    set nopreviewwindow
+    execute 'Rooter'
   endif
 
   if tabpagenr('$') > 1
-    execute ':q'
+    execute 'q'
   else
-    execute ':bd'
+    execute 'bd'
   endif
 endfunction
 
