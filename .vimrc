@@ -323,15 +323,6 @@ augroup highlights
   au BufEnter * hi! DiffText   term=reverse cterm=reverse  ctermbg=236 gui=reverse  guibg=#32302f ctermfg=208 guifg=#fe8019
 augroup END
 
-augroup fugitiveMappings
-  au!
-
-  au FileType gitcommit |
-        \ nmap <buffer> <C-e> <CR><C-W>K |
-        \ nmap <buffer> <C-t> <CR><C-W>T |
-        \ nmap <buffer> <C-r> <CR><C-W>T:Gdiff<CR>
-augroup END
-
 augroup vimrcEx
   au!
 
@@ -839,24 +830,21 @@ cnoremap <C-L> <Right>
 
 "Vimdiff
 "diff 2 buffers in vertical split
-nnoremap <leader>1 :call ToggleDiff()<cr>
-"close every buffer except the one you're in
-nnoremap <leader>o :only<CR>
-nnoremap <leader>[ ]czz
-nnoremap <leader>] [czz
-nnoremap du :diffupdate<CR>
-nnoremap dh :diffget //2<CR>\|:diffupdate<CR>
-nnoremap dl :diffget //3<CR>\|:diffupdate<CR>
+nnoremap <silent> <leader>1 :call ToggleDiff()<cr>
+nnoremap <silent> <leader>o :only<CR>
+nnoremap <silent> du :diffupdate<CR>
+nnoremap <silent> dh :diffget //2<CR>\|:diffupdate<CR>
+nnoremap <silent> dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
 nnoremap <silent> <leader>gs :call GitStatus()<CR>
 nnoremap <silent> <leader>gc :call GitCommit()<CR>
-nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>go :Git checkout<Space>
-nnoremap <leader>gl :Git lg<CR>
-nnoremap <leader>gd :Gdiff<CR>
-nnoremap <leader>gm :Gmerge<CR>
+nnoremap <silent> <leader>gw :Gwrite<CR>
+nnoremap <silent> <leader>gb :Gblame<CR>
+nnoremap <silent> <leader>go :Git checkout<Space>
+nnoremap <silent> <leader>gl :Git lg<CR>
+nnoremap <silent> <leader>gd :Gdiff<CR>
+nnoremap <silent> <leader>gm :Gmerge<CR>
 nnoremap <silent> <leader>gph :Dispatch! git push -u<CR>
 nnoremap <silent> <leader>gpl :Dispatch! git pull<CR>
 
