@@ -528,7 +528,6 @@ function! CloseBuffer()
   " when exiting the Git Status window
   if &ft == 'gitcommit'
     set nopreviewwindow
-    execute 'Rooter'
   endif
 
   if tabpagenr('$') > 1
@@ -617,7 +616,7 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@'.expression.'@'.replacement.'@gc'
+  execute '%sno@'.expression.'@'.replacement.'@gcI'
 endfunction
 
 function! VisReplaceIt()
@@ -627,7 +626,7 @@ function! VisReplaceIt()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute "%sno@\\%V".expression."@".replacement."@gc"
+  execute "%sno@\\%V".expression."@".replacement."@gcI"
 endfunction
 
 function! MassReplaceIt()
@@ -641,9 +640,9 @@ function! MassReplaceIt()
   let replacement = input('Enter replacement:')
   call inputrestore()
   if fullWord == 1
-    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@g | update'
+    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@gI | update'
   else
-    execute 'cfdo %sno@'.expression.'@'.replacement.'@g | update'
+    execute 'cfdo %sno@'.expression.'@'.replacement.'@gI | update'
   endif
 endfunction
 
@@ -783,6 +782,17 @@ function! GoToTag(type, word)
     :normal zz
   endif
 endfunction
+
+function! JoinSpaceless()
+  execute 'normal! $'
+  let lastChar = matchstr(getline('.'), '\%' . col('.') . 'c.')
+
+  if lastChar =~ '('
+    execute 'normal! Jx'
+  else
+    execute 'normal! J'
+  endif
+endfunction
 "FUNCTIONS }}}
 
 "MAPPINGS {{{
@@ -902,8 +912,8 @@ nnoremap <leader>ff `[v`]=
 inoremap <silent><expr> jk getline('.') =~ '^\s\+$' && empty(&buftype) ? '<ESC>:call setline(line("."), "")<CR>' : '<ESC>'
 
 " Move tab left and right
-nnoremap th :tabm -1<cr>
-nnoremap tl :tabm +1<cr>
+nnoremap <silent> th :tabm -1<cr>
+nnoremap <silent> tl :tabm +1<cr>
 
 " Save session
 noremap <silent> <F7> :call SaveSession()<cr>
@@ -1034,6 +1044,9 @@ noremap Q q
 
 " Gutentags update
 nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
+
+" Join spaceless
+nnoremap J :call JoinSpaceless()<CR>
 
 " Abbreviations
 ab teh the
