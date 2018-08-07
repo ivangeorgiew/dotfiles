@@ -616,7 +616,11 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@'.expression.'@'.replacement.'@gcI'
+  if a:visual == 0
+    execute '%sno@'.expression.'@'.replacement.'@gcI'
+  else
+    execute '%sno@\<'.expression.'\>@'.replacement.'@gcI'
+  endif
 endfunction
 
 function! VisReplaceIt()
@@ -643,6 +647,20 @@ function! MassReplaceIt()
     execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@gI | update'
   else
     execute 'cfdo %sno@'.expression.'@'.replacement.'@gI | update'
+  endif
+endfunction
+
+function! PasteMultipleWords()
+  call inputsave()
+  let withoutCommas = confirm('Without commas ?',"&Yes\n&No", 1)
+  call inputrestore()
+  if withoutCommas == 1
+    execute "normal! o\<Esc>\"cpmb^"
+    execute "s/, /\r/g"
+    execute "silent normal! V`b="
+    execute "redraw!"
+  else
+    normal! "cp==
   endif
 endfunction
 
@@ -924,7 +942,7 @@ noremap <silent> <F5> :call OpenSession()<cr>
 " Copy multiple words to register
 nnoremap <silent> <leader>8 lbve"cy
 nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
-nnoremap <silent> <leader>0 "cp
+nnoremap <silent> <leader>0 :call PasteMultipleWords()<CR>
 
 " Space to new line in vis selection
 vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
