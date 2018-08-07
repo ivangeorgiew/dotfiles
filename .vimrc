@@ -383,9 +383,6 @@ let g:mundo_preview_height = 25
 let g:mundo_preview_bottom = 1
 let g:mundo_close_on_revert = 1
 
-" have jsx highlighting/indenting work in .js files as well
-let g:jsx_ext_required = 0
-
 " ALE configurations
 let g:ale_enabled = 1
 let g:ale_linters_explicit = 1
@@ -483,8 +480,8 @@ let g:UltiSnipsSnippetDirectories = ['ultisnips']
 let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
-let g:EasyClipAutoFormat = 0
-let g:EasyClipAlwaysMoveCursorToEndOfPaste = 1
+let g:EasyClipAutoFormat = 1
+let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
 let g:EasyClipPreserveCursorPositionAfterYank = 1
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
@@ -654,13 +651,14 @@ function! PasteMultipleWords()
   call inputsave()
   let withoutCommas = confirm('Without commas ?',"&Yes\n&No", 1)
   call inputrestore()
+  normal! "cp
   if withoutCommas == 1
-    execute "normal! o\<Esc>\"cpmb^"
+    execute "normal! mb^"
     execute "s/, /\r/g"
     execute "silent normal! V`b="
     execute "redraw!"
   else
-    normal! "cp==
+    normal! ==
   endif
 endfunction
 
@@ -920,9 +918,8 @@ nmap <C-F> <plug>EasyClipSwapPasteBackwards
 imap <C-E> <plug>EasyClipInsertModePaste
 cmap <C-E> <plug>EasyClipCommandModePaste
 " Paste content before or after line
-" use EasyClip's p command (that is why its nmap and not nnoremap)
-nmap <leader>p o<Esc>p
-nmap <leader>P O<Esc>p
+nmap <silent> <leader>p o<ESC>p
+nmap <silent> <leader>P O<ESC>P
 " format last pasted text
 nnoremap <leader>ff `[v`]=
 
@@ -1046,7 +1043,7 @@ map <C-g> <Esc>
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
 " don't go to the end of line char
-vnoremap $ g_
+xnoremap <expr> $ mode() == "v" ? "g_" : "$"
 
 "Emmet
 nmap <C-y> <C-q>,
