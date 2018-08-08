@@ -173,7 +173,6 @@ set lazyredraw
 set nocursorcolumn
 set regexpengine=1
 set synmaxcol=256 "fixes lag from long lines
-" syntax sync minlines=128 " no point
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
 "MISC }}}
@@ -206,6 +205,8 @@ set nowrap                                 " dont wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
+set redrawtime=5000                        " increase redraw time for syntax handling
+
 
 " Folding
 set foldmethod=manual
@@ -343,6 +344,9 @@ augroup END
 " AUGROUP }}}
 
 "SETTINGS {{{
+"JSX for .js files as well
+let g:jsx_ext_required = 0
+
 " Disabled matching of paranteses for folding speed
 let loaded_matchparen = 1
 
@@ -481,8 +485,8 @@ let g:UltiSnipsMappingsToIgnore = ['autocomplete']
 
 " EasyClip settings
 let g:EasyClipAutoFormat = 1
-let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
 let g:EasyClipPreserveCursorPositionAfterYank = 1
+let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
