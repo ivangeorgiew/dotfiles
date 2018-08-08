@@ -171,7 +171,7 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set regexpengine=1
+set regexpengine=0
 set synmaxcol=256 "fixes lag from long lines
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
@@ -206,6 +206,7 @@ set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
 set redrawtime=5000                        " increase redraw time for syntax handling
+set pastetoggle=<plug>PasteToggle          " fix the indenting on <C-e>
 
 
 " Folding
@@ -758,7 +759,7 @@ function! FoldExprJS()
     let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
 
     " Keep the startBracket check last for performance
-    if lind < 4 && l !~ s:nonStarterFolds && l !~ s:endBracket && l =~ s:startBracket
+    if lind < 4 && l !~ s:nonStarterFolds && l =~ s:startBracket && l !~ s:endBracket
       let s:prevBracketIndent = s:bracketIndent
       let s:bracketIndent = lind
       return 'a1'
@@ -918,9 +919,8 @@ nmap rr <plug>SubstituteLine
 " change yank buffer
 nmap <C-B> <plug>EasyClipSwapPasteForward
 nmap <C-F> <plug>EasyClipSwapPasteBackwards
-" Copy from *
-imap <C-E> <plug>EasyClipInsertModePaste
-cmap <C-E> <plug>EasyClipCommandModePaste
+" paste from default register in insert mode
+inoremap <silent> <C-E> <C-r>+
 " Paste content before or after line
 nmap <silent> <leader>p o<ESC>p
 nmap <silent> <leader>P O<ESC>P
