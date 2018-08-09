@@ -378,10 +378,6 @@ let g:NERDTreeWinSize=30
 let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['node_modules', '.git', '.DS_Store']
 
-"Emmet settings
-let g:user_emmet_settings = { 'javascript.jsx' : { 'extends' : 'jsx' } }
-let g:user_emmet_leader_key='<C-q>'
-
 "Mundo (undo history) settings
 let g:mundo_width = 40
 let g:mundo_preview_height = 25
@@ -522,7 +518,7 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 "vim-lastplace
-let g:lastplace_open_folds = 0
+let g:lastplace_open_folds = 1
 "SETTINGS }}}
 
 "FUNCTIONS {{{
@@ -1047,9 +1043,6 @@ inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
 " don't go to the end of line char
 xnoremap <expr> $ mode() == "v" ? "g_" : "$"
-
-"Emmet
-nmap <C-y> <C-q>,
 
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()

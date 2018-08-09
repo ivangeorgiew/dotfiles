@@ -31,13 +31,14 @@ $1.propTypes = {
 }
 endsnippet
 
-snippet cl "console.log"
-console.log(${1})
+snippet cr "constructor" b
+constructor(props) {
+	super(props)
+
+	$0
+}
 endsnippet
 
-snippet "i(mp)?" "import" !br
-import { ${1} } from '${2}/$1'
-endsnippet
 
 snippet cwrp "componentWillReceiveProps" b
 componentWillReceiveProps(nextProps) {
@@ -81,3 +82,8 @@ endsnippet
 snippet fn "function"
 function $0
 endsnippet
+
+snippet cl "console.log"
+console.log$0
+endsnippet
+
