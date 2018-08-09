@@ -386,7 +386,7 @@ let g:mundo_close_on_revert = 1
 
 " ALE configurations
 let g:ale_enabled = 1
-let g:ale_linters_explicit = 1
+let g:ale_linters_explicit = 0
 let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
 let g:ale_lint_on_enter = 1
@@ -518,7 +518,7 @@ let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
 "vim-lastplace
-let g:lastplace_open_folds = 1
+let g:lastplace_open_folds = 0
 "SETTINGS }}}
 
 "FUNCTIONS {{{
