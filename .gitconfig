@@ -20,7 +20,7 @@
     pre = checkout @{-1}
     rt = reset HEAD~1
     sa = submodule add
-    su = !git submodule update --init --recursive
+    su = !git submodule sync && git submodule update --init --recursive
     rs = rm --cached
     ss = status
     sch = !git branch --all | grep
@@ -36,7 +36,7 @@
 [include]
     path = .gitconfig.local
 [commit]
-    template = /Users/ivangeorgiev/.gitmessage
+    template = ~/dotfiles/.gitmessage
 [user]
     name = Ivan Georgiev
     email = ivan.georgiev@tick42.com
@@ -63,8 +63,6 @@
 [mergetool "sourcetree"]
     cmd = /usr/local/bin/ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
     trustExitCode = true
-[credential]
-
 [hub]
     protocol = https
 [filter "lfs"]
