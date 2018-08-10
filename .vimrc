@@ -316,9 +316,6 @@ augroup highlights
   au BufEnter * hi! link ALEWarning MyError
   au BufEnter * hi! link ALEErrorSign MyError
 
-  " Show characters over 120 columns
-  " au BufEnter *.js match OverLength /\%122v.*/
-
   au BufEnter * hi! DiffAdd    term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
   au BufEnter * hi! DiffChange term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
   au BufEnter * hi! DiffDelete term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=167 guifg=#fb4934
@@ -338,6 +335,7 @@ augroup vimrcEx
   au BufEnter *.js setl tabstop=4 shiftwidth=4 synmaxcol=3000
   au BufEnter *.feature setl tabstop=4 shiftwidth=4
   au BufEnter *.scss setl tabstop=4 shiftwidth=4
+  au BufEnter *.json setl tabstop=4 shiftwidth=4
 
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
@@ -386,11 +384,20 @@ let g:mundo_close_on_revert = 1
 
 " ALE configurations
 let g:ale_enabled = 1
-let g:ale_linters_explicit = 0
-let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
-let g:ale_fixers = {'javascript': ['eslint'], 'css': ['stylelint'], 'json': ['jsonlint']}
+let g:ale_linters_explicit = 1
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+      \'javascript': ['eslint'],
+      \'scss': ['scsslint'],
+      \'json': ['jsonlint']
+\}
+" eslint fixer removes last fold lines
+let g:ale_fixers = {
+      \'scss': ['prettier'],
+      \'json': ['prettier']
+\}
 let g:ale_lint_on_enter = 1
-let g:ale_lint_on_save = 0
+let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'always'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_set_highlights = 1
@@ -542,7 +549,7 @@ function! GitCommit()
   if message == ''
     let message = 'update'
   endif
-  exec ':Gcommit -m "' . message . '"'
+  exec ':silent! Gcommit -m "' . message . '"'
 endfunction
 
 function GitStatus()
@@ -879,7 +886,6 @@ nnoremap <silent> <leader>gl :Git lg<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
 nnoremap <silent> <leader>gph :Dispatch! git push -u<CR>
-nnoremap <silent> <leader>gpl :Dispatch! git pull<CR>
 
 " Navigations between tabs
 nnoremap <silent> H gT
