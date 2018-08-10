@@ -1032,8 +1032,8 @@ nnoremap <leader>fm :call MoveCurrentFile()<cr>
 nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 
 " import-js mappings
-nnoremap <silent> <leader>ia :ImportJSWord<CR>:update<CR>
-nnoremap <silent> <leader>if :ImportJSFix<CR>:update<CR>
+nnoremap <silent> <leader>ia :ImportJSWord<CR>:update<CR>:silent! normal! zO<CR>
+nnoremap <silent> <leader>if :ImportJSFix<CR>:update<CR>:silent! normal! zO<CR>
 
 " Make using Ctrl+C do the same as Escape, to trigger autocmd
 inoremap <C-c> <Esc>
