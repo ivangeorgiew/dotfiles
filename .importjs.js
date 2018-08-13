@@ -26,9 +26,10 @@ module.exports = {
     globals: [ 'module' ],
     namedExports: {
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
+        'react-immutable-proptypes': [ 'list', 'map' ],
         'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
         'reselect': [ 'createSelector' ],
-        'redux-saga/effects': [ 'all', 'put', 'call', 'select', 'take', 'race', 'takeLatest', 'takeEvery', 'fork', 'cancel', 'spawn' ],
+        'redux-saga/effects': [ 'all', 'join', 'put', 'call', 'select', 'take', 'race', 'takeLatest', 'takeEvery', 'fork', 'cancel', 'spawn' ],
         'redux-saga': [ 'delay' ],
         'react-redux': [ 'connect' ],
         'redux': [ 'bindActionCreators' ]
