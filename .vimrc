@@ -392,6 +392,7 @@ let g:ale_linters = {
       \'json': ['jsonlint']
 \}
 " eslint fixer removes last fold lines
+" DONT fix with javascript with eslint, since it will make mistakes
 let g:ale_fixers = {
       \'scss': ['prettier'],
       \'json': ['prettier']
@@ -621,11 +622,7 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  if a:visual == 0
-    execute '%sno@'.expression.'@'.replacement.'@gcI'
-  else
-    execute '%sno@\<'.expression.'\>@'.replacement.'@gcI'
-  endif
+  execute '%sno@'.expression.'@'.replacement.'@gcI'
 endfunction
 
 function! VisReplaceIt()
@@ -665,8 +662,6 @@ function! PasteMultipleWords()
     execute "s/, /\r/g"
     execute "silent normal! V`b="
     execute "redraw!"
-  else
-    normal! ==
   endif
 endfunction
 
@@ -808,13 +803,15 @@ function! GoToTag(type, word)
 endfunction
 
 function! JoinSpaceless()
-  execute 'normal! $'
-  let lastChar = matchstr(getline('.'), '\%' . col('.') . 'c.')
+  normal! $J
 
-  if lastChar =~ '('
-    execute 'normal! Jx'
-  else
-    execute 'normal! J'
+  let currCol = col('.')
+  let centerChar = matchstr(getline('.'), '\%' . currCol . 'c.')
+  let leftChar = matchstr(getline('.'), '\%' . (currCol - 1) . 'c.')
+  let rightChar = matchstr(getline('.'), '\%' . (currCol + 1) . 'c.')
+
+  if centerChar =~ '\s' && (leftChar =~ '[\(]' || rightChar =~ '[\.\,\<,\>]')
+    normal! x
   endif
 endfunction
 "FUNCTIONS }}}
@@ -1068,4 +1065,5 @@ nnoremap J :call JoinSpaceless()<CR>
 " Abbreviations
 ab teh the
 ab cosnt const
+ab prosp props
 "MAPPINGS }}}
