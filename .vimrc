@@ -171,7 +171,7 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set regexpengine=0
+set regexpengine=1
 set synmaxcol=256 "fixes lag from long lines
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
@@ -243,13 +243,11 @@ set complete=.,t
 set splitbelow
 set splitright
 
-"Silver searcher
-if executable('ag')
-  set grepprg=ag
-endif
-
 "Vimdiff options
 set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespace
+
+"Silver searcher
+set grepprg=ag
 "SET }}}
 
 "AUGROUP {{{
@@ -405,22 +403,19 @@ let g:ale_set_highlights = 1
 let g:ale_set_signs = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-  " Custom ctlp mapping
-  " let g:ctrlp_map = '<C-p>'
-  let g:grep_cmd_opts = '--line-numbers --noheading'
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_cmd='CtrlP :pwd'
-  let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
-  let g:ctrlp_show_hidden = 1
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-
-  " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-  let g:ag_prg = 'ag --hidden --column --nogroup --noheading -s'
-endif
+let g:grep_cmd_opts = '--line-numbers --noheading'
+" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+let g:ctrlp_cmd='CtrlP :pwd'
+let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
+let g:ctrlp_show_hidden = 1
+" ag is fast enough that CtrlP doesn't need to cache
+let g:ctrlp_use_caching = 0
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
+" open file even if already opened
+let g:ctrlp_switch_buffer = ''
+" open multiple files in new tabs and jump to first one
+let g:ctrlp_open_multiple_files = 'tj'
+let g:ag_prg = 'ag --hidden --column --nogroup --noheading -s'
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -810,7 +805,7 @@ function! JoinSpaceless()
   let leftChar = matchstr(getline('.'), '\%' . (currCol - 1) . 'c.')
   let rightChar = matchstr(getline('.'), '\%' . (currCol + 1) . 'c.')
 
-  if centerChar =~ '\s' && (leftChar =~ '[\(]' || rightChar =~ '[\.\,\<,\>]')
+  if centerChar =~ '\s' && (leftChar =~ '[\(]' || rightChar =~ '[\.]')
     normal! x
   endif
 endfunction
