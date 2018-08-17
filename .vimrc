@@ -654,10 +654,10 @@ endfunction
 
 function! PasteMultipleWords()
   call inputsave()
-  let withoutCommas = confirm('Without commas ?',"&Yes\n&No", 1)
+  let withCommas = confirm('With commas ?',"&Yes\n&No", 1)
   call inputrestore()
   normal! "cp
-  if withoutCommas == 1
+  if withCommas == 2
     execute "normal! mb^"
     execute "s/, /\r/g"
     execute "silent normal! V`b="
@@ -963,7 +963,7 @@ nnoremap <leader>al :ALELint<CR>
 "Incsearch
 nnoremap / /\V
 "search backwards
-nnoremap <leader>l ?\V
+nnoremap ? ?\V
 "search in visual selection
 vnoremap <leader>/ <ESC>/\%V\V
 "search the copied content
@@ -971,8 +971,7 @@ nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
 "search the selected
 vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
-nnoremap <silent><expr> ? (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-vnoremap ? <C-C>
+nnoremap <silent><expr> <leader>l (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
 "Toggle wrapscan
 nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
