@@ -333,9 +333,6 @@ augroup vimrcEx
   au BufEnter *.scss setl tabstop=4 shiftwidth=4
   au BufEnter *.json setl tabstop=4 shiftwidth=4
 
-  "Disable matchparen
-  au VimEnter * execute 'NoMatchParen'
-
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
 augroup END
@@ -344,6 +341,9 @@ augroup END
 "SETTINGS {{{
 "JSX for .js files as well
 let g:jsx_ext_required = 0
+
+" Disabled matching of paranteses for folding speed
+let loaded_matchparen = 1
 
 " Variables for FoldExprJS
 let s:tabstop = 4
