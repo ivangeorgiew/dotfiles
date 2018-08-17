@@ -93,3 +93,14 @@ snippet cl "console.log"
 console.log($0)
 endsnippet
 
+snippet worker
+function * $1Worker ({ payload: {$2} }) {
+	$0
+}
+endsnippet
+
+snippet watcher
+function * $1Watcher() {
+	yield factoryTakeLatest($0)
+}
+endsnippet
