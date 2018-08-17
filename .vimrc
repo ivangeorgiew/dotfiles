@@ -622,7 +622,7 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@'.expression.'@'.replacement.'@gcI'
+  execute '%sno@\C'.expression.'@'.replacement.'@gcI'
 endfunction
 
 function! VisReplaceIt()
@@ -632,7 +632,7 @@ function! VisReplaceIt()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute "%sno@\\%V".expression."@".replacement."@gcI"
+  execute "%sno@\\%V\\C".expression."@".replacement."@gcI"
 endfunction
 
 function! MassReplaceIt()
