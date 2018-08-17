@@ -171,7 +171,7 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set regexpengine=1
+set regexpengine=0
 set synmaxcol=256 "fixes lag from long lines
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
@@ -206,8 +206,6 @@ set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
 set redrawtime=5000                        " increase redraw time for syntax handling
-set pastetoggle=<plug>PasteToggle          " fix the indenting on <C-e>
-
 
 " Folding
 set foldmethod=manual
@@ -335,6 +333,9 @@ augroup vimrcEx
   au BufEnter *.scss setl tabstop=4 shiftwidth=4
   au BufEnter *.json setl tabstop=4 shiftwidth=4
 
+  "Disable matchparen
+  au VimEnter * execute 'NoMatchParen'
+
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
 augroup END
@@ -343,9 +344,6 @@ augroup END
 "SETTINGS {{{
 "JSX for .js files as well
 let g:jsx_ext_required = 0
-
-" Disabled matching of paranteses for folding speed
-let loaded_matchparen = 1
 
 " Variables for FoldExprJS
 let s:tabstop = 4
