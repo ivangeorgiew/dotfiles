@@ -505,7 +505,6 @@ let g:fastfold_fold_movement_commands = []
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
 let g:airline_extensions = [ 'ctrlp', 'ale', 'branch' ]
-let g:airline#extensions#branch#displayed_head_limit = 45
 let g:airline_section_y = ''
 let g:airline_highlighting_cache = 0
 let g:airline_theme = 'gruvbox'
