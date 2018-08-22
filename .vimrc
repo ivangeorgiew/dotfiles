@@ -1054,7 +1054,7 @@ noremap Q q
 nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
-nnoremap J :call JoinSpaceless()<CR>
+nnoremap <silent> J :call JoinSpaceless()<CR>
 
 " go to next/prev line even if it is wrapped
 nnoremap j gj
