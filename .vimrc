@@ -179,15 +179,13 @@ set synmaxcol=256 "fixes lag from long lines
 
 "SET {{{
 " Common
-" set ignorecase
-" set smartcase
-set noantialias
+set smartcase                              " Needed for correct work with CtrlP
 set scroll=10                              " Set scroll lines
 set nocompatible                           " Use Vim settings, rather then Vi settings
 set nobackup                               " dont make backups
 set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
-set swapsync=""
+set swapsync=""                            " Don't write swap file to disk
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
 set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
@@ -201,7 +199,7 @@ set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=800                         " time after which the CursorHold events will fire
-set nowrap                                 " dont wrap too long lines
+set wrap                                   " if on - wrap too long lines
 set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
@@ -615,7 +613,7 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@\C'.expression.'@'.replacement.'@gcI'
+  execute '%sno@'.expression.'@'.replacement.'@gcI'
 endfunction
 
 function! VisReplaceIt()
@@ -625,7 +623,7 @@ function! VisReplaceIt()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute "%sno@\\%V\\C".expression."@".replacement."@gcI"
+  execute "%sno@\\%V".expression."@".replacement."@gcI"
 endfunction
 
 function! MassReplaceIt()
@@ -875,7 +873,11 @@ nnoremap <silent> <leader>go :Git checkout<Space>
 nnoremap <silent> <leader>gl :Git lg<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
-nnoremap <silent> <leader>gph :Dispatch! git push -u<CR>
+command! -nargs=0 Push execute 'Dispatch! git push -u'
+cnoreabbrev ph Push
+command! -nargs=0 Pull execute 'Dispatch! git pull'
+cnoreabbrev pl Pull
+
 
 " Navigations between tabs
 nnoremap <silent> H gT
@@ -973,9 +975,9 @@ nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 nnoremap * m
 
 " Move to the next word such word
-nnoremap <silent> n n:silent! norm! zO<CR>zz
-nnoremap <silent> N N:silent! norm! zO<CR>zz
-map _ "by:let @/ = '\C\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>
+nnoremap <silent> n n:silent! norm! zv<CR>zz
+nnoremap <silent> N N:silent! norm! zv<CR>zz
+map _ "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>
 nmap <silent> m viw_n
 vmap <silent> m _n
 nmap <silent> M viw_NN
@@ -1053,6 +1055,10 @@ nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
 nnoremap J :call JoinSpaceless()<CR>
+
+" go to next/prev line even if it is wrapped
+nnoremap j gj
+nnoremap k gk
 
 " Abbreviations
 ab teh the
