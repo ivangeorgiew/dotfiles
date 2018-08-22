@@ -179,8 +179,8 @@ set synmaxcol=256 "fixes lag from long lines
 
 "SET {{{
 " Common
-set ignorecase
-set smartcase
+" set ignorecase
+" set smartcase
 set noantialias
 set scroll=10                              " Set scroll lines
 set nocompatible                           " Use Vim settings, rather then Vi settings
@@ -954,15 +954,15 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V
+nnoremap / /\V\c
 "search backwards
-nnoremap ? ?\V
+nnoremap ? ?\V\c
 "search in visual selection
-vnoremap <leader>/ <ESC>/\%V\V
+vnoremap <leader>/ <ESC>/\%V\V\c
 "search the copied content
-nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
 "search the selected
-vnoremap <silent> // "by:let @/ = '\V' . escape(@b, '\\/.*$^~[]')<CR>n
+vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
 "toggle search highlight
 nnoremap <silent><expr> <leader>l (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
